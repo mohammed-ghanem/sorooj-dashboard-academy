@@ -1,0 +1,207 @@
+{
+  "home": {
+    "title": "الصفحة الرئيسية"
+  },
+  "pages": {
+    "login": {
+      "loginTitle": "لوحة تحكم الادارة ",
+      "email": "البريد الالكترونى",
+      "passwordName": "كلمة المرور",
+      "forgetPassword": "هل نسيت كلمة المرور ؟",
+      "loginButton": "تسجيل الدخول ",
+      "dontHaveUser": "ليس لديك حساب ؟",
+      "createAccount": "انشاء حساب ",
+      "LoginSuccessful": " تم تسجيل الدخول بنجاح",
+      "redirectHome": "سيتم تحويلك الى الصفحة الرئيسية",
+      "ok": "تم",
+      "NotVerified": "لم يتم تفعيل الحساب",
+      "newVerifyCode": "تم إرسال رمز التحقق الجديد إلى بريدك الإلكتروني. يرجى التحقق من حسابك.",
+      "Error": "خطأ",
+      "failedResendCode": "فشل في إعادة إرسال رمز التحقق. يرجى المحاولة مرة أخرى في وقت لاحق.",
+      "verifyBeforeLogin": "برجاء تفعيل الحساب قبل تسجيل الدخول",
+      "InvalidEmailOrPassword": "خطأ فى البريد الالكترونى او كلمة المرور",
+      "InvalidEmailOrPasswordSwal": "فشل تسجيل الدخول خطأ البريد الالكترونى او كلمة المرور يرجى المحاولة مرة اخرى",
+      "NetworkError": "خطأ في الشبكة، يرجى التحقق من اتصال الشبكة والمحاولة مرة أخرى، ",
+      "SomethingWentWrong": "خطأ، حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.',",
+      "rememberMe": "تذكرني"
+    },
+    "forgetPassword": {
+      "title": "استعادة كلمة المرور",
+      "forgetPasswordTitle": "هل نسيت كلمة المرور ؟",
+      "email": "البريد الالكترونى",
+      "sending": "جارى ارسال رمز التحقق",
+      "send": "ارسال رمز التحقق",
+      "forgetPasswordButton": "استعادة كلمة المرور"
+    },
+    "verifyCode": {
+      "title": "تحقق من رمز التحقق",
+      "email": "البريد الالكترونى",
+      "code": "رمز التحقق",
+      "placeholder": "ادخل رمز التحقق المكون من 4 ارقال",
+      "processing" : "جارى التحقق",
+      "verify": "تحقق",
+      "resendCode" : "اعادة ارسال رمز التحقق"
+    },
+    "resetPassword": {
+      "title": "انشاء كلمة المرور الجديدة",
+      "email": "البريد الالكترونى",
+      "code": "رمز التحقق",
+      "password": "كلمة المرور",
+      "confirmPassword": "تاكيد كلمة المرور",
+      "processing": "جارى تغيير كلمة المرور",
+      "confirmBtn": "تاكيد"
+    },
+    "changePassword": {
+      "title": "تغيير كلمة المرور",
+      "subtitle": "أدخل كلمة المرور الحالية ثم اختر كلمة جديدة",
+      "oldPassword": "كلمة المرور القديمة",
+      "password": "  كلمة المرور الجديدة",
+      "confirmPassword": "تاكيد كلمة المرور الجديدة",
+      "passCondition" : "لأمان حسابك، يجب أن تتكون كلمة المرور من: حروف (A–Z, a–z)، أرقام (0–9)، ورمز خاص واحد على الأقل مثل: ! @ # $ % ^ & *",
+      "processing": "جارى تغيير كلمة المرور",
+      "confirmBtn": "تاكيد",
+      "cancelBtn" : "الغاء"
+    },
+    "updateProfile": {
+      "title": "تحديث الملف الشخصى",
+      "titleUpdate": "تحديث البيانات الشخصية ",
+      "name": "الاسم بالكامل",
+      "email": "البريد الالكترونى",
+      "phone": "رقم الجوال",
+      "processing": "جارى تحديث الملف الشخصى",
+      "confirmBtn": "تاكيد"
+    },
+    "profile": {
+      "title": "الملف الشخصى",
+      "titleUpdate": "تحديث الملف الشخصى",
+      "name": "الاسم بالكامل",
+      "email": "البريد الالكترونى",
+      "phone": "رقم الجوال",
+      "processing": "جارى تحديث الملف الشخصى",
+      "confirmBtn": "تاكيد",
+      "noData": "لا يوجد بيانات",
+      "memberSince": "عضو منذ",
+      "personalDetails": "بيانات شخصية ",
+      "editProfile": "تحديث الملف الشخصى" 
+    },
+    "userDropDown": {
+      "profile": "الملف الشخصى",
+      "changePassword": "تغيير كلمة المرور",
+      "logout": "تسجيل الخروج",
+      "confirmLogout" : " تأكيد تسجيل الخروج  ",
+      "confirmLogoutQuestion" : "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
+      "cancelBtn" : "الغاء",
+      "logoutProcissing" : " جارى تسجيل الخروج",
+      "logoutBtn" : "تسجيل الخروج"
+    },
+    "admins": {
+      "adminsTitle": "المسؤولين",
+      "searchPlaceholder": "ابحث عن مسؤول...", 
+      "protect": "محمى",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف المسؤول",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذا المسؤول؟ لا يمكن التراجع هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createAdmin": {
+        "title": "انشاء مسؤول جديد",
+        "titleDescription": "انشاء بيانات المسؤول والصلاحيات",
+        "name": "الاسم بالكامل",
+        "email": "البريد الالكترونى",
+        "phone": "رقم الجوال",
+        "password": "كلمة المرور",
+        "confirmPassword": "تاكيد كلمة المرور",
+        "roles": "الصلاحيات والمهام",
+        "isActive": "نشط",
+        "processing": "جارى انشاء المسؤول",
+        "createBtn": "انشاء المسؤول"
+      },
+      "editAdmin": { 
+        "title": "تعديل المسؤول",
+        "titleUpdate": "تحديث بيانات المسؤول والصلاحيات",
+        "name": "الاسم بالكامل",
+        "email": "البريد الالكترونى",
+        "phone": "رقم الجوال",
+        "role": "الصلاحيات والمهام",
+        "isActive": "مفعل",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": " حفظ التغييرات"
+      }
+    },
+    "roles": {
+      "rolesTitle": "الصلاحيات والمهام",
+      "searchPlaceholder": "ابحث عن صلاحية...",
+      "protect": "محمى",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف الصلاحية",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذه الصلاحية؟ لا يمكن التراجع هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createRole": {
+        "title": "انشاء دور جديد",
+        "titleDescription": "حدد تفاصيل الدور وقم بتعيين الصلاحيات",
+        "roleInfo": "معلومات الدور",
+        "nameAr": "الاسم بالعربية",
+        "nameArPlaceholder": "مدير النظام بالعربية",
+        "nameEn": "الاسم بالانجليزية",
+        "nameEnPlaceholder": "مدير النظام بالانجليزية",
+        "description": "وصف الصلاحية",
+        "permissions": "اختر الصلاحيات",
+        "isSelected": "محدد",
+        "selectAll": "اختر الكل",
+        "searchPlaceholder" : "ابحث عن صلاحية...",
+        "processing": "جارى انشاء الدور",
+        "createBtn": "انشاء الدور"
+      },
+      "editRole": {
+        "title": "تعديل الدور",
+        "titleUpdate": "تحديث بيانات الدور والصلاحيات",
+        "roleInfo": "معلومات الدور",
+        "nameAr": "الاسم بالعربية",
+        "nameArPlaceholder": "مدير النظام بالعربية",
+        "nameEn": "الاسم بالانجليزية",
+        "nameEnPlaceholder": "مدير النظام بالانجليزية",
+        "description": "وصف الصلاحية",
+        "permissions": "اختر الصلاحيات",
+        "isSelected": "محدد",
+        "selectAll": "اختر الكل",
+        "searchPlaceholder" : "ابحث عن صلاحية...",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": "حفظ التغييرات"
+      },
+      "viewRole": {
+        "title": "عرض الدور",
+        "description": "بيانات الدور والصلاحيات",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالانجليزية",
+        "status": "حالة الدور",
+        "active" : "نشط",
+        "inactive" : "غير نشط",
+        "permissions": "الصلاحيات",
+        "noPermissions": "لا صلاحيات متاحة",
+        "backBtn": "العودة"
+      }
+    }
+  },
+  "sidebar": {
+    "dashboard": "الرئيسية",
+    "roles": "الصلاحيات والمهام",
+    "admins": "المستخدمين",
+    "settings": "الإعدادات",
+    "privacyPolicy": "سياسة الخصوصية",
+    "profile": "الملف الشخصى"
+  },
+  "settings": {
+    "privacyPolicy": {
+      "title": "سياسة الخصوصية",
+      "arabicContent": "المحتوى بالعربية",
+      "englishContent": "المحتوى بالانجليزية",
+      "processing": "جارى حفظ التغييرات",
+      "saveBtn": "حفظ ",
+      "successMessage": "تم حفظ التغييرات بنجاح",
+      "errorMessage": "فشل حفظ التغييرات"
+    }
+  }
+}

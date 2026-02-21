@@ -1,0 +1,209 @@
+{
+  "home": {
+    "title": "Home"
+  },
+  "loading": {
+    "title": "Loading"
+  },
+  "pages": { 
+    "login": {
+      "loginTitle": "Admins Dashboard",
+      "email": "Email Address",
+      "passwordName": "Password",
+      "forgetPassword": "Forget Password ?",
+      "loginButton": "Log In",
+      "dontHaveUser": "Dont Have Account ?",
+      "createAccount": "create account",
+      "LoginSuccessful": "Login Successful!",
+      "redirectHome": "You will be redirected to the home page !",
+      "ok": "OK",
+      "NotVerified": "Account Not Verified !",
+      "newVerifyCode": " Please verify your account.",
+      "Error": "Error",
+      "failedResendCode": "Failed to resend verification code. Please try again later.",
+      "verifyBeforeLogin": "Please verify your account before logging in.",
+      "InvalidEmailOrPassword": "Invalid email or password",
+      "InvalidEmailOrPasswordSwal": "'Login Failed', 'Invalid email or password. Please try again.', 'error'",
+      "NetworkError": "Network Error', 'Please check your network connection and try again.', 'error'",
+      "SomethingWentWrong": "'Error', 'Something went wrong. Please try again later.', 'error'" ,
+        "rememberMe": "Remember Me"
+    },
+    "forgetPassword": {
+      "title": "Forget Password",
+      "email": "Email Address",
+      "sending": "Sending Verification Code",
+      "send": "send verification code",
+      "forgetPasswordButton": "Password recovery"
+    },
+    "verifyCode": {
+      "title": "Verification Code",
+      "email": "Email Address",
+      "code": "Verification Code",
+      "placeholder": "Enter verification code consisting of 4 digits",
+      "processing" : "Processing Verification",
+      "verify": " verify",
+      "resendCode" : " Resend Verification Code"
+
+    },
+    "resetPassword": {
+      "title": "Enter your new password",
+      "email": "Email Address",
+      "code": " Verification Code",
+      "password": " new password",
+      "confirmPassword": "confirm password",
+      "processing": "Processing Password Recovery",
+      "confirmBtn": "confirm"
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "subtitle": "Enter your current password then choose a new password",
+      "oldPassword": " old password",
+      "password": " new password",
+      "confirmPassword": "confirm new password",
+      "passCondition" : "For account security, your password must contain at least: letters (A-Z, a-z), numbers (0-9), and a special character such as: ! @ # $ % ^ & *",
+      "processing": "Processing Change Password",
+      "confirmBtn": "confirm",
+      "cancelBtn" : "cancel"
+    },
+    "updateProfile": {
+      "title": "Update Profile",
+      "titleUpdate": "Update your personal information",
+      "name": "Full name",
+      "email": "Email",
+      "processing": "Processing Update Profile",
+      "confirmBtn": "Confirm"
+    },
+    "profile": {
+      "title": " Profile",
+      "titleUpdate": "Update your personal information",
+      "name": " Full name",
+      "email": " Email Address",
+      "phone": " Phone Number",
+      "processing": " Processing Update Profile",
+      "confirmBtn": " Confirm",
+      "noData": " No data available", 
+      "memberSince": " Member Since",
+      "personalDetails": " Profile Details",
+      "editProfile": " Edit Profile"
+    },
+    "userDropDown": {
+      "profile": "Profile",
+      "changePassword": "Change Password",
+      "logout": "Logout",
+      "confirmLogout" : "Confirm Logout",
+      "confirmLogoutQuestion": " Are you sure you want to logout ?",
+      "cancelBtn" : "Cancel",
+      "logoutProcissing" : "Processing Logout",
+      "logoutBtn" : "Logout"
+    },
+    "admins": {
+      "adminsTitle": "Admins",
+      "searchPlaceholder": "Search admins...",
+      "protect": "Protected",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteTitle": "Confirm Delete Admin",
+      "deleteMessage": "Are you sure you want to delete this admin? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete",
+      "createAdmin": {
+        "title": "Create New Admin",
+        "titleDescription": "Create admin information and permissions",
+        "name": "Full Name",
+        "email": "Email Address",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "roles": "Select Role",
+        "isActive": "Active",
+        "processing": "Processing Create Admin",
+        "createBtn": "Create Admin"
+      },
+      "editAdmin": {
+        "title": "Edit Admin",
+        "titleUpdate": "Update admin information and permissions",
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "role": "Select Role",
+        "isActive": "Active",
+        "processing": "Processing Save Changes",
+        "editBtn": "Save Changes"
+      }
+    },
+    "roles": {
+      "rolesTitle": "Roles & Permissions",
+      "searchPlaceholder": "Search roles...",
+      "protect": "Protected",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteTitle": "Confirm Delete Role",
+      "deleteMessage": "Are you sure you want to delete this role? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete",
+      "createRole": {
+        "title": "Create New Role",
+        "titleDescription": "Define role details and assign permissions",
+        "roleInfo": "Role Information",
+        "nameAr": "Role Name in Arabic",
+        "nameArPlaceholder": "System administrator in Arabic",
+        "nameEn": "Role Name in English",
+        "nameEnPlaceholder": "System Administrator in English",
+        "description": "Role Description",
+        "permissions": "Select Permissions",
+        "isSelected": "Selected",
+        "selectAll": "Select All",
+        "searchPlaceholder" : "Search permissions...",
+        "processing": "Processing Create Role",
+        "createBtn": "Create Role"
+      },
+      "editRole": {
+        "title": "Edit Role",
+        "titleUpdate": "Update role details and permissions",
+        "roleInfo": "Role Information",
+        "nameAr": "Role Name in Arabic",
+        "nameArPlaceholder": "System administrator in Arabic",
+        "nameEn": "Role Name in English",
+        "nameEnPlaceholder": "System Administrator in English",
+        "description": "Role Description",
+        "permissions": "Select Permissions",
+        "isSelected": "Selected",
+        "selectAll": "Select All",
+        "searchPlaceholder" : "Search permissions...",
+        "processing": "Processing Save Changes",
+        "editBtn": "Save Changes"
+      },
+      "viewRole": {
+        "title": "View Role",
+        "description": "Role details and permissions",
+        "nameAr": "Role Name in Arabic",
+        "nameEn": "Role Name in English",
+        "status": "Role Status",
+        "active" : "Active",
+        "inactive" : "Inactive",
+        "permissions": "Permissions",
+        "noPermissions": "No permissions available",
+        "backBtn": "Back"
+      }
+    }
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "roles": "Roles & Permissions",
+    "admins": "Admins",
+    "settings": "Settings",
+    "privacyPolicy": "Privacy Policy",
+    "profile": "Profile"
+  },
+  "settings": {
+    "privacyPolicy": {
+      "title": " Privacy Policy",
+      "arabicContent": " Arabic Content",
+      "englishContent": " English Content",
+      "processing": "Processing Save Changes",
+      "saveBtn": "Save Changes",
+      "successMessage": "Changes saved successfully",
+      "errorMessage": "Failed to save changes"
+
+    }
+  }
+}

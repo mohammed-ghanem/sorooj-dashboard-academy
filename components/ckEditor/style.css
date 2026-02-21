@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Qahiri&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri&family=Almarai&family=Aref+Ruqaa&family=El+Messiri&family=Reem+Kufi&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400..700&display=swap");
+
+.ck-content > blockquote,
+.ck-content > dl,
+.ck-content > dd,
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6,
+.ck-content > hr,
+.ck-content > figure,
+.ck-content > p,
+.ck-content > pre {
+  margin: revert;
+}
+
+.ck-content > ol,
+.ck-content > ul {
+  list-style: revert;
+  margin: revert;
+  padding: revert;
+}
+
+.ck-content > table {
+  border-collapse: revert;
+}
+
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6 {
+  font-size: revert;
+  font-weight: revert;
+}
+
+table {
+  border-collapse: revert;
+}
+ol,
+ul,
+li {
+  list-style: revert;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+p {
+  font-size: revert;
+  font-weight: revert;
+  /* margin: revert; */
+}
+
+.ckeditor-container {
+  height: 100%;
+  min-height: 300px; /* Minimum height */
+  max-height: 500px; /* Maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: hidden; /* Disable horizontal scrolling */
+  box-shadow: 1px 1px 1px #ebf5ff;
+  border-radius: 4px; /* Optional: Add rounded corners */
+  background: #e9f3f8;
+  width: 100%;
+  margin: auto;
+}
+
+.ck-content {
+  height: 100% !important; /* Ensure the editor content fills the container */
+  min-height: 300px !important; /* Minimum height for the editor content */
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  overflow-x: hidden !important; /* Disable horizontal scrolling */
+}
+.ck-dropdown__panel-visible {
+  overflow-y: auto !important;
+  height: 100% !important;
+  display: block !important;
+  min-height: 260px !important;
+}
+/* .ckeditor-container p {
+  line-height: 0.7 !important;  
+  word-spacing: -2px !important; 
+} */
