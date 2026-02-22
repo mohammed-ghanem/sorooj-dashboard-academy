@@ -37,12 +37,11 @@ export const privacyPolicyApi = createApi({
         auth: true,
         withCsrf: true,
       }),
-      transformResponse: (response: any) =>
-        response.data.data[0]?.value,
+      transformResponse: (response: any) => response,
       invalidatesTags: ["PrivacyPolicy"],
     }),
   }),
-});
+}); 
 
 export const {
   useGetPrivacyPolicyQuery,
