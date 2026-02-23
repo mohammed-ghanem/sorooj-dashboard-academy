@@ -131,7 +131,7 @@ svg {
   background-color: #218838;
   border-color: #1e7e34;
 }
-.createBtn{
+.createBtn {
   background: #4a46eb;
   color: #fff;
   padding: 4px 16px;
@@ -146,19 +146,21 @@ svg {
   background: rgb(243 244 246);
 }
 .mainColor {
-  color: #69909d;
+  color: #937e55;
 }
+
 .titleColor {
-  color : #4a46eb
+  color: #3f4e5c;
 }
 .bgTitleColor {
-  background-color: #4a46eb
+  background-color: #937e55;
 }
 .bgTitleColor:hover {
-  background-color: #4e4af2cf
+  background-color: #ad9870;
+  transition: ease-in-out 0.3s;
 }
 .iconBar {
-  color: #4a46eb!important;
+  color: #4a46eb !important;
 }
 .bkMainColor {
   /* background: #69909d4f; */
@@ -180,7 +182,7 @@ svg {
   color: #000;
 }
 .fontCairo {
-  font-family: 'Cairo', sans-serif;
+  font-family: "Cairo", sans-serif;
 }
 .fontBold {
   font-weight: bold;
@@ -198,4 +200,17 @@ svg {
 }
 .greenBgIcon:hover {
   background-color: #3c8d4e;
+}
+.bgForm {
+  background: #eddec2ad;
+  background: linear-gradient(-90deg, #eddec2a1 -50%, #fff 100%, #eddec2 100%);
+}
+
+.authTitle {
+  width: fit-content;
+  margin: auto;
+  border: 1px solid #967d56;
+  padding: 4px 10px;
+  border-radius: 5px;
+  background: #fff;
 }

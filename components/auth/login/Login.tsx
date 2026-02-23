@@ -4,9 +4,10 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useLoginMutation } from "@/store/auth/authApi";
 import { toast } from "sonner";
-import { Loader2 , Mail, Eye, EyeOff } from "lucide-react";
+import { Loader2, Mail, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import loginIcon from "@/public/assets/images/loginIcon.webp";
+import logo from "@/public/assets/images/logo.png";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import LoginSkeleton from "./LoginSkeleton";
@@ -66,11 +67,15 @@ const Login = () => {
   };
 
   return (
-    <div className="relative font-cairo" dir="rtl">
-      <div className="grid lg:grid-cols-2 gap-4 items-center">
+    <div className="relative font-cairo " dir="rtl">
+      <div className="grid lg:grid-cols-2 gap-4 items-center bgForm">
         {/* Form */}
-        <div className="my-10" dir="ltr">
-          <h1 className="text-center font-bold text-xl md:text-2xl titleColor">
+        <div className="my-10 h-screen md:h-auto" dir="ltr">
+          {/* logo  */}
+          <div className="flex justify-center mb-4">
+            <Image src={logo} alt="login icon" width={200} height={200} />
+          </div>
+          <h1 className="text-center font-bold text-xl md:text-2xl titleColor authTitle">
             {translate.pages.login.loginTitle}
           </h1>
 
@@ -82,9 +87,8 @@ const Login = () => {
             {/* email input */}
             <div className="mb-4">
               <label
-                className={`block text-[13px] font-bold titleColor ${
-                  lang === "ar" ? "text-right!" : "text-left"
-                }`}
+                className={`block text-[13px] font-bold titleColor ${lang === "ar" ? "text-right!" : "text-left"
+                  }`}
               >
                 {translate.pages.login.email}
               </label>
@@ -97,7 +101,7 @@ const Login = () => {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="mt-1 block w-full p-2  border rounded-md
+                  className="mt-1 block w-full p-2  border rounded-md bg-white
                    focus-visible:ring-0! focus-visible:outline-none!"
                 />
               </div>
@@ -107,9 +111,8 @@ const Login = () => {
 
             <div className="mb-4">
               <label
-                className={`block text-[13px] font-bold titleColor ${
-                  lang === "ar" ? "text-right!" : "text-left"
-                }`}
+                className={`block text-[13px] font-bold titleColor ${lang === "ar" ? "text-right!" : "text-left"
+                  }`}
               >
                 {translate.pages.login.passwordName}
               </label>
@@ -120,7 +123,7 @@ const Login = () => {
                   type={showPassword ? "text" : "password"}
                   value={form.password}
                   onChange={handleChange}
-                  className="mt-1 block w-full p-2 pr-10 border rounded-md
+                  className="mt-1 block w-full p-2 pr-10 border rounded-md bg-white
                   focus-visible:ring-0! focus-visible:outline-none!"
                 />
 
@@ -149,7 +152,7 @@ const Login = () => {
               {/* forget password */}
               <a
                 href={`/${lang}/forget-password`}
-                className="border-b border-regal-blue text-sm text-blue-700"
+                className="border-b border-regal-blue text-sm mainColor"
               >
                 {translate.pages.login.forgetPassword}
               </a>
@@ -175,9 +178,9 @@ const Login = () => {
 
         {/* Image */}
 
-        <div className="relative hidden lg:flex bkMainColor h-screen items-center justify-center">
-          <div className="h-[50%]">
-            <Image src={loginIcon} alt="bg" width={600} height={800} />
+        <div className="relative hidden lg:flex h-screen items-center justify-center ">
+          <div className="h-[70%]">
+            <Image src={loginIcon} alt="bg" width={800} height={1000} />
           </div>
         </div>
 

@@ -9,11 +9,15 @@ const LoginSkeleton = () => {
   const lang = LangUseParams();
   return (
     <div className="relative font-cairo" dir="rtl">
-      <div className="grid lg:grid-cols-2 gap-4 items-center">
+      <div className="grid lg:grid-cols-2 gap-4 items-center bgForm">
         {/* Form Skeleton */}
-        <div className="my-10" dir={`${lang === "ar" ? "rtl" : "ltr"}`}>
+        <div className="my-10 h-screen md:h-auto" dir={`${lang === "ar" ? "rtl" : "ltr"}`}>
+          {/* logo  */}
+          <div className="flex justify-center mb-4">
+            <Skeleton className="h-20 w-52" />
+          </div>
           {/* Title */}
-          <Skeleton className="h-8 w-52 mx-auto mb-8" />
+          <Skeleton className="h-8 w-52 mx-auto mb-8 " />
 
           <div className="p-4 w-[95%] md:w-[80%] mx-auto">
             {/* Email */}
@@ -21,7 +25,7 @@ const LoginSkeleton = () => {
               <Skeleton className="h-4 w-24 mb-2" />
 
               <div className="relative">
-                <Skeleton className="absolute end-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full" />
+                <Skeleton className="absolute inset-e-3 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full" />
                 <Skeleton className="h-10 w-full rounded-md" />
               </div>
             </div>
@@ -55,9 +59,9 @@ const LoginSkeleton = () => {
         </div>
 
         {/* Image */}
-        <div className="relative hidden lg:flex bkMainColor h-screen items-center justify-center">
-          <div className="h-[50%]">
-            <Image src={loginIcon} alt="bg" width={600} height={800} />
+        <div className="relative hidden lg:flex h-screen items-center justify-center ">
+          <div className="h-[70%]">
+            <Image src={loginIcon} alt="bg" width={800} height={1000} />
           </div>
         </div>
       </div>
