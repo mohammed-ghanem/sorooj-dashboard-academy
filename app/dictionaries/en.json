@@ -5,7 +5,7 @@
   "loading": {
     "title": "Loading"
   },
-  "pages": { 
+  "pages": {
     "login": {
       "loginTitle": "Admins Dashboard",
       "email": "Email Address",
@@ -25,8 +25,8 @@
       "InvalidEmailOrPassword": "Invalid email or password",
       "InvalidEmailOrPasswordSwal": "'Login Failed', 'Invalid email or password. Please try again.', 'error'",
       "NetworkError": "Network Error', 'Please check your network connection and try again.', 'error'",
-      "SomethingWentWrong": "'Error', 'Something went wrong. Please try again later.', 'error'" ,
-        "rememberMe": "Remember Me"
+      "SomethingWentWrong": "'Error', 'Something went wrong. Please try again later.', 'error'",
+      "rememberMe": "Remember Me"
     },
     "forgetPassword": {
       "title": "Forget Password",
@@ -40,10 +40,10 @@
       "email": "Email Address",
       "code": "Verification Code",
       "placeholder": "Enter verification code consisting of 4 digits",
-      "processing" : "Processing Verification",
+      "processing": "Processing Verification",
       "verify": " verify",
-      "resendCode" : " Resend Verification Code"
-
+      "resendCode": " Resend Verification Code",
+      "pendingResendCode": " Resending Verification Code"
     },
     "resetPassword": {
       "title": "Enter your new password",
@@ -60,10 +60,10 @@
       "oldPassword": " old password",
       "password": " new password",
       "confirmPassword": "confirm new password",
-      "passCondition" : "For account security, your password must contain at least: letters (A-Z, a-z), numbers (0-9), and a special character such as: ! @ # $ % ^ & *",
+      "passCondition": "For account security, your password must contain at least: letters (A-Z, a-z), numbers (0-9), and a special character such as: ! @ # $ % ^ & *",
       "processing": "Processing Change Password",
       "confirmBtn": "confirm",
-      "cancelBtn" : "cancel"
+      "cancelBtn": "cancel"
     },
     "updateProfile": {
       "title": "Update Profile",
@@ -81,7 +81,7 @@
       "phone": " Phone Number",
       "processing": " Processing Update Profile",
       "confirmBtn": " Confirm",
-      "noData": " No data available", 
+      "noData": " No data available",
       "memberSince": " Member Since",
       "personalDetails": " Profile Details",
       "editProfile": " Edit Profile"
@@ -90,11 +90,11 @@
       "profile": "Profile",
       "changePassword": "Change Password",
       "logout": "Logout",
-      "confirmLogout" : "Confirm Logout",
+      "confirmLogout": "Confirm Logout",
       "confirmLogoutQuestion": " Are you sure you want to logout ?",
-      "cancelBtn" : "Cancel",
-      "logoutProcissing" : "Processing Logout",
-      "logoutBtn" : "Logout"
+      "cancelBtn": "Cancel",
+      "logoutProcissing": "Processing Logout",
+      "logoutBtn": "Logout"
     },
     "admins": {
       "adminsTitle": "Admins",
@@ -152,7 +152,7 @@
         "permissions": "Select Permissions",
         "isSelected": "Selected",
         "selectAll": "Select All",
-        "searchPlaceholder" : "Search permissions...",
+        "searchPlaceholder": "Search permissions...",
         "processing": "Processing Create Role",
         "createBtn": "Create Role"
       },
@@ -168,7 +168,7 @@
         "permissions": "Select Permissions",
         "isSelected": "Selected",
         "selectAll": "Select All",
-        "searchPlaceholder" : "Search permissions...",
+        "searchPlaceholder": "Search permissions...",
         "processing": "Processing Save Changes",
         "editBtn": "Save Changes"
       },
@@ -178,8 +178,8 @@
         "nameAr": "Role Name in Arabic",
         "nameEn": "Role Name in English",
         "status": "Role Status",
-        "active" : "Active",
-        "inactive" : "Inactive",
+        "active": "Active",
+        "inactive": "Inactive",
         "permissions": "Permissions",
         "noPermissions": "No permissions available",
         "backBtn": "Back"
@@ -203,7 +203,6 @@
       "saveBtn": "Save Changes",
       "successMessage": "Changes saved successfully",
       "errorMessage": "Failed to save changes"
-
     }
   }
 }

@@ -95,9 +95,7 @@ svg {
 }
 
 /* Your custom styles */
-.mainBackGroundColor {
-  background-color: #ebf5ff;
-}
+
 
 .titleStyle {
   background: #ebf5ff;
@@ -160,7 +158,7 @@ svg {
   transition: ease-in-out 0.3s;
 }
 .iconBar {
-  color: #4a46eb !important;
+  color: #937e55 !important;
 }
 .bkMainColor {
   /* background: #69909d4f; */
@@ -168,8 +166,9 @@ svg {
   color: #000;
 }
 .hover-mainColor:hover {
-  background: #ebf5ff;
-  color: #000;
+  background: #607181;
+  color: #fff;
+  transition: ease-in-out 0.3s;
 }
 .scoundColor {
   color: #81878f;
@@ -178,9 +177,10 @@ svg {
   color: #9368f33d;
 }
 .activeLink {
-  background: #ebf5ff;
-  color: #000;
+  background: #607181;
+  color: #fff;
 }
+
 .fontCairo {
   font-family: "Cairo", sans-serif;
 }
@@ -191,21 +191,29 @@ svg {
   background: #ebf5ff;
   padding: 8px;
 }
-.greenBgIcon {
+.darkBlueBgIcon {
   color: #fff;
-  background-color: #46a758;
+  background-color: #3f4e5c;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
 }
 .greenBgIcon:hover {
-  background-color: #3c8d4e;
+  background-color: #546676;
+  transition: ease-in-out 0.3s;
 }
 .bgForm {
   background: #eddec2ad;
   background: linear-gradient(-90deg, #eddec2a1 -50%, #fff 100%, #eddec2 100%);
 }
-
+.mainBackGroundColor {
+  background: #eddec2ad;
+  background: linear-gradient(180deg, #eddec2a1 -100%, #fff 100%, #eddec2 50%);
+}
+.asideBg {
+  background: #eddec2ad;
+  background: linear-gradient(-45deg, rgba(237, 222, 194, .63) -100%, #fff 100%, #eddec2 100%);
+}
 .authTitle {
   width: fit-content;
   margin: auto;
@@ -213,4 +221,5 @@ svg {
   padding: 4px 10px;
   border-radius: 5px;
   background: #fff;
+  color : #3f4e5c;
 }

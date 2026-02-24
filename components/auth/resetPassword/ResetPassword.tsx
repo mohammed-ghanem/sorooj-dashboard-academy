@@ -2,7 +2,7 @@
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useResetPasswordMutation } from "@/store/auth/authApi";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import restpass from "@/public/assets/images/restpass.webp";
 import ResetPasswordSkeleton from "./ResetPasswordSkeleton";
+import logo from "@/public/assets/images/logo.png";
 
 const ResetPassword = () => {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
@@ -37,7 +38,7 @@ const ResetPassword = () => {
     }
   }, [email, code, lang, router]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (password !== confirm) {
@@ -76,10 +77,14 @@ const ResetPassword = () => {
   }
 
   return (
-    <div className="relative grdianBK font-cairo" style={{ direction: "rtl" }}>
-      <div className="grid lg:grid-cols-2 gap-4 items-center">
-        <div className="my-10" style={{ direction: "ltr" }}>
-          <h1 className="text-center font-bold text-xl md:text-2xl titleColor">
+    <div className="relative  font-cairo" dir="rtl">
+      <div className="grid lg:grid-cols-2 gap-4 items-center bgForm">
+        <div className="my-10" dir="ltr">
+          {/* logo */}
+          <div className="flex justify-center mb-4">
+            <Image src={logo} alt="login icon" width={200} height={200} />
+          </div>
+          <h1 className="text-center font-bold text-xl md:text-2xl authTitle">
             {translate?.pages.resetPassword.title}
           </h1>
 
@@ -149,9 +154,9 @@ const ResetPassword = () => {
         </div>
 
         {/* Image */}
-        <div className="relative hidden lg:flex bkMainColor h-screen items-center justify-center">
-          <div className="h-[50%]">
-            <Image src={restpass} alt="bg" width={500} height={700} />
+        <div className="relative hidden lg:flex h-screen items-center justify-center">
+          <div className="h-[70%]">
+            <Image src={restpass} alt="bg" width={800} height={1000} />
           </div>
         </div>
       </div>

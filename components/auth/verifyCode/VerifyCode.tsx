@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, FormEvent, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import Cookies from "js-cookie";
 import Image from "next/image";
-
+import logo from "@/public/assets/images/logo.png";
 import otp from "@/public/assets/images/otp.webp";
 
 import { useResendOtpMutation, useVerifyCodeMutation } from "@/store/auth/authApi";
@@ -88,7 +88,7 @@ const VerifyCode = () => {
     inputsRef.current[nextIndex]?.focus();
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     const finalCode = code.join("");
@@ -138,11 +138,15 @@ const VerifyCode = () => {
 
 
   return (
-    <div className="relative grdianBK font-cairo" style={{ direction: "rtl" }}>
-      <div className="grid lg:grid-cols-2 gap-4 items-center">
+    <div className="relative  font-cairo" dir="rtl">
+      <div className="grid lg:grid-cols-2 gap-4 items-center bgForm">
         {/* Form */}
-        <div className="my-10" style={{ direction: "ltr" }}>
-          <h1 className="text-center font-bold text-xl md:text-2xl titleColor">
+        <div className="my-10" dir="ltr">
+          {/* logo  */}
+          <div className="flex justify-center mb-4">
+            <Image src={logo} alt="login icon" width={200} height={200} />
+          </div>
+          <h1 className="text-center font-bold text-xl md:text-2xl authTitle">
             {translate?.pages.verifyCode.title}
           </h1>
 
@@ -191,7 +195,8 @@ const VerifyCode = () => {
                       handleKeyDown(e, index)
                     }
                     onPaste={handlePaste}
-                    className="w-14 h-14 text-center text-xl font-bold border rounded-md ring-2 ring-green-500"
+                    className="w-14 h-14 text-center text-xl font-bold
+                     border rounded-md ring-2 ring-[#967d56] focus-visible:outline-[#3f4e5c] bg-white titleColor"
                   />
                 ))}
               </div>
@@ -220,21 +225,25 @@ const VerifyCode = () => {
                 type="button"
                 onClick={handleResend}
                 disabled={isResending}
-                className="greenBgIcon mt-5 font-semibold"
+                className="darkBlueBgIcon mt-5 font-semibold"
               >
                 {isResending
-                  ? <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ? <div className="flex items-center justify-center">
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <span>
+                        {translate?.pages.verifyCode.pendingResendCode}
+                      </span>
+                    </div>
                   : translate?.pages.verifyCode.resendCode}
               </button>
-
             </div>
           </form>
         </div>
 
         {/* Image */}
-        <div className="relative hidden lg:flex bkMainColor h-screen items-center justify-center">
-          <div className="h-[50%]">
-            <Image src={otp} alt="bg" width={500} height={700} />
+        <div className="relative hidden lg:flex h-screen items-center justify-center">
+          <div className="h-[70%]">
+            <Image src={otp} alt="bg" width={800} height={1000} />
           </div>
         </div>
       </div>

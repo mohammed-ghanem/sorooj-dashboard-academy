@@ -9,11 +9,11 @@ const VerifyCodeSkeleton = () => {
   const lang = LangUseParams();
 
   return (
-    <div className="relative grdianBK font-cairo" style={{ direction: "rtl" }}>
+    <div className="relative  font-cairo"  dir="rtl"> 
       <div className="grid lg:grid-cols-2 gap-4 items-center">
 
         {/* Form Skeleton */}
-        <div className="my-10" style={{ direction: "ltr" }}>
+        <div className="my-10" dir="ltr">
           
           {/* Title */}
           <Skeleton className="h-7 md:h-8 w-56 mx-auto mb-6" />
@@ -57,7 +57,7 @@ const VerifyCodeSkeleton = () => {
         </div>
 
         {/* Image Skeleton */}
-        <div className="relative hidden lg:flex bkMainColor h-screen items-center justify-center">
+        <div className="relative hidden lg:flex h-screen items-center justify-center">
           <div className="h-[50%] w-[60%]">
             <Skeleton className="w-full h-full rounded-xl" />
           </div>

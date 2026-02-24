@@ -7,11 +7,12 @@ import { toast } from "sonner";
 import { Loader2, Mail, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import loginIcon from "@/public/assets/images/loginIcon.webp";
+import Image from "next/image";
 import logo from "@/public/assets/images/logo.png";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import LoginSkeleton from "./LoginSkeleton";
-import Image from "next/image";
+
 
 
 
@@ -75,7 +76,7 @@ const Login = () => {
           <div className="flex justify-center mb-4">
             <Image src={logo} alt="login icon" width={200} height={200} />
           </div>
-          <h1 className="text-center font-bold text-xl md:text-2xl titleColor authTitle">
+          <h1 className="text-center font-bold text-xl md:text-2xl authTitle">
             {translate.pages.login.loginTitle}
           </h1>
 

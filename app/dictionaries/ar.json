@@ -38,9 +38,10 @@
       "email": "البريد الالكترونى",
       "code": "رمز التحقق",
       "placeholder": "ادخل رمز التحقق المكون من 4 ارقال",
-      "processing" : "جارى التحقق",
+      "processing": "جارى التحقق",
       "verify": "تحقق",
-      "resendCode" : "اعادة ارسال رمز التحقق"
+      "resendCode": " اعادة ارسال رمز التحقق ",
+      "pendingResendCode": " جارى اعادة ارسال رمز التحقق "
     },
     "resetPassword": {
       "title": "انشاء كلمة المرور الجديدة",
@@ -57,10 +58,10 @@
       "oldPassword": "كلمة المرور القديمة",
       "password": "  كلمة المرور الجديدة",
       "confirmPassword": "تاكيد كلمة المرور الجديدة",
-      "passCondition" : "لأمان حسابك، يجب أن تتكون كلمة المرور من: حروف (A–Z, a–z)، أرقام (0–9)، ورمز خاص واحد على الأقل مثل: ! @ # $ % ^ & *",
+      "passCondition": "لأمان حسابك، يجب أن تتكون كلمة المرور من: حروف (A–Z, a–z)، أرقام (0–9)، ورمز خاص واحد على الأقل مثل: ! @ # $ % ^ & *",
       "processing": "جارى تغيير كلمة المرور",
       "confirmBtn": "تاكيد",
-      "cancelBtn" : "الغاء"
+      "cancelBtn": "الغاء"
     },
     "updateProfile": {
       "title": "تحديث الملف الشخصى",
@@ -82,21 +83,21 @@
       "noData": "لا يوجد بيانات",
       "memberSince": "عضو منذ",
       "personalDetails": "بيانات شخصية ",
-      "editProfile": "تحديث الملف الشخصى" 
+      "editProfile": "تحديث الملف الشخصى"
     },
     "userDropDown": {
       "profile": "الملف الشخصى",
       "changePassword": "تغيير كلمة المرور",
       "logout": "تسجيل الخروج",
-      "confirmLogout" : " تأكيد تسجيل الخروج  ",
-      "confirmLogoutQuestion" : "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
-      "cancelBtn" : "الغاء",
-      "logoutProcissing" : " جارى تسجيل الخروج",
-      "logoutBtn" : "تسجيل الخروج"
+      "confirmLogout": " تأكيد تسجيل الخروج  ",
+      "confirmLogoutQuestion": "هل أنت متأكد أنك تريد تسجيل الخروج من حسابك؟",
+      "cancelBtn": "الغاء",
+      "logoutProcissing": " جارى تسجيل الخروج",
+      "logoutBtn": "تسجيل الخروج"
     },
     "admins": {
       "adminsTitle": "المسؤولين",
-      "searchPlaceholder": "ابحث عن مسؤول...", 
+      "searchPlaceholder": "ابحث عن مسؤول...",
       "protect": "محمى",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -117,7 +118,7 @@
         "processing": "جارى انشاء المسؤول",
         "createBtn": "انشاء المسؤول"
       },
-      "editAdmin": { 
+      "editAdmin": {
         "title": "تعديل المسؤول",
         "titleUpdate": "تحديث بيانات المسؤول والصلاحيات",
         "name": "الاسم بالكامل",
@@ -151,7 +152,7 @@
         "permissions": "اختر الصلاحيات",
         "isSelected": "محدد",
         "selectAll": "اختر الكل",
-        "searchPlaceholder" : "ابحث عن صلاحية...",
+        "searchPlaceholder": "ابحث عن صلاحية...",
         "processing": "جارى انشاء الدور",
         "createBtn": "انشاء الدور"
       },
@@ -167,7 +168,7 @@
         "permissions": "اختر الصلاحيات",
         "isSelected": "محدد",
         "selectAll": "اختر الكل",
-        "searchPlaceholder" : "ابحث عن صلاحية...",
+        "searchPlaceholder": "ابحث عن صلاحية...",
         "processing": "جارى حفظ التغييرات",
         "editBtn": "حفظ التغييرات"
       },
@@ -177,8 +178,8 @@
         "nameAr": "الاسم بالعربية",
         "nameEn": "الاسم بالانجليزية",
         "status": "حالة الدور",
-        "active" : "نشط",
-        "inactive" : "غير نشط",
+        "active": "نشط",
+        "inactive": "غير نشط",
         "permissions": "الصلاحيات",
         "noPermissions": "لا صلاحيات متاحة",
         "backBtn": "العودة"
