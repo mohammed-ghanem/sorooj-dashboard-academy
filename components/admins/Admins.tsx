@@ -158,7 +158,8 @@ export default function Admins() {
             {/* EDIT */}
             <Link href={`/${lang}/admins/edit/${admin.id}`}>
               <Button
-                className="bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 cursor-pointer"
+                className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
+                 focus:ring-green-300 cursor-pointer"
                 size="sm"
               >
                 <Edit3 className="h-4 w-4" />

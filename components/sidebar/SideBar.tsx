@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import {
-  Settings,
+  Settings, 
   ChevronDown,
   ShieldCheck,
 } from "lucide-react";
@@ -40,10 +40,10 @@ const SideBar = () => {
   }, [pathname, lang]);
 
   const linkClass = (active: boolean) =>
-    `flex items-center justify-center md:justify-start
+    `group flex items-center justify-center md:justify-start
      gap-0 md:gap-2 p-2 rounded font-semibold transition
      ${active
-      ? "activeLink hover-mainColor rounded-l-4xl "
+      ? "activeLink text-white hover-mainColor rounded-e-4xl "
       : "scoundColor hover-mainColor rounded-l-4xl "}`;
 
   if (!lang || !translate) return <SidebarSkeleton />;
@@ -71,7 +71,7 @@ const SideBar = () => {
                 href={link.href}
                 className={linkClass(isActive(link.href))}
               >
-                <link.icon size={18} className="iconBar" />
+                <link.icon size={18} />
                 <span className="hidden md:inline">
                   {translate.sidebar[link.key]}
                 </span>
@@ -94,7 +94,7 @@ const SideBar = () => {
               `}
             >
               <span className="flex items-center gap-2">
-                <Settings size={18} className="iconBar" />
+                <Settings size={18}  />
                 <span className="hidden md:inline">
                   {translate.sidebar.settings}
                 </span>

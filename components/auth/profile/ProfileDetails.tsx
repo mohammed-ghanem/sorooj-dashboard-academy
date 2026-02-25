@@ -119,7 +119,7 @@ function ProfileDetails() {
           <Button
             asChild
             size="lg"
-            className="flex items-center w-fit m-auto font-semibold rounded-xl greenBgIcon"
+            className="flex items-center w-fit m-auto font-semibold rounded-xl createBtn"
           >
             <Link href={`/${lang}/update-profile`}>
               <SquarePen className="w-4 h-4 " />

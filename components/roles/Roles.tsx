@@ -134,8 +134,8 @@ export default function RolesPage() {
           {/* EDIT */}
           <Link href={`/${lang}/roles/edit/${role.id}`}>
             <Button
-              className="bg-blue-500 hover:bg-blue-600 focus:ring-2
-               focus:ring-blue-300 cursor-pointer"
+              className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
+               focus:ring-green-300 cursor-pointer"
               size="sm"
             >
               <Edit3 className="h-4 w-4" />
@@ -144,8 +144,8 @@ export default function RolesPage() {
           {/* view */}
           <Link href={`/${lang}/roles/view/${role.id}`}>
             <Button
-              className="greenBgIcon focus:ring-2
-               focus:ring-blue-300 cursor-pointer"
+              className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
+               focus:ring-yellow-300 cursor-pointer"
               size="sm"
             >
               <Eye className="w-5 h-5" />
@@ -153,10 +153,10 @@ export default function RolesPage() {
           </Link>
           {/* DELETE */}
           <DeleteConfirmDialog
-            title={translate?.pages.roles.deleteTitle || ""}
-            description={translate?.pages.roles.deleteMessage || ""}
-            confirmText={translate?.pages.roles.deleteBtn || ""}
-            cancelText={translate?.pages.roles.cancelBtn || ""}
+            title={translate?.pages.roles.deleteTitle}
+            description={translate?.pages.roles.deleteMessage}
+            confirmText={translate?.pages.roles.deleteBtn}
+            cancelText={translate?.pages.roles.cancelBtn}
             onConfirm={() => handleDelete(role.id)}
           />
         </div>
@@ -171,7 +171,7 @@ export default function RolesPage() {
   return (
     <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
       <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-40!" : ""}`}>
-        {translate?.pages.roles.rolesTitle || ""}
+        {translate?.pages.roles.rolesTitle}
       </h2>
 
       <div className="mt-10">
@@ -183,7 +183,7 @@ export default function RolesPage() {
             }`}
         >
           {!showSkeleton &&
-            `${translate?.pages.roles.createRole.title || ""}`}
+            `${translate?.pages.roles.createRole.title}`}
         </Link>
       </div>
 
@@ -191,7 +191,7 @@ export default function RolesPage() {
         data={roles}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.roles.searchPlaceholder || ""}`}
+        searchPlaceholder={`${translate?.pages.roles.searchPlaceholder}`}
       />
     </div>
   );

@@ -98,11 +98,11 @@ svg {
 
 
 .titleStyle {
-  background: #ebf5ff;
+  background: #967f56;
   width: fit-content;
   padding: 10px;
   border-radius: 5px;
-  color: #495b64;
+  color: #fff;
   font-size: 16px;
   font-weight: bold;
 }
@@ -130,7 +130,7 @@ svg {
   border-color: #1e7e34;
 }
 .createBtn {
-  background: #4a46eb;
+  background: #607280;
   color: #fff;
   padding: 4px 16px;
   border: none;
