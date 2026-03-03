@@ -7,6 +7,7 @@ import { Providers } from "../../providers/Providers";
 import SideBar from "@/components/sidebar/SideBar";
 import { ReactNode } from "react";
 import { Cairo } from "next/font/google";
+import Footer from "@/components/footer/Footer";
 
 const cairo = Cairo({
   subsets: ["latin"],
@@ -56,17 +57,7 @@ export default async function RootLayout({
               </main>
 
               {/* Footer */}
-              <footer className="h-12 md:h-10 bg-white border-t flex items-center justify-center text-sm text-gray-500 px-4">
-                <div className="text-center">
-                  <span className="block md:inline">
-                    © {new Date().getFullYear()} My Dashboard
-                  </span>
-                  <span className="hidden md:inline mx-2">•</span>
-                  <span className="block md:inline text-xs mt-1 md:mt-0">
-                    جميع الحقوق محفوظة
-                  </span>
-                </div>
-              </footer>
+              <Footer />
             </div>
           </div>
         </Providers>

@@ -204,5 +204,8 @@
       "successMessage": "تم حفظ التغييرات بنجاح",
       "errorMessage": "فشل حفظ التغييرات"
     }
+  },
+  "footer": {
+    "copyright": "All rights reserved to Wecan Development & IT"
   }
 }

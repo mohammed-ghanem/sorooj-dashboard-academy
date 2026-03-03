@@ -59,7 +59,7 @@ const SideBar = () => {
       <div className="p-4 font-bold text-lg mainColor flex justify-center md:justify-start">
         {/* logo  */}
         <div className="flex justify-center mb-4 m-auto md:ms-0">
-          <Image src={logo} alt="login icon" width={130} height={75} />
+          <Image className="" src={logo} alt="login icon" width={130} height={75} />
         </div>
       </div>
 

@@ -204,5 +204,8 @@
       "successMessage": "Changes saved successfully",
       "errorMessage": "Failed to save changes"
     }
+  },
+  "footer": {
+    "copyright": "All rights reserved to Wecan Development & IT"
   }
 }
