@@ -192,6 +192,7 @@
     "admins": "Admins",
     "settings": "Settings",
     "privacyPolicy": "Privacy Policy",
+    "contactUs": "Contact Us",
     "profile": "Profile"
   },
   "settings": {
@@ -203,6 +204,15 @@
       "saveBtn": "Save Changes",
       "successMessage": "Changes saved successfully",
       "errorMessage": "Failed to save changes"
+    },
+    "contactUs": {
+      "title": "Contact Us",
+      "searchPlaceholder": "Search messages...",
+      "message": "Message",
+      "deleteTitle": "Confirm Delete Message",
+      "deleteMessage": "Are you sure you want to delete this message? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete"
     }
   },
   "footer": {

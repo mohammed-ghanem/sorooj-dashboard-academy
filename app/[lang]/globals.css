@@ -98,12 +98,12 @@ svg {
 
 
 .titleStyle {
-  background: #967f56;
+  background: #3f4e60;
   width: fit-content;
   padding: 10px;
   border-radius: 5px;
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 .titleDescription {

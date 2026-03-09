@@ -192,6 +192,7 @@
     "admins": "المستخدمين",
     "settings": "الإعدادات",
     "privacyPolicy": "سياسة الخصوصية",
+    "contactUs": "تواصل معنا",
     "profile": "الملف الشخصى"
   },
   "settings": {
@@ -203,6 +204,15 @@
       "saveBtn": "حفظ ",
       "successMessage": "تم حفظ التغييرات بنجاح",
       "errorMessage": "فشل حفظ التغييرات"
+    },
+    "contactUs": {
+      "title": "تواصل معنا",
+      "searchPlaceholder": "ابحث عن رسالة...",
+      "message": "الرسالة",
+      "deleteTitle": "تأكيد حذف الرسالة",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذه الرسالة؟ لا يمكن التراجع هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف"
     }
   },
   "footer": {

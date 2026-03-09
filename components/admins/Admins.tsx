@@ -82,7 +82,7 @@ export default function Admins() {
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
-        Object.values(errorData.errors).forEach((messages: any) =>
+        Object.values(errorData.errors).forEach((messages: any) => 
           messages.forEach((msg: string) => toast.error(msg))
         );
         return;

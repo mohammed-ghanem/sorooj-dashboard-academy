@@ -72,11 +72,11 @@ export const adminsApi = createApi({
     ======================= */
     getAdmins: builder.query<IAdmin[], void>({
       query: () => ({
-        url: "/admins",
+        url: "/admins", 
         method: "get",
         params: {
           page: 0,
-          limit: 0,
+          limit: 0, 
         },
 
       }),

@@ -6,6 +6,7 @@ import { adminsApi } from "./admins/adminsApi";
 import { rolesApi } from "./roles/rolesApi";
 import { permissionsApi } from "./permissions/permissionsApi";
 import { authApi } from "./auth/authApi";
+import { contactsApi } from "./settings/contactsApi";
 
 
 
@@ -17,6 +18,7 @@ export const store = configureStore({
     [permissionsApi.reducerPath]: permissionsApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
+    [contactsApi.reducerPath]: contactsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -25,7 +27,8 @@ export const store = configureStore({
       adminsApi.middleware,
       rolesApi.middleware,
       permissionsApi.middleware,
-      authApi.middleware
+      authApi.middleware,
+      contactsApi.middleware,
       ),
    
 });
