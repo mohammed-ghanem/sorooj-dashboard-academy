@@ -86,19 +86,19 @@ function UpdateProfile() {
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+     if (!file) return;
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error(translate?.pages.updateProfile.imageTooLarge || "Image size should be less than 2MB");
-      return;
-    }
+    // // Validate file size (max 2MB)
+    // if (file.size > 2 * 1024 * 1024) {
+    //   toast.error(translate?.pages.updateProfile.imageTooLarge || "Image size should be less than 2MB");
+    //   return;
+    // }
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error(translate?.pages.updateProfile.invalidImageType || "Please select a valid image file");
-      return;
-    }
+    // // Validate file type
+    // if (!file.type.startsWith('image/')) {
+    //   toast.error(translate?.pages.updateProfile.invalidImageType || "Please select a valid image file");
+    //   return;
+    // }
 
     setSelectedFile(file);
     
