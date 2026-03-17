@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -42,16 +41,15 @@ function UpdateProfile() {
 
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
   const user = profileData?.data || profileData?.user || profileData;
-  
+
   const [form, setForm] = useState({
     name: "",
     email: "",
     mobile: "",
-    image: "",
+    avatar: "",
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
 
@@ -61,13 +59,11 @@ function UpdateProfile() {
         name: user.name ?? "",
         email: user.email ?? "",
         mobile: user.mobile ?? "",
-        image: user.avatar ?? "",
+        avatar: user.avatar ?? "",
       });
-      
-      if (user.avatar) {
-        setImagePreview(user.avatar);
-      }
-      
+
+
+
       setInitialLoading(false);
     }
   }, [user]);
@@ -84,38 +80,75 @@ function UpdateProfile() {
     fileInputRef.current?.click();
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
+
+  //   setSelectedFile(file);
+
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setForm(prev => ({
+  //       ...prev,
+  //       avatar: reader.result as string, // هنا المهم
+  //     }));
+  //   };
+
+  //   reader.readAsDataURL(file);
+  // };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-     if (!file) return;
+    if (!file) return;
 
-    // // Validate file size (max 2MB)
-    // if (file.size > 2 * 1024 * 1024) {
-    //   toast.error(translate?.pages.updateProfile.imageTooLarge || "Image size should be less than 2MB");
-    //   return;
-    // }
+    setSelectedFile(file);
 
-    // // Validate file type
-    // if (!file.type.startsWith('image/')) {
-    //   toast.error(translate?.pages.updateProfile.invalidImageType || "Please select a valid image file");
-    //   return;
-    // }
- 
-    setSelectedFile(file); 
-    
-    // Create preview
+    // preview
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result as string);
+      setForm(prev => ({
+        ...prev,
+        avatar: reader.result as string,
+      }));
     };
     reader.readAsDataURL(file);
+
+    // ✅ Auto Upload
+    const toastId = toast.loading("جاري رفع الصورة...");
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      const res = await updateProfile(formData as any).unwrap();
+
+      toast.success(res?.message || "تم رفع الصورة", { id: toastId });
+
+      await refetch(); // تحديث البيانات
+
+    } catch (err: any) {
+      console.error(err);
+
+      toast.error(err?.data?.message || "فشل رفع الصورة", {
+        id: toastId,
+      });
+
+      // ❗ رجّع الصورة القديمة لو فشل
+      setForm(prev => ({
+        ...prev,
+        avatar: user?.avatar || "",
+      }));
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleRemoveImage = () => {
-    const defaultImage = "";
-    setForm(prev => ({ ...prev, image: defaultImage }));
-    setImagePreview(defaultImage);
+    setForm(prev => ({ ...prev, avatar: "" }));
+
     setSelectedFile(null);
-    
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -131,46 +164,48 @@ function UpdateProfile() {
       return;
     }
 
+    const toastId = toast.loading("جاري رفع الصورة...");
+
     try {
       setIsUploading(true);
 
-      // إنشاء FormData لإرسال الملف مع البيانات
       const formData = new FormData();
       formData.append('name', form.name);
       formData.append('email', form.email);
       formData.append('mobile', form.mobile);
-      
-      // إذا تم اختيار صورة جديدة، أضفها إلى FormData
+
       if (selectedFile) {
-        formData.append('avatar', selectedFile); // المفتاح 'image' حسب ما يتوقعه الباك إند
+        formData.append('avatar', selectedFile);
       }
 
-      console.log("Submitting form with image:", selectedFile ? selectedFile.name : "No new image");
-
-      // استخدم mutation مع FormData
       const res = await updateProfile(formData as any).unwrap();
-      
-      console.log("Update response:", res);
-      toast.success(res?.message || "Profile updated successfully");
+
+      toast.success(res?.message || "تم التحديث بنجاح", { id: toastId });
 
       await refetch();
       router.push(`/${lang}/profile`);
 
     } catch (err: any) {
       console.error("Update error:", err);
+
       const errorData = err?.data ?? err;
 
-      if (errorData?.errors) { 
+      if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) =>
+            toast.error(msg, { id: toastId })
+          )
         );
         return;
       }
 
       if (errorData?.message) {
-        toast.error(errorData.message);
+        toast.error(errorData.message, { id: toastId });
         return;
       }
+
+      toast.error("فشل التحديث", { id: toastId });
+
     } finally {
       setIsUploading(false);
     }
@@ -194,28 +229,30 @@ function UpdateProfile() {
         <CardHeader className="text-center space-y-3 pb-6">
           <div className="flex justify-center mb-2">
             <div className="relative group">
-              <Avatar 
+
+              {/* Remove Image Button */}
+              {(form.avatar || selectedFile) && (
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="absolute top-0 right-0 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow hover:bg-red-600 transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+
+              <Avatar
                 className="w-24 h-24 border-4 border-blue-100 cursor-pointer"
-                onClick={handleImageClick}
+                onClick={!isUploading ? handleImageClick : undefined}
               >
-                <AvatarImage src={imagePreview || form.image} />
+                <AvatarImage src={form.avatar || user?.avatar || ""} />
                 <AvatarFallback className="bg-blue-100 text-blue-600 text-xl">
                   {getInitials(form.name || "User")}
                 </AvatarFallback>
               </Avatar>
-              
+
               {/* Overlay with camera icon */}
-              <div 
-                className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                onClick={handleImageClick}
-              >
-                {isUploading ? (
-                  <Loader2 className="w-8 h-8 text-white animate-spin" />
-                ) : (
-                  <Camera className="w-8 h-8 text-white" />
-                )}
-              </div>
-              
+
               {/* Upload button */}
               <Button
                 type="button"
@@ -230,7 +267,7 @@ function UpdateProfile() {
 
             </div>
           </div>
-          
+
           <CardTitle className="text-xl font-bold">
             {translate?.pages.updateProfile.title}
           </CardTitle>
@@ -308,14 +345,6 @@ function UpdateProfile() {
                 }}
               />
             </div>
-
-            {/* Show selected file name */}
-            {selectedFile && (
-              <div className="text-sm text-green-600 flex items-center gap-2">
-                <Upload className="w-4 h-4" />
-                {selectedFile.name} (سيتم رفعها مع الحفظ)
-              </div>
-            )}
 
             {/* Action Buttons */}
             <div className="flex gap-3">

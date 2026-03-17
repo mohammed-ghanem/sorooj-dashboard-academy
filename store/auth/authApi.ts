@@ -238,6 +238,10 @@ export const authApi = createApi({
                 data: body,
                 auth: true, // سيضيف Authorization header تلقائياً
                 withCsrf: true, // لإضافة CSRF token
+                headers: {
+                    "Content-Type": "multipart/form-data", // تأكد من أن نوع المحتوى هو multipart/form-data
+                    
+                },
             }),
             invalidatesTags: ["Profile"], // يلغي cache البروفايل بعد التحديث
             async onQueryStarted(_, { queryFulfilled }) {

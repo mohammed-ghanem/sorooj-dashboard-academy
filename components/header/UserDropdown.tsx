@@ -35,7 +35,7 @@ export default function UserDropdown({
     skip: !token,
   });
 
-  const user = profileData?.data || profileData?.user || profileData;
+  const user = profileData?.data || profileData?.user || profileData || null;
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -56,7 +56,7 @@ export default function UserDropdown({
 
   if (!token) return null;
 
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
       <div className="w-28 h-8 rounded-md bg-gray-300 animate-pulse" />
     );
@@ -69,10 +69,10 @@ export default function UserDropdown({
         className="flex items-center gap-2 rounded-lg p-1 hover:bg-gray-100"
       >
         <div className="w-10 h-10 rounded-full overflow-hidden border">
-          {user.avatar ? (
+          {user?.avatar ? (
             <Image
-              src={user.avatar}
-              alt={user.name}
+              src={user?.avatar}
+              alt={user?.name || "user"}
               width={40}
               height={40}
             />
