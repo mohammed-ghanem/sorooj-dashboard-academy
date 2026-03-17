@@ -99,7 +99,7 @@ function UpdateProfile() {
     //   toast.error(translate?.pages.updateProfile.invalidImageType || "Please select a valid image file");
     //   return;
     // }
-
+ 
     setSelectedFile(file);
     
     // Create preview
