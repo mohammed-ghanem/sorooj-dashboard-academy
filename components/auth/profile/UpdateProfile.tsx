@@ -100,7 +100,7 @@ function UpdateProfile() {
     //   return;
     // }
  
-    setSelectedFile(file);
+    setSelectedFile(file); 
     
     // Create preview
     const reader = new FileReader();
