@@ -8,6 +8,9 @@ export interface IContact {
     email: string;
     mobile: string;
     message: string;
+    reply?: string | null;
+    is_reply?: boolean;
+    status?: string;
     type: string;
     type_label: string;
     created_at: string;
@@ -20,6 +23,9 @@ function normalizeContact(item: any): IContact {
         email: item?.email ?? "",
         mobile: item?.mobile ?? "",
         message: item?.message ?? "",
+        reply: item?.reply ?? null,
+        is_reply: item?.is_reply ?? false,
+        status: item?.status ?? "",
         type: item?.type ?? "",
         type_label: item?._type ?? "",
         created_at: item?.created_at ?? "",
@@ -68,7 +74,21 @@ export const contactsApi = createApi({
             invalidatesTags: ["Contacts"],
         }),
 
+
+        // reply to contact mutation
+        replyContact: builder.mutation<
+            { message: string },
+            { id: number; reply: string }
+        >({
+            query: ({ id, reply }) => ({
+                url: `contacts/reply/${id}`, // عدل حسب الباك اند عندك
+                method: "post",
+                data: { reply },
+            }),
+            invalidatesTags: ["Contacts"],
+        }),
+
     }),
 });
 
-export const { useGetContactsQuery, useDeleteContactMutation } = contactsApi;
+export const { useGetContactsQuery, useDeleteContactMutation, useReplyContactMutation } = contactsApi;

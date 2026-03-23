@@ -80,23 +80,6 @@ function UpdateProfile() {
     fileInputRef.current?.click();
   };
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (!file) return;
-
-  //   setSelectedFile(file);
-
-  //   const reader = new FileReader();
-  //   reader.onloadend = () => {
-  //     setForm(prev => ({
-  //       ...prev,
-  //       avatar: reader.result as string, // هنا المهم
-  //     }));
-  //   };
-
-  //   reader.readAsDataURL(file);
-  // };
-
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
