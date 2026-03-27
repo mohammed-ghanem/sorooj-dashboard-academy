@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import {
-  Settings, 
+  Settings,
   ChevronDown,
   ShieldCheck,
 } from "lucide-react";
@@ -32,6 +32,7 @@ const SideBar = () => {
   const isSettingsActive = () => {
     return settingsLinks(lang).some(link => isActive(link.href));
   };
+
 
   useEffect(() => {
     if (isSettingsActive()) {
@@ -94,7 +95,7 @@ const SideBar = () => {
               `}
             >
               <span className="flex items-center gap-2">
-                <Settings size={18}  />
+                <Settings size={18} />
                 <span className="hidden md:inline">
                   {translate.sidebar.settings}
                 </span>
@@ -109,7 +110,7 @@ const SideBar = () => {
 
             <div
               className={`md:ms-6 mt-1 ms-3 space-y-1 overflow-hidden transition-all duration-300 
-              ${openSettings ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+              ${openSettings ? " opacity-100" : "max-h-0 opacity-0"}`}
             >
               {settingsLinks(lang).map((link) => (
                 <Link

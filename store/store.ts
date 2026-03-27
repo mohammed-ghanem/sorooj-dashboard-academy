@@ -7,6 +7,8 @@ import { rolesApi } from "./roles/rolesApi";
 import { permissionsApi } from "./permissions/permissionsApi";
 import { authApi } from "./auth/authApi";
 import { contactsApi } from "./settings/contactsApi";
+import { termsAndConditionsApi } from "./settings/termsAndConditions";
+import { deleteAccountApi } from "./settings/deleteAcoount";
 
 
 
@@ -14,6 +16,8 @@ export const store = configureStore({
   reducer: {
     app: appReducer,
     [privacyPolicyApi.reducerPath]: privacyPolicyApi.reducer,
+    [termsAndConditionsApi.reducerPath]: termsAndConditionsApi.reducer,
+    [deleteAccountApi.reducerPath]: deleteAccountApi.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
     [permissionsApi.reducerPath]: permissionsApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
@@ -24,6 +28,8 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       privacyPolicyApi.middleware , 
+      termsAndConditionsApi.middleware,
+      deleteAccountApi.middleware,
       adminsApi.middleware,
       rolesApi.middleware,
       permissionsApi.middleware,

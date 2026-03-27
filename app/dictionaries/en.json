@@ -192,12 +192,32 @@
     "admins": "Admins",
     "settings": "Settings",
     "privacyPolicy": "Privacy Policy",
+    "termsAndConditions": "Terms and Conditions",
+    "deleteAccount": "Delete Account",
     "contactUs": "Contact Us",
     "profile": "Profile"
   },
   "settings": {
     "privacyPolicy": {
       "title": " Privacy Policy",
+      "arabicContent": " Arabic Content",
+      "englishContent": " English Content",
+      "processing": "Processing Save Changes",
+      "saveBtn": "Save Changes",
+      "successMessage": "Changes saved successfully",
+      "errorMessage": "Failed to save changes"
+    },
+    "termsAndConditions": {
+      "title": "Terms and Conditions",
+      "arabicContent": " Arabic Content",
+      "englishContent": " English Content",
+      "processing": "Processing Save Changes",
+      "saveBtn": "Save Changes",
+      "successMessage": "Changes saved successfully",
+      "errorMessage": "Failed to save changes"
+    },
+    "deleteAccount": {
+      "title": "Delete account policy",
       "arabicContent": " Arabic Content",
       "englishContent": " English Content",
       "processing": "Processing Save Changes",

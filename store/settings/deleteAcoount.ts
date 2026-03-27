@@ -8,42 +8,45 @@ interface SettingValue {
   message?: string;
 }
 
-export const privacyPolicyApi = createApi({
-  reducerPath: "privacyPolicyApi",
+export const deleteAccountApi = createApi({
+  reducerPath: "deleteAccountApi",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["PrivacyPolicy"],
+  tagTypes: ["DeleteAccount"],
   endpoints: (builder) => ({
-    getPrivacyPolicy: builder.query<SettingValue, void>({
+    getDeleteAccount: builder.query<SettingValue, void>({
       query: () => ({
         url: "/settings",
         method: "get",
-        params: { key: "privacy-policy" },
+        params: { key: "delete-account" },
       }),
+      
+
       transformResponse: (response: any) => {
         return response?.data?.[0]?.value ?? { ar: "", en: "" };
       },
-      keepUnusedDataFor: 300, // 5 دقائق
+
+      keepUnusedDataFor: 300, // 3 minutes
     }),
 
-    updatePrivacyPolicy: builder.mutation<
+    updateDeleteAccount: builder.mutation<
       SettingValue,
       SettingValue
     >({
       query: (value) => ({
         url: "/settings",
         method: "post",
-        params: { key: "privacy-policy" },
+        params: { key: "delete-account" },
         data: { value },
         auth: true,
         withCsrf: true,
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: ["PrivacyPolicy"],
+      invalidatesTags: ["DeleteAccount"],
     }),
   }),
 });
 
 export const {
-  useGetPrivacyPolicyQuery,
-  useUpdatePrivacyPolicyMutation,
-} = privacyPolicyApi;
+  useGetDeleteAccountQuery,
+  useUpdateDeleteAccountMutation,
+} = deleteAccountApi;

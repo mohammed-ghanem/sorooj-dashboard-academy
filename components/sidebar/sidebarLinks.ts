@@ -24,6 +24,14 @@ export const settingsLinks = (lang: string) => [
     key: "privacyPolicy",
   },
   {
+    href: `/${lang}/terms-conditions`,
+    key: "termsAndConditions",
+  },
+  {
+    href: `/${lang}/delete-account`,
+    key: "deleteAccount",
+  },
+  {
     href: `/${lang}/contact-us`,
     key: "contactUs",
   },

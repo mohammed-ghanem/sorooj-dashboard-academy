@@ -8,42 +8,45 @@ interface SettingValue {
   message?: string;
 }
 
-export const privacyPolicyApi = createApi({
-  reducerPath: "privacyPolicyApi",
+export const termsAndConditionsApi = createApi({
+  reducerPath: "termsAndConditionsApi",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["PrivacyPolicy"],
+  tagTypes: ["TermsAndConditions"],
   endpoints: (builder) => ({
-    getPrivacyPolicy: builder.query<SettingValue, void>({
+    getTermsAndConditions: builder.query<SettingValue, void>({
       query: () => ({
         url: "/settings",
         method: "get",
-        params: { key: "privacy-policy" },
+        params: { key: "terms-and-conditions" },
       }),
+      
+
       transformResponse: (response: any) => {
         return response?.data?.[0]?.value ?? { ar: "", en: "" };
       },
-      keepUnusedDataFor: 300, // 5 دقائق
+
+      keepUnusedDataFor: 300, // 3 minutes
     }),
 
-    updatePrivacyPolicy: builder.mutation<
+    updateTermsAndConditions: builder.mutation<
       SettingValue,
       SettingValue
     >({
       query: (value) => ({
         url: "/settings",
         method: "post",
-        params: { key: "privacy-policy" },
+        params: { key: "terms-and-conditions" },
         data: { value },
         auth: true,
         withCsrf: true,
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: ["PrivacyPolicy"],
+      invalidatesTags: ["TermsAndConditions"],
     }),
   }),
 });
 
 export const {
-  useGetPrivacyPolicyQuery,
-  useUpdatePrivacyPolicyMutation,
-} = privacyPolicyApi;
+  useGetTermsAndConditionsQuery,
+  useUpdateTermsAndConditionsMutation,
+} = termsAndConditionsApi;

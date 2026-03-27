@@ -192,12 +192,32 @@
     "admins": "المستخدمين",
     "settings": "الإعدادات",
     "privacyPolicy": "سياسة الخصوصية",
+    "termsAndConditions": "الشروط والأحكام",
+    "deleteAccount": "حذف الحساب",
     "contactUs": "تواصل معنا",
     "profile": "الملف الشخصى"
   },
   "settings": {
     "privacyPolicy": {
       "title": "سياسة الخصوصية",
+      "arabicContent": "المحتوى بالعربية",
+      "englishContent": "المحتوى بالانجليزية",
+      "processing": "جارى حفظ التغييرات",
+      "saveBtn": "حفظ ",
+      "successMessage": "تم حفظ التغييرات بنجاح",
+      "errorMessage": "فشل حفظ التغييرات"
+    },
+    "termsAndConditions": {
+      "title": "الشروط والأحكام",
+      "arabicContent": "المحتوى بالعربية",
+      "englishContent": "المحتوى بالانجليزية",
+      "processing": "جارى حفظ التغييرات",
+      "saveBtn": "حفظ ",
+      "successMessage": "تم حفظ التغييرات بنجاح",
+      "errorMessage": "فشل حفظ التغييرات"
+    },
+    "deleteAccount": {
+      "title": "سياسة حذف الحساب",
       "arabicContent": "المحتوى بالعربية",
       "englishContent": "المحتوى بالانجليزية",
       "processing": "جارى حفظ التغييرات",

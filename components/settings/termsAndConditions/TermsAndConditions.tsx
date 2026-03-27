@@ -2,27 +2,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useGetPrivacyPolicyQuery, useUpdatePrivacyPolicyMutation, } from "@/store/settings/privacyPolicyApi";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-import PrivacyPolicySkeleton, { PrivacyPolicyEditorSkeleton } from "./PrivacyPolicySkeleton";
+import TermsAndConditionsSkeleton, {
+  TermsAndConditionsEditorSkeleton,
+} from "./TermsAndConditionsSkeleton";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import TranslateHook from "@/translate/TranslateHook";
 import { CircleCheckBig } from "lucide-react";
+import {
+  useGetTermsAndConditionsQuery,
+  useUpdateTermsAndConditionsMutation,
+} from "@/store/settings/termsAndConditions";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
-  loading: () => <PrivacyPolicyEditorSkeleton />,
+  loading: () => <TermsAndConditionsEditorSkeleton />,
 });
 
-export default function PrivacyPolicy() {
+export default function TermsAndConditions() {
   const sessionReady = useSessionReady();
   const translate = TranslateHook();
-  const { data, isLoading } = useGetPrivacyPolicyQuery(undefined, {
+  const { data, isLoading } = useGetTermsAndConditionsQuery(undefined, {
     skip: !sessionReady,
+    refetchOnMountOrArgChange: true,
   });
-  const [updatePolicy, { isLoading: isSaving }] =
-    useUpdatePrivacyPolicyMutation();
+  const [updateTermsAndConditions, { isLoading: isSaving }] =
+    useUpdateTermsAndConditionsMutation();
 
   const [form, setForm] = useState({ ar: "", en: "" });
 
@@ -34,18 +40,17 @@ export default function PrivacyPolicy() {
     });
   }, [data]);
 
-  // const isPageLoading = isLoading || !data;
-
   if (!sessionReady) {
-    return <PrivacyPolicySkeleton />;
+    return <TermsAndConditionsSkeleton />;
   }
 
   if (isLoading) {
-    return <PrivacyPolicySkeleton />;
+    return <TermsAndConditionsSkeleton />;
   }
+
   const submit = async () => {
     try {
-      const res = await updatePolicy(form).unwrap();
+      const res = await updateTermsAndConditions(form).unwrap();
       toast.success(res?.message);
     } catch (err: any) {
       const errorData = err?.data ?? err;
@@ -56,25 +61,27 @@ export default function PrivacyPolicy() {
         );
         return;
       }
-    } 
+    }
   };
 
   return (
     <div className="p-6 mx-4 my-10 space-y-6 bg-white rounded-2xl border border-solid border-[#ddd]">
       <h3 className=" font-bold titleStyle cairo-font">
-        {translate?.settings.privacyPolicy.title}
+        {translate?.settings.termsAndConditions.title}
       </h3>
 
       {!data ? (
         <>
-          <PrivacyPolicyEditorSkeleton />
-          <PrivacyPolicyEditorSkeleton />
+          <TermsAndConditionsEditorSkeleton />
+          <TermsAndConditionsEditorSkeleton />
         </>
       ) : (
         <>
           {/* arabic content */}
           <div className="m-2">
-            <p className="titleDescription">{translate?.settings.privacyPolicy.arabicContent}</p>
+            <p className="titleDescription">
+              {translate?.settings.termsAndConditions.arabicContent}
+            </p>
             <CkEditor
               editorData={form.ar}
               handleOnUpdate={(value) =>
@@ -85,7 +92,9 @@ export default function PrivacyPolicy() {
           </div>
           {/* english content */}
           <div className="m-2">
-            <p className="titleDescription">{translate?.settings.privacyPolicy.englishContent}</p>
+            <p className="titleDescription">
+              {translate?.settings.termsAndConditions.englishContent}
+            </p>
             <CkEditor
               editorData={form.en}
               handleOnUpdate={(value) =>
@@ -94,20 +103,19 @@ export default function PrivacyPolicy() {
               config={{ language: "en", direction: "ltr" }}
             />
           </div>
-          <button onClick={submit}
+          <button
+            onClick={submit}
             className="submitButton flex items-center"
             disabled={isSaving}
           >
             <CircleCheckBig className="h-4 w-4 me-2" />
             {isSaving
-              ?
-              `${translate?.settings.privacyPolicy.processing}`
-              :
-              `${translate?.settings.privacyPolicy.saveBtn}`
-            }
+              ? `${translate?.settings.termsAndConditions.processing}`
+              : `${translate?.settings.termsAndConditions.saveBtn}`}
           </button>
         </>
       )}
     </div>
   );
 }
+ 
