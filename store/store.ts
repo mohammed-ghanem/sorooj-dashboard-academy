@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import appReducer from "./app/appSlice";
 import { privacyPolicyApi } from "./settings/privacyPolicyApi";
 import { adminsApi } from "./admins/adminsApi";
+import { cohortsApi } from "./cohorts/cohortsApi";
 import { rolesApi } from "./roles/rolesApi";
 import { permissionsApi } from "./permissions/permissionsApi";
 import { authApi } from "./auth/authApi";
@@ -19,6 +20,7 @@ export const store = configureStore({
     [termsAndConditionsApi.reducerPath]: termsAndConditionsApi.reducer,
     [deleteAccountApi.reducerPath]: deleteAccountApi.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
+    [cohortsApi.reducerPath]: cohortsApi.reducer,
     [permissionsApi.reducerPath]: permissionsApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
@@ -31,6 +33,7 @@ export const store = configureStore({
       termsAndConditionsApi.middleware,
       deleteAccountApi.middleware,
       adminsApi.middleware,
+      cohortsApi.middleware,
       rolesApi.middleware,
       permissionsApi.middleware,
       authApi.middleware,

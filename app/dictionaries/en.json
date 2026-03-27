@@ -130,6 +130,52 @@
         "editBtn": "Save Changes"
       }
     },
+    "cohorts": {
+      "cohortsTitle": "Cohorts",
+      "searchPlaceholder": "Search cohorts...",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteTitle": "Confirm Delete Cohort",
+      "deleteMessage": "Are you sure you want to delete this cohort? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete",
+      "createCohort": {
+        "title": "Create Cohort",
+        "description": "Add a new academic cohort with Arabic and English names and date range",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "isActive": "Active",
+        "processing": "Creating cohort",
+        "createBtn": "Create cohort"
+      },
+      "editCohort": {
+        "title": "Edit cohort",
+        "titleUpdate": "Update cohort details and date range",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "isActive": "Active",
+        "processing": "Saving changes",
+        "editBtn": "Save changes"
+      },
+      "viewCohort": {
+        "title": "Cohort details",
+        "description": "Read-only information for this cohort",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "startDateGregorian": "Start date (Gregorian)",
+        "endDateGregorian": "End date (Gregorian)",
+        "startDateHijri": "Start date (Hijri)",
+        "endDateHijri": "End date (Hijri)",
+        "status": "Status",
+        "createdAt": "Created at",
+        "backBtn": "Back",
+        "notFound": "Cohort not found"
+      }
+    },
     "roles": {
       "rolesTitle": "Roles & Permissions",
       "searchPlaceholder": "Search roles...",
@@ -190,6 +236,7 @@
     "dashboard": "Dashboard",
     "roles": "Roles & Permissions",
     "admins": "Admins",
+    "cohorts": "Cohorts",
     "settings": "Settings",
     "privacyPolicy": "Privacy Policy",
     "termsAndConditions": "Terms and Conditions",

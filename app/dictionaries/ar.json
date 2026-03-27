@@ -130,6 +130,52 @@
         "editBtn": " حفظ التغييرات"
       }
     },
+    "cohorts": {
+      "cohortsTitle": "الدفعات",
+      "searchPlaceholder": "ابحث عن دفعة...",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف الدفعة",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذه الدفعة؟ لا يمكن التراجع هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createCohort": {
+        "title": "إضافة دفعة",
+        "description": "أضف دفعة دراسية جديدة بالعربية والإنجليزية مع نطاق التواريخ",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "isActive": "نشط",
+        "processing": "جارى إنشاء الدفعة",
+        "createBtn": "إنشاء الدفعة"
+      },
+      "editCohort": {
+        "title": "تعديل الدفعة",
+        "titleUpdate": "تحديث بيانات الدفعة ونطاق التواريخ",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "startDate": "تاريخ البداية",
+        "endDate": "تاريخ النهاية",
+        "isActive": "نشط",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": "حفظ التغييرات"
+      },
+      "viewCohort": {
+        "title": "تفاصيل الدفعة",
+        "description": "عرض بيانات الدفعة الدراسية",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "startDateGregorian": "تاريخ البداية (ميلادي)",
+        "endDateGregorian": "تاريخ النهاية (ميلادي)",
+        "startDateHijri": "تاريخ البداية (هجري)",
+        "endDateHijri": "تاريخ النهاية (هجري)",
+        "status": "الحالة",
+        "createdAt": "تاريخ الإنشاء",
+        "backBtn": "رجوع",
+        "notFound": "لم يتم العثور على الدفعة"
+      }
+    },
     "roles": {
       "rolesTitle": "الصلاحيات والمهام",
       "searchPlaceholder": "ابحث عن صلاحية...",
@@ -190,6 +236,7 @@
     "dashboard": "الرئيسية",
     "roles": "الصلاحيات والمهام",
     "admins": "المستخدمين",
+    "cohorts": "الدفعات",
     "settings": "الإعدادات",
     "privacyPolicy": "سياسة الخصوصية",
     "termsAndConditions": "الشروط والأحكام",

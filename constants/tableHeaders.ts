@@ -8,6 +8,14 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    cohorts: {
+      name: "الاسم",
+      startDate: "تاريخ البداية",
+      endDate: "تاريخ النهاية",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     roles: {
       name: "الدور",
       status: "الحالة",
@@ -31,6 +39,14 @@ export const TABLE_HEADERS = {
       name: "Name",
       email: "Email",
       roles: "Roles",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    cohorts: {
+      name: "Name",
+      startDate: "Start date",
+      endDate: "End date",
       status: "Status",
       actions: "Actions",
     },

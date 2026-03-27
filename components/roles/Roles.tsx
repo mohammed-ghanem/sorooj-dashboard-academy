@@ -142,7 +142,7 @@ export default function RolesPage() {
             </Button>
           </Link>
           {/* view */}
-          <Link href={`/${lang}/roles/view/${role.id}`}>
+          <Link href={`/${lang}/roles/view/${role.id}`}> 
             <Button
               className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
                focus:ring-yellow-300 cursor-pointer"

@@ -1,4 +1,4 @@
-import { Home, ShieldCheck, Users } from "lucide-react";
+import { CalendarRange, Home, ShieldCheck, Users } from "lucide-react";
 
 export const mainLinks = (lang: string) => [
   {
@@ -15,6 +15,11 @@ export const mainLinks = (lang: string) => [
     href: `/${lang}/admins`,
     icon: Users,
     key: "admins",
+  },
+  {
+    href: `/${lang}/cohorts`,
+    icon: CalendarRange,
+    key: "cohorts",
   },
 ];
 
