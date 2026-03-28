@@ -198,7 +198,7 @@
         "permissions": "اختر الصلاحيات",
         "isSelected": "محدد",
         "selectAll": "اختر الكل",
-        "searchPlaceholder": "ابحث عن صلاحية...",
+        "searchPlaceholder": "ابحث عن صلاحية... ",
         "processing": "جارى انشاء الدور",
         "createBtn": "انشاء الدور"
       },
