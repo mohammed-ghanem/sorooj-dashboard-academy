@@ -5,10 +5,10 @@ import Link from "next/link";
 import LangUseParams from "@/translate/LangUseParams";
 
 import {
-  useGetCohortsQuery,
-  useDeleteCohortMutation,
-  useToggleCohortStatusMutation,
-} from "@/store/cohorts/cohortsApi";
+  useGetAcademicYearsQuery,
+  useDeleteAcademicYearMutation,
+  useToggleAcademicYearStatusMutation,
+} from "@/store/academicYears/academicYearsApi";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -22,40 +22,38 @@ import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
-import { formatGregorianDateAr, formatHijriDateAr } from "@/utils/dateFormat";
 
-import type { ICohort } from "@/types/cohort";
+import type { IAcademicYear } from "@/types/academicYear";
 
-export default function Cohorts() {
+export default function AcademicYears() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const headers = TABLE_HEADERS[lang as "ar" | "en"].cohorts;
+  const headers = TABLE_HEADERS[lang as "ar" | "en"].academicYears;
 
   const {
-    data: cohorts = [],
+    data: academicYears = [],
     isLoading,
-  } = useGetCohortsQuery(undefined, { skip: !sessionReady });
-  const [deleteCohort] = useDeleteCohortMutation();
-  const [toggleStatus] = useToggleCohortStatusMutation();
+  } = useGetAcademicYearsQuery(undefined, { skip: !sessionReady });
+  const [deleteAcademicYear] = useDeleteAcademicYearMutation();
+  const [toggleStatus] = useToggleAcademicYearStatusMutation();
 
-  const { getOptimisticStatus, toggle, isPending } = useOptimisticToggle<ICohort>(
-    {
+  const { getOptimisticStatus, toggle, isPending } =
+    useOptimisticToggle<IAcademicYear>({
       getId: (row) => row.id,
       getStatus: (row) => row.is_active,
       onToggle: async (row) => {
         await toggleStatus(row.id);
       },
-    }
-  );
+    });
 
-  const displayName = (c: ICohort) =>
+  const displayName = (c: IAcademicYear) =>
     lang === "ar" ? c.name_ar || c.name : c.name_en || c.name;
 
   const handleDelete = async (id: number) => {
     try {
-      const res = await deleteCohort(id).unwrap();
+      const res = await deleteAcademicYear(id).unwrap();
       toast.success(res?.message);
     } catch (err: any) {
       const errorData = err?.data ?? err;
@@ -72,36 +70,12 @@ export default function Cohorts() {
     }
   };
 
-  const columns: Column<ICohort>[] = [
+  const columns: Column<IAcademicYear>[] = [
     {
       key: "name_ar",
       header: headers.name,
       render: (_, c) => (
         <span className="font-medium">{displayName(c)}</span>
-      ),
-    },
-    {
-      key: "start_date",
-      header: headers.startDate,
-      render: (_, row) => (
-        <div className="leading-5">
-          <div>{formatGregorianDateAr(row.start_date)}</div>
-          <div className="text-sm text-muted-foreground">
-            {formatHijriDateAr(row.start_date_hijri)}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "end_date",
-      header: headers.endDate,
-      render: (_, row) => (
-        <div className="leading-5">
-          <div>{formatGregorianDateAr(row.end_date)}</div>
-          <div className="text-sm text-muted-foreground">
-            {formatHijriDateAr(row.end_date_hijri)}
-          </div>
-        </div>
       ),
     },
     {
@@ -126,8 +100,8 @@ export default function Cohorts() {
           />
           <span className="text-sm">
             {getOptimisticStatus(row)
-              ? translate?.pages.cohorts.active
-              : translate?.pages.cohorts.inactive}
+              ? translate?.pages.academicYears.active
+              : translate?.pages.academicYears.inactive}
           </span>
         </div>
       ),
@@ -138,7 +112,7 @@ export default function Cohorts() {
       align: "center",
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
-          <Link href={`/${lang}/cohorts/view/${row.id}`}>
+          <Link href={`/${lang}/academic-years/view/${row.id}`}>
             <Button
               className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
                focus:ring-yellow-300 cursor-pointer"
@@ -147,7 +121,7 @@ export default function Cohorts() {
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
-          <Link href={`/${lang}/cohorts/edit/${row.id}`}>
+          <Link href={`/${lang}/academic-years/edit/${row.id}`}>
             <Button
               className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
                  focus:ring-green-300 cursor-pointer"
@@ -158,10 +132,10 @@ export default function Cohorts() {
           </Link>
 
           <DeleteConfirmDialog
-            title={translate?.pages.cohorts.deleteTitle}
-            description={translate?.pages.cohorts.deleteMessage}
-            confirmText={translate?.pages.cohorts.deleteBtn}
-            cancelText={translate?.pages.cohorts.cancelBtn}
+            title={translate?.pages.academicYears.deleteTitle}
+            description={translate?.pages.academicYears.deleteMessage}
+            confirmText={translate?.pages.academicYears.deleteBtn}
+            cancelText={translate?.pages.academicYears.cancelBtn}
             onConfirm={() => handleDelete(row.id)}
           />
         </div>
@@ -173,24 +147,24 @@ export default function Cohorts() {
 
   return (
     <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-24!" : ""}`}>
-        {translate?.pages.cohorts.cohortsTitle || ""}
+      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-32!" : ""}`}>
+        {translate?.pages.academicYears.listTitle || ""}
       </h2>
       <div className="mt-10">
         <Link
-          href={`/${lang}/cohorts/create`}
+          href={`/${lang}/academic-years/create`}
           className={`createBtn  ${showSkeleton ? "block w-40 h-9 py-2.5 opacity-50" : ""}`}
         >
           {!showSkeleton &&
-            `${translate?.pages.cohorts.createCohort.title}`}
+            `${translate?.pages.academicYears.createAcademicYear.title}`}
         </Link>
       </div>
 
       <DataTable
-        data={cohorts}
+        data={academicYears}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.cohorts.searchPlaceholder}`}
+        searchPlaceholder={`${translate?.pages.academicYears.searchPlaceholder}`}
       />
     </div>
   );

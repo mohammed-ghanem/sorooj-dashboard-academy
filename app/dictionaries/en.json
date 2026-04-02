@@ -176,6 +176,87 @@
         "notFound": "Cohort not found"
       }
     },
+    "academicYears": {
+      "listTitle": "Academic years",
+      "searchPlaceholder": "Search academic years...",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteTitle": "Confirm delete academic year",
+      "deleteMessage": "Are you sure you want to delete this academic year? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete",
+      "createAcademicYear": {
+        "title": "Create academic year",
+        "description": "Add a new academic year with Arabic and English names",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "isActive": "Active",
+        "processing": "Creating academic year",
+        "createBtn": "Create academic year"
+      },
+      "editAcademicYear": {
+        "title": "Edit academic year",
+        "titleUpdate": "Update academic year details",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "isActive": "Active",
+        "processing": "Saving changes",
+        "editBtn": "Save changes"
+      },
+      "viewAcademicYear": {
+        "title": "Academic year details",
+        "description": "Read-only information for this academic year",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "status": "Status",
+        "createdAt": "Created at",
+        "backBtn": "Back",
+        "notFound": "Academic year not found"
+      }
+    },
+    "studyTerms": {
+      "listTitle": "Study terms",
+      "searchPlaceholder": "Search study terms...",
+      "active": "Active",
+      "inactive": "Inactive",
+      "deleteTitle": "Confirm delete study term",
+      "deleteMessage": "Are you sure you want to delete this study term? This action cannot be undone.",
+      "cancelBtn": "Cancel",
+      "deleteBtn": "Delete",
+      "createStudyTerm": {
+        "title": "Create study term",
+        "description": "Add a new study term and link it to an academic year",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "academicYear": "Academic year",
+        "selectAcademicYear": "Select academic year",
+        "isActive": "Active",
+        "processing": "Creating study term",
+        "createBtn": "Create study term"
+      },
+      "editStudyTerm": {
+        "title": "Edit study term",
+        "titleUpdate": "Update study term details",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "academicYear": "Academic year",
+        "selectAcademicYear": "Select academic year",
+        "isActive": "Active",
+        "processing": "Saving changes",
+        "editBtn": "Save changes"
+      },
+      "viewStudyTerm": {
+        "title": "Study term details",
+        "description": "Read-only information for this study term",
+        "nameAr": "Name (Arabic)",
+        "nameEn": "Name (English)",
+        "academicYear": "Academic year",
+        "status": "Status",
+        "createdAt": "Created at",
+        "backBtn": "Back",
+        "notFound": "Study term not found"
+      }
+    },
     "roles": {
       "rolesTitle": "Roles & Permissions",
       "searchPlaceholder": "Search roles...",
@@ -237,6 +318,8 @@
     "roles": "Roles & Permissions",
     "admins": "Admins",
     "cohorts": "Cohorts",
+    "academicYears": "Academic years",
+    "studyTerms": "Study terms",
     "settings": "Settings",
     "privacyPolicy": "Privacy Policy",
     "termsAndConditions": "Terms and Conditions",

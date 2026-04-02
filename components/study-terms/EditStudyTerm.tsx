@@ -6,15 +6,16 @@ import "./style.css";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { CalendarRange } from "lucide-react";
+import { BookOpenCheck } from "lucide-react";
 
+import { useGetAcademicYearsQuery } from "@/store/academicYears/academicYearsApi";
 import {
-  useGetCohortByIdQuery,
-  useUpdateCohortMutation,
-} from "@/store/cohorts/cohortsApi";
+  useGetStudyTermByIdQuery,
+  useUpdateStudyTermMutation,
+} from "@/store/studyTerms/studyTermsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import CohortFormSkeleton from "./CohortFormSkeleton";
+import StudyTermFormSkeleton from "./StudyTermFormSkeleton";
 
 import {
   Card,
@@ -30,74 +31,85 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import {
-  formatGregorianDateAr,
-  formatHijriFromGregorianDateAr,
-} from "@/utils/dateFormat";
 
-type EditCohortForm = {
+import type { IAcademicYear } from "@/types/academicYear";
+
+type EditStudyTermForm = {
   name_ar: string;
   name_en: string;
-  start_date: string;
-  end_date: string;
+  academic_year_id: number;
   is_active: boolean;
 };
 
-export default function EditCohort() {
+export default function EditStudyTerm() {
   const sessionReady = useSessionReady();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const { data: cohort, isLoading } = useGetCohortByIdQuery(Number(id), {
+  const { data: academicYears = [], isLoading: loadingYears } =
+    useGetAcademicYearsQuery(undefined, { skip: !sessionReady });
+
+  const { data: studyTerm, isLoading } = useGetStudyTermByIdQuery(Number(id), {
     skip: !sessionReady,
   });
 
-  const [updateCohort, { isLoading: isUpdating }] =
-    useUpdateCohortMutation();
+  const [updateStudyTerm, { isLoading: isUpdating }] =
+    useUpdateStudyTermMutation();
 
-  const { register, handleSubmit, reset, control, watch } =
-    useForm<EditCohortForm>({
+  const { register, handleSubmit, reset, control } =
+    useForm<EditStudyTermForm>({
       defaultValues: {
         name_ar: "",
         name_en: "",
-        start_date: "",
-        end_date: "",
+        academic_year_id: 0,
         is_active: true,
       },
     });
 
-  const watchedStartDate = watch("start_date");
-  const watchedEndDate = watch("end_date");
-
   useEffect(() => {
-    if (!cohort) return;
+    if (!studyTerm) return;
+
+    const yearId =
+      studyTerm.academic_year_id ||
+      studyTerm.academic_year?.id ||
+      0;
 
     reset({
-      name_ar: cohort.name_ar ?? "",
-      name_en: cohort.name_en ?? "",
-      start_date: cohort.start_date?.slice(0, 10) ?? "",
-      end_date: cohort.end_date?.slice(0, 10) ?? "",
-      is_active: Boolean(cohort.is_active),
+      name_ar: studyTerm.name_ar ?? "",
+      name_en: studyTerm.name_en ?? "",
+      academic_year_id: Number(yearId) || 0,
+      is_active: Boolean(studyTerm.is_active),
     });
-  }, [cohort, reset]);
+  }, [studyTerm, reset]);
 
-  const onSubmit = async (data: EditCohortForm) => {
+  const yearLabel = (y: IAcademicYear) =>
+    lang === "ar" ? y.name_ar || y.name : y.name_en || y.name;
+
+  const onSubmit = async (data: EditStudyTermForm) => {
+    if (!data.academic_year_id) {
+      toast.error(
+        lang === "ar"
+          ? "يرجى اختيار العام الدراسي"
+          : "Please select an academic year"
+      );
+      return;
+    }
+
     try {
-      const res = await updateCohort({
+      const res = await updateStudyTerm({
         id: Number(id),
         data: {
           name_ar: data.name_ar,
           name_en: data.name_en,
-          start_date: data.start_date,
-          end_date: data.end_date,
+          academic_year_id: data.academic_year_id,
           is_active: data.is_active,
         },
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/cohorts`);
+      router.push(`/${lang}/study-terms`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -113,8 +125,8 @@ export default function EditCohort() {
     }
   };
 
-  if (!sessionReady || isLoading) {
-    return <CohortFormSkeleton />;
+  if (!sessionReady || isLoading || loadingYears) {
+    return <StudyTermFormSkeleton />;
   }
 
   return (
@@ -123,12 +135,12 @@ export default function EditCohort() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-bold ">
             <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <CalendarRange className="w-5 h-5 " />
+              <BookOpenCheck className="w-5 h-5 " />
             </div>
-            {translate?.pages.cohorts.editCohort.title}
+            {translate?.pages.studyTerms.editStudyTerm.title}
           </CardTitle>
           <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.cohorts.editCohort.titleUpdate}
+            {translate?.pages.studyTerms.editStudyTerm.titleUpdate}
           </CardDescription>
         </CardHeader>
 
@@ -137,7 +149,7 @@ export default function EditCohort() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.nameAr}
+                  {translate?.pages.studyTerms.editStudyTerm.nameAr}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
@@ -146,7 +158,7 @@ export default function EditCohort() {
               </div>
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.nameEn}
+                  {translate?.pages.studyTerms.editStudyTerm.nameEn}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
@@ -155,37 +167,34 @@ export default function EditCohort() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.startDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("start_date", { required: true })}
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(watchedStartDate)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(watchedStartDate)}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.endDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("end_date", { required: true })}
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(watchedEndDate)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(watchedEndDate)}
-                </div>
-              </div>
+            <div className="space-y-1">
+              <Label className="font-semibold mb-2">
+                {translate?.pages.studyTerms.editStudyTerm.academicYear}
+              </Label>
+              <Controller
+                name="academic_year_id"
+                control={control}
+                rules={{ validate: (v) => v > 0 }}
+                render={({ field }) => (
+                  <select
+                    className="flex h-10 w-full rounded-md border border-[#999] bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-0"
+                    value={field.value > 0 ? String(field.value) : ""}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      field.onChange(v === "" ? 0 : Number(v));
+                    }}
+                  >
+                    <option value="">
+                      {translate?.pages.studyTerms.editStudyTerm.selectAcademicYear}
+                    </option>
+                    {academicYears.map((y) => (
+                      <option key={y.id} value={y.id}>
+                        {yearLabel(y)}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
             </div>
 
             <Separator />
@@ -202,18 +211,18 @@ export default function EditCohort() {
                 )}
               />
               <span className="text-sm">
-                {translate?.pages.cohorts.editCohort.isActive}
+                {translate?.pages.studyTerms.editStudyTerm.isActive}
               </span>
             </div>
 
             <Button
               type="submit"
-              disabled={isUpdating}
+              disabled={isUpdating || !academicYears.length}
               className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
             >
               {isUpdating
-                ? `${translate?.pages.cohorts.editCohort.processing}...`
-                : `${translate?.pages.cohorts.editCohort.editBtn}`}
+                ? `${translate?.pages.studyTerms.editStudyTerm.processing}...`
+                : `${translate?.pages.studyTerms.editStudyTerm.editBtn}`}
             </Button>
           </form>
         </CardContent>

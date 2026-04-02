@@ -4,6 +4,8 @@ import appReducer from "./app/appSlice";
 import { privacyPolicyApi } from "./settings/privacyPolicyApi";
 import { adminsApi } from "./admins/adminsApi";
 import { cohortsApi } from "./cohorts/cohortsApi";
+import { academicYearsApi } from "./academicYears/academicYearsApi";
+import { studyTermsApi } from "./studyTerms/studyTermsApi";
 import { rolesApi } from "./roles/rolesApi";
 import { permissionsApi } from "./permissions/permissionsApi";
 import { authApi } from "./auth/authApi";
@@ -21,6 +23,8 @@ export const store = configureStore({
     [deleteAccountApi.reducerPath]: deleteAccountApi.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
     [cohortsApi.reducerPath]: cohortsApi.reducer,
+    [academicYearsApi.reducerPath]: academicYearsApi.reducer,
+    [studyTermsApi.reducerPath]: studyTermsApi.reducer,
     [permissionsApi.reducerPath]: permissionsApi.reducer,
     [rolesApi.reducerPath]: rolesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
@@ -34,6 +38,8 @@ export const store = configureStore({
       deleteAccountApi.middleware,
       adminsApi.middleware,
       cohortsApi.middleware,
+      academicYearsApi.middleware,
+      studyTermsApi.middleware,
       rolesApi.middleware,
       permissionsApi.middleware,
       authApi.middleware,

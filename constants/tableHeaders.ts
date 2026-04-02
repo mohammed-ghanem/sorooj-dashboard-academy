@@ -16,6 +16,19 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    academicYears: {
+      name: "الاسم",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
+    studyTerms: {
+      name: "الاسم",
+      academicYear: "العام الدراسي",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     roles: {
       name: "الدور",
       status: "الحالة",
@@ -47,6 +60,19 @@ export const TABLE_HEADERS = {
       name: "Name",
       startDate: "Start date",
       endDate: "End date",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    academicYears: {
+      name: "Name",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    studyTerms: {
+      name: "Name",
+      academicYear: "Academic year",
       status: "Status",
       actions: "Actions",
     },

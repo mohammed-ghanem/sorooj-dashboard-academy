@@ -1,0 +1,4 @@
+.data-\[state\=checked\]\:bg-primary[data-state="checked"] {
+    background-color: #28a745 !important;
+    border: #28a745 !important;
+}

@@ -176,6 +176,87 @@
         "notFound": "لم يتم العثور على الدفعة"
       }
     },
+    "academicYears": {
+      "listTitle": "الأعوام الدراسية",
+      "searchPlaceholder": "ابحث عن عام دراسي...",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف العام الدراسي",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذا العام الدراسي؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createAcademicYear": {
+        "title": "إضافة عام دراسي",
+        "description": "أضف عامًا دراسيًا جديدًا بالعربية والإنجليزية",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "isActive": "نشط",
+        "processing": "جارى إنشاء العام الدراسي",
+        "createBtn": "إنشاء العام الدراسي"
+      },
+      "editAcademicYear": {
+        "title": "تعديل العام الدراسي",
+        "titleUpdate": "تحديث بيانات العام الدراسي",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "isActive": "نشط",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": "حفظ التغييرات"
+      },
+      "viewAcademicYear": {
+        "title": "تفاصيل العام الدراسي",
+        "description": "عرض بيانات العام الدراسي",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "status": "الحالة",
+        "createdAt": "تاريخ الإنشاء",
+        "backBtn": "رجوع",
+        "notFound": "لم يتم العثور على العام الدراسي"
+      }
+    },
+    "studyTerms": {
+      "listTitle": "المحاور الدراسية",
+      "searchPlaceholder": "ابحث عن محور دراسي...",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف المحور الدراسي",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذا المحور الدراسي؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createStudyTerm": {
+        "title": "إضافة محور دراسي",
+        "description": "أضف محورًا دراسيًا جديدًا واربطه بعام دراسي",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "academicYear": "العام الدراسي",
+        "selectAcademicYear": "اختر العام الدراسي",
+        "isActive": "نشط",
+        "processing": "جارى إنشاء المحور الدراسي",
+        "createBtn": "إنشاء المحور الدراسي"
+      },
+      "editStudyTerm": {
+        "title": "تعديل المحور الدراسي",
+        "titleUpdate": "تحديث بيانات المحور الدراسي",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "academicYear": "العام الدراسي",
+        "selectAcademicYear": "اختر العام الدراسي",
+        "isActive": "نشط",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": "حفظ التغييرات"
+      },
+      "viewStudyTerm": {
+        "title": "تفاصيل المحور الدراسي",
+        "description": "عرض بيانات المحور الدراسي",
+        "nameAr": "الاسم بالعربية",
+        "nameEn": "الاسم بالإنجليزية",
+        "academicYear": "العام الدراسي",
+        "status": "الحالة",
+        "createdAt": "تاريخ الإنشاء",
+        "backBtn": "رجوع",
+        "notFound": "لم يتم العثور على المحور الدراسي"
+      }
+    },
     "roles": {
       "rolesTitle": "الصلاحيات والمهام",
       "searchPlaceholder": "ابحث عن صلاحية...",
@@ -237,6 +318,8 @@
     "roles": "الصلاحيات والمهام",
     "admins": "المستخدمين",
     "cohorts": "الدفعات",
+    "academicYears": "الأعوام الدراسية",
+    "studyTerms": "المحاور الدراسية",
     "settings": "الإعدادات",
     "privacyPolicy": "سياسة الخصوصية",
     "termsAndConditions": "الشروط والأحكام",

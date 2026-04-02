@@ -6,15 +6,15 @@ import "./style.css";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { CalendarRange } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 
 import {
-  useGetCohortByIdQuery,
-  useUpdateCohortMutation,
-} from "@/store/cohorts/cohortsApi";
+  useGetAcademicYearByIdQuery,
+  useUpdateAcademicYearMutation,
+} from "@/store/academicYears/academicYearsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import CohortFormSkeleton from "./CohortFormSkeleton";
+import AcademicYearFormSkeleton from "./AcademicYearFormSkeleton";
 
 import {
   Card,
@@ -30,74 +30,62 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import {
-  formatGregorianDateAr,
-  formatHijriFromGregorianDateAr,
-} from "@/utils/dateFormat";
 
-type EditCohortForm = {
+type EditAcademicYearForm = {
   name_ar: string;
   name_en: string;
-  start_date: string;
-  end_date: string;
   is_active: boolean;
 };
 
-export default function EditCohort() {
+export default function EditAcademicYear() {
   const sessionReady = useSessionReady();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const { data: cohort, isLoading } = useGetCohortByIdQuery(Number(id), {
-    skip: !sessionReady,
-  });
+  const { data: academicYear, isLoading } = useGetAcademicYearByIdQuery(
+    Number(id),
+    {
+      skip: !sessionReady,
+    }
+  );
 
-  const [updateCohort, { isLoading: isUpdating }] =
-    useUpdateCohortMutation();
+  const [updateAcademicYear, { isLoading: isUpdating }] =
+    useUpdateAcademicYearMutation();
 
-  const { register, handleSubmit, reset, control, watch } =
-    useForm<EditCohortForm>({
+  const { register, handleSubmit, reset, control } =
+    useForm<EditAcademicYearForm>({
       defaultValues: {
         name_ar: "",
         name_en: "",
-        start_date: "",
-        end_date: "",
         is_active: true,
       },
     });
 
-  const watchedStartDate = watch("start_date");
-  const watchedEndDate = watch("end_date");
-
   useEffect(() => {
-    if (!cohort) return;
+    if (!academicYear) return;
 
     reset({
-      name_ar: cohort.name_ar ?? "",
-      name_en: cohort.name_en ?? "",
-      start_date: cohort.start_date?.slice(0, 10) ?? "",
-      end_date: cohort.end_date?.slice(0, 10) ?? "",
-      is_active: Boolean(cohort.is_active),
+      name_ar: academicYear.name_ar ?? "",
+      name_en: academicYear.name_en ?? "",
+      is_active: Boolean(academicYear.is_active),
     });
-  }, [cohort, reset]);
+  }, [academicYear, reset]);
 
-  const onSubmit = async (data: EditCohortForm) => {
+  const onSubmit = async (data: EditAcademicYearForm) => {
     try {
-      const res = await updateCohort({
+      const res = await updateAcademicYear({
         id: Number(id),
         data: {
           name_ar: data.name_ar,
           name_en: data.name_en,
-          start_date: data.start_date,
-          end_date: data.end_date,
           is_active: data.is_active,
         },
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/cohorts`);
+      router.push(`/${lang}/academic-years`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -114,7 +102,7 @@ export default function EditCohort() {
   };
 
   if (!sessionReady || isLoading) {
-    return <CohortFormSkeleton />;
+    return <AcademicYearFormSkeleton />;
   }
 
   return (
@@ -123,12 +111,12 @@ export default function EditCohort() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-bold ">
             <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <CalendarRange className="w-5 h-5 " />
+              <GraduationCap className="w-5 h-5 " />
             </div>
-            {translate?.pages.cohorts.editCohort.title}
+            {translate?.pages.academicYears.editAcademicYear.title}
           </CardTitle>
           <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.cohorts.editCohort.titleUpdate}
+            {translate?.pages.academicYears.editAcademicYear.titleUpdate}
           </CardDescription>
         </CardHeader>
 
@@ -137,7 +125,7 @@ export default function EditCohort() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.nameAr}
+                  {translate?.pages.academicYears.editAcademicYear.nameAr}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
@@ -146,45 +134,12 @@ export default function EditCohort() {
               </div>
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.nameEn}
+                  {translate?.pages.academicYears.editAcademicYear.nameEn}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
                   {...register("name_en", { required: true })}
                 />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.startDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("start_date", { required: true })}
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(watchedStartDate)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(watchedStartDate)}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.editCohort.endDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("end_date", { required: true })}
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(watchedEndDate)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(watchedEndDate)}
-                </div>
               </div>
             </div>
 
@@ -202,7 +157,7 @@ export default function EditCohort() {
                 )}
               />
               <span className="text-sm">
-                {translate?.pages.cohorts.editCohort.isActive}
+                {translate?.pages.academicYears.editAcademicYear.isActive}
               </span>
             </div>
 
@@ -212,8 +167,8 @@ export default function EditCohort() {
               className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
             >
               {isUpdating
-                ? `${translate?.pages.cohorts.editCohort.processing}...`
-                : `${translate?.pages.cohorts.editCohort.editBtn}`}
+                ? `${translate?.pages.academicYears.editAcademicYear.processing}...`
+                : `${translate?.pages.academicYears.editAcademicYear.editBtn}`}
             </Button>
           </form>
         </CardContent>

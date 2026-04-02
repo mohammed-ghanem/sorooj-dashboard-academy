@@ -5,12 +5,12 @@ import { useState } from "react";
 import "./style.css";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { CalendarRange } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 
-import { useCreateCohortMutation } from "@/store/cohorts/cohortsApi";
+import { useCreateAcademicYearMutation } from "@/store/academicYears/academicYearsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import CohortFormSkeleton from "./CohortFormSkeleton";
+import AcademicYearFormSkeleton from "./AcademicYearFormSkeleton";
 
 import {
   Card,
@@ -26,30 +26,25 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import { formatGregorianDateAr, formatHijriFromGregorianDateAr } from "@/utils/dateFormat";
 
 type FormState = {
   name_ar: string;
   name_en: string;
-  start_date: string;
-  end_date: string;
   is_active: boolean;
 };
 
-export default function CreateCohort() {
+export default function CreateAcademicYear() {
   const sessionReady = useSessionReady();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const [createCohort, { isLoading: isCreating }] =
-    useCreateCohortMutation();
+  const [createAcademicYear, { isLoading: isCreating }] =
+    useCreateAcademicYearMutation();
 
   const [form, setForm] = useState<FormState>({
     name_ar: "",
     name_en: "",
-    start_date: "",
-    end_date: "",
     is_active: true,
   });
 
@@ -57,16 +52,14 @@ export default function CreateCohort() {
     e.preventDefault();
 
     try {
-      const res = await createCohort({
+      const res = await createAcademicYear({
         name_ar: form.name_ar,
         name_en: form.name_en,
-        start_date: form.start_date,
-        end_date: form.end_date,
         is_active: form.is_active,
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/cohorts`);
+      router.push(`/${lang}/academic-years`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -83,7 +76,7 @@ export default function CreateCohort() {
   };
 
   if (!sessionReady) {
-    return <CohortFormSkeleton />;
+    return <AcademicYearFormSkeleton />;
   }
 
   return (
@@ -92,12 +85,12 @@ export default function CreateCohort() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-bold">
             <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <CalendarRange className="w-5 h-5 " />
+              <GraduationCap className="w-5 h-5 " />
             </div>
-            {translate?.pages.cohorts.createCohort.title}
+            {translate?.pages.academicYears.createAcademicYear.title}
           </CardTitle>
           <CardDescription>
-            {translate?.pages.cohorts.createCohort.description}
+            {translate?.pages.academicYears.createAcademicYear.description}
           </CardDescription>
         </CardHeader>
 
@@ -106,7 +99,7 @@ export default function CreateCohort() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.createCohort.nameAr}
+                  {translate?.pages.academicYears.createAcademicYear.nameAr}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
@@ -118,7 +111,7 @@ export default function CreateCohort() {
               </div>
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.createCohort.nameEn}
+                  {translate?.pages.academicYears.createAcademicYear.nameEn}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
@@ -127,45 +120,6 @@ export default function CreateCohort() {
                     setForm({ ...form, name_en: e.target.value })
                   }
                 />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.createCohort.startDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  value={form.start_date}
-                  onChange={(e) =>
-                    setForm({ ...form, start_date: e.target.value })
-                  }
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(form.start_date)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(form.start_date)}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.cohorts.createCohort.endDate}
-                </Label>
-                <Input
-                  type="date"
-                  className="focus-visible:ring-0 border-[#999]"
-                  value={form.end_date}
-                  onChange={(e) =>
-                    setForm({ ...form, end_date: e.target.value })
-                  }
-                />
-                <div className="text-xs text-muted-foreground">
-                  {formatGregorianDateAr(form.end_date)}{" "}
-                  <span className="mx-1">—</span>{" "}
-                  {formatHijriFromGregorianDateAr(form.end_date)}
-                </div>
               </div>
             </div>
 
@@ -179,7 +133,7 @@ export default function CreateCohort() {
                 }
               />
               <span className="text-sm">
-                {translate?.pages.cohorts.createCohort.isActive}
+                {translate?.pages.academicYears.createAcademicYear.isActive}
               </span>
             </div>
 
@@ -189,8 +143,8 @@ export default function CreateCohort() {
               className="mx-auto block bg-green-700 hover:bg-green-600 font-semibold"
             >
               {isCreating
-                ? `${translate?.pages.cohorts.createCohort.processing}...`
-                : `${translate?.pages.cohorts.createCohort.createBtn}`}
+                ? `${translate?.pages.academicYears.createAcademicYear.processing}...`
+                : `${translate?.pages.academicYears.createAcademicYear.createBtn}`}
             </Button>
           </form>
         </CardContent>
