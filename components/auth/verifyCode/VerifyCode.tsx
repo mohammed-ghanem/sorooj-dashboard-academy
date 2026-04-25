@@ -13,7 +13,7 @@ import otp from "@/public/assets/images/otp.webp";
 import { useResendOtpMutation, useVerifyCodeMutation } from "@/store/auth/authApi";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
-import VerifyCodeSkeleton from "./VerifyCodeSkeleton";
+import VerifyCodeSkeleton from "@/components/skeleton/VerifyCodeSkeleton";
 
 const CODE_LENGTH = 4;
 

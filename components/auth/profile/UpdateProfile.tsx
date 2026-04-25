@@ -23,7 +23,7 @@ import "./style.css";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import { useRouter } from "next/navigation";
-import ProfileSkeleton from "@/components/auth/profile/ProfileSkeleton";
+import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 
 function UpdateProfile() {
   const lang = LangUseParams();

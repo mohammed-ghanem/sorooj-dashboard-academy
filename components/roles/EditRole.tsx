@@ -45,7 +45,7 @@ import {
 
 // Toast
 import { toast } from "sonner";
-import RoleFormSkeleton from "./RoleFormSkeleton";
+import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
 
 export default function EditRole() {
   const router = useRouter();

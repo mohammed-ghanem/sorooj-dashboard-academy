@@ -1,11 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/* ================= Title ================= */
 export function TermsAndConditionsTitleSkeleton() {
   return <Skeleton className="h-8 w-64 " />;
 }
 
-/* ================= Editor ================= */
 export function TermsAndConditionsEditorSkeleton() {
   return (
     <div className="space-y-3">
@@ -16,12 +14,10 @@ export function TermsAndConditionsEditorSkeleton() {
   );
 }
 
-/* ================= Button ================= */
 export function TermsAndConditionsButtonSkeleton() {
   return <Skeleton className="h-10 w-32 rounded-lg" />;
 }
 
-/* ================= Page ================= */
 export default function TermsAndConditionsPageSkeleton() {
   return (
     <div className="p-6 mx-4 my-10 space-y-6 bg-white rounded-2xl border border-solid border-[#ddd]">

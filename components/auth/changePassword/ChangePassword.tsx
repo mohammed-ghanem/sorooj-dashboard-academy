@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import ChangePasswordSkeleton from "./ChangePasswordSkeleton";
+import ChangePasswordSkeleton from "@/components/skeleton/ChangePasswordSkeleton";
 
 
 const ChangePassword = () => {

@@ -47,6 +47,7 @@ function normalizeStudyTerm(item: any): IStudyTerm {
     name: localized.name,
     name_ar: localized.name_ar,
     name_en: localized.name_en,
+    about_term: item?.about_term ?? "",
     academic_year_id,
     academic_year,
     is_active: Boolean(item?.is_active === true || Number(item?.is_active ?? 0) === 1),
@@ -60,6 +61,7 @@ function buildStudyTermFormData(data: ICreateStudyTermPayload | IUpdateStudyTerm
   const fd = new FormData();
   fd.append("name[ar]", data.name_ar);
   fd.append("name[en]", data.name_en);
+  fd.append("about_term", data.about_term);
   fd.append("academic_year_id", String(data.academic_year_id));
   fd.append("is_active", data.is_active ? "1" : "0");
   return fd;

@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import TranslateHook from "@/translate/TranslateHook";
-import ViewAcademicYearSkeleton from "./ViewAcademicYearSkeleton";
+import ViewAcademicYearSkeleton from "@/components/skeleton/ViewAcademicYearSkeleton";
 
 export default function ViewAcademicYear() {
   const { id } = useParams<{ id: string }>();

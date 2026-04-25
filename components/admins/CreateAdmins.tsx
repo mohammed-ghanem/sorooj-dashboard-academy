@@ -13,7 +13,7 @@ import { useCreateAdminMutation } from "@/store/admins/adminsApi";
 import { useGetRolesQuery } from "@/store/roles/rolesApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import AdminFormSkeleton from "./AdminFormSkeleton";
+import AdminFormSkeleton from "@/components/skeleton/AdminFormSkeleton";
 
 import {
   Card,

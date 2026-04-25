@@ -38,26 +38,21 @@ const SidebarSkeleton = () => {
         asideBg border-e flex flex-col
       "
     >
-      {/* Logo Section */}
       <div className="p-4 flex justify-center">
         <Skeleton className="h-24 w-32 rounded-md" />
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1">
         <ul className="space-y-1 p-2">
-          {/* Main Links */}
           {Array.from({ length: 3 }).map((_, i) => (
             <li key={`main-${i}`}>
               <SidebarSkeletonItem />
             </li>
           ))}
 
-          {/* Settings Parent */}
           <li>
             <SidebarSkeletonItem showChevron />
 
-            {/* Nested Links (always visible in skeleton for better UX) */}
             <div className="md:ms-6 mt-1 ms-3 space-y-1">
               {Array.from({ length: 2 }).map((_, i) => (
                 <SidebarSkeletonItem key={`nested-${i}`} nested />

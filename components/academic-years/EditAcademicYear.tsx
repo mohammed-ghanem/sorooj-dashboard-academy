@@ -14,7 +14,7 @@ import {
 } from "@/store/academicYears/academicYearsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import AcademicYearFormSkeleton from "./AcademicYearFormSkeleton";
+import AcademicYearFormSkeleton from "@/components/skeleton/AcademicYearFormSkeleton";
 
 import {
   Card,

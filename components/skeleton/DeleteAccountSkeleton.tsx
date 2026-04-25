@@ -1,11 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-/* ================= Title ================= */
 export function DeleteAccountTitleSkeleton() {
   return <Skeleton className="h-8 w-64 " />;
 }
 
-/* ================= Editor ================= */
 export function DeleteAccountEditorSkeleton() {
   return (
     <div className="space-y-3">
@@ -16,12 +14,10 @@ export function DeleteAccountEditorSkeleton() {
   );
 }
 
-/* ================= Button ================= */
 export function DeleteAccountButtonSkeleton() {
   return <Skeleton className="h-10 w-32 rounded-lg" />;
 }
 
-/* ================= Page ================= */
 export default function DeleteAccountPageSkeleton() {
   return (
     <div className="p-6 mx-4 my-10 space-y-6 bg-white rounded-2xl border border-solid border-[#ddd]">

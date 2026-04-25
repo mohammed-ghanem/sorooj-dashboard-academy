@@ -29,6 +29,13 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    subjects: {
+      name: "الاسم",
+      studyTerm: "المحور الدراسي",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     roles: {
       name: "الدور",
       status: "الحالة",
@@ -73,6 +80,13 @@ export const TABLE_HEADERS = {
     studyTerms: {
       name: "Name",
       academicYear: "Academic year",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    subjects: {
+      name: "Name",
+      studyTerm: "Study term",
       status: "Status",
       actions: "Actions",
     },

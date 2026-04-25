@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
-import SidebarSkeleton from "./SidebarSkeleton";
+import SidebarSkeleton from "@/components/skeleton/SidebarSkeleton";
 import { mainLinks, settingsLinks } from "./sidebarLinks";
 import Image from "next/image";
 import logo from "@/public/assets/images/logo.png";

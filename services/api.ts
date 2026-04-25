@@ -63,6 +63,11 @@ api.interceptors.request.use(
         config.headers["X-XSRF-TOKEN"] = csrf;
       }
     }
+
+    // Let browser set multipart boundary for FormData uploads.
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
     return config;
   },
   (error) => Promise.reject(error)

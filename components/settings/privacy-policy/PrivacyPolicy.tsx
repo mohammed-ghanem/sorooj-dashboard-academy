@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useGetPrivacyPolicyQuery, useUpdatePrivacyPolicyMutation, } from "@/store/settings/privacyPolicyApi";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-import PrivacyPolicySkeleton, { PrivacyPolicyEditorSkeleton } from "./PrivacyPolicySkeleton";
+import PrivacyPolicySkeleton, { PrivacyPolicyEditorSkeleton } from "@/components/skeleton/PrivacyPolicySkeleton";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import TranslateHook from "@/translate/TranslateHook";
 import { CircleCheckBig } from "lucide-react";

@@ -15,7 +15,7 @@ import {
 } from "@/store/studyTerms/studyTermsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import StudyTermFormSkeleton from "./StudyTermFormSkeleton";
+import StudyTermFormSkeleton from "@/components/skeleton/StudyTermFormSkeleton";
 
 import {
   Card,
@@ -37,6 +37,7 @@ import type { IAcademicYear } from "@/types/academicYear";
 type EditStudyTermForm = {
   name_ar: string;
   name_en: string;
+  about_term: string;
   academic_year_id: number;
   is_active: boolean;
 };
@@ -63,6 +64,7 @@ export default function EditStudyTerm() {
       defaultValues: {
         name_ar: "",
         name_en: "",
+        about_term: "",
         academic_year_id: 0,
         is_active: true,
       },
@@ -79,6 +81,7 @@ export default function EditStudyTerm() {
     reset({
       name_ar: studyTerm.name_ar ?? "",
       name_en: studyTerm.name_en ?? "",
+      about_term: studyTerm.about_term ?? "",
       academic_year_id: Number(yearId) || 0,
       is_active: Boolean(studyTerm.is_active),
     });
@@ -103,6 +106,7 @@ export default function EditStudyTerm() {
         data: {
           name_ar: data.name_ar,
           name_en: data.name_en,
+          about_term: data.about_term,
           academic_year_id: data.academic_year_id,
           is_active: data.is_active,
         },
@@ -165,6 +169,16 @@ export default function EditStudyTerm() {
                   {...register("name_en", { required: true })}
                 />
               </div>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="font-semibold mb-2">
+                {translate?.pages.studyTerms.editStudyTerm.aboutTerm}
+              </Label>
+              <Input
+                className="focus-visible:ring-0 border-[#999]"
+                {...register("about_term", { required: true })}
+              />
             </div>
 
             <div className="space-y-1">

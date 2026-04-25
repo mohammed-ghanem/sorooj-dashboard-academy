@@ -12,6 +12,7 @@ import { authApi } from "./auth/authApi";
 import { contactsApi } from "./settings/contactsApi";
 import { termsAndConditionsApi } from "./settings/termsAndConditions";
 import { deleteAccountApi } from "./settings/deleteAcoount";
+import { subjectsApi } from "./subjects/subjectsApi";
 
 
 
@@ -29,6 +30,7 @@ export const store = configureStore({
     [rolesApi.reducerPath]: rolesApi.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
+    [subjectsApi.reducerPath]: subjectsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -44,6 +46,7 @@ export const store = configureStore({
       permissionsApi.middleware,
       authApi.middleware,
       contactsApi.middleware,
+      subjectsApi.middleware,
       ),
    
 });

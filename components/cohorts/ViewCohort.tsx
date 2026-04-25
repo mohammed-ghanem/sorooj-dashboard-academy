@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import TranslateHook from "@/translate/TranslateHook";
-import ViewCohortSkeleton from "./ViewCohortSkeleton";
+import ViewCohortSkeleton from "@/components/skeleton/ViewCohortSkeleton";
 import { formatGregorianDateAr, formatHijriDateAr } from "@/utils/dateFormat";
 
 export default function ViewCohort() {

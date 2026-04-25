@@ -5,13 +5,13 @@ import { useState } from "react";
 import "./style.css";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { BookOpenCheck } from "lucide-react";
+import { BookOpenText } from "lucide-react";
 
-import { useGetAcademicYearsQuery } from "@/store/academicYears/academicYearsApi";
-import { useCreateStudyTermMutation } from "@/store/studyTerms/studyTermsApi";
+import { useGetStudyTermsQuery } from "@/store/studyTerms/studyTermsApi";
+import { useCreateSubjectMutation } from "@/store/subjects/subjectsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import StudyTermFormSkeleton from "@/components/skeleton/StudyTermFormSkeleton";
+import SubjectFormSkeleton from "@/components/skeleton/SubjectFormSkeleton";
 
 import {
   Card,
@@ -25,79 +25,80 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import ImageDropzone from "@/components/shared/ImageDropzone";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-
-import type { IAcademicYear } from "@/types/academicYear";
+import { parseLocalizedNameFromModel } from "@/utils/localizedName";
 
 type FormState = {
-  name_ar: string;
-  name_en: string;
-  about_term: string;
-  academic_year_id: number | "";
+  name: string;
+  about_subject: string;
+  study_term_id: number | "";
   is_active: boolean;
+  cover: File | null;
 };
 
-export default function CreateStudyTerm() {
+export default function CreateSubject() {
   const sessionReady = useSessionReady();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const { data: academicYears = [], isLoading: loadingYears } =
-    useGetAcademicYearsQuery(undefined, { skip: !sessionReady });
+  const { data: studyTerms = [], isLoading: loadingStudyTerms } =
+    useGetStudyTermsQuery(undefined, { skip: !sessionReady });
 
-  const [createStudyTerm, { isLoading: isCreating }] =
-    useCreateStudyTermMutation();
+  const [createSubject, { isLoading: isCreating }] = useCreateSubjectMutation();
 
   const [form, setForm] = useState<FormState>({
-    name_ar: "",
-    name_en: "",
-    about_term: "",
-    academic_year_id: "",
+    name: "",
+    about_subject: "",
+    study_term_id: "",
     is_active: true,
+    cover: null,
   });
 
-  const yearLabel = (y: IAcademicYear) =>
-    lang === "ar" ? y.name_ar || y.name : y.name_en || y.name;
+  const studyTermLabel = (row: any) => {
+    const loc = parseLocalizedNameFromModel(row);
+    return lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (form.academic_year_id === "" || Number(form.academic_year_id) <= 0) {
+    if (form.study_term_id === "" || Number(form.study_term_id) <= 0) {
       toast.error(
         lang === "ar"
-          ? "يرجى اختيار العام الدراسي"
-          : "Please select an academic year"
+          ? "يرجى اختيار المحور الدراسي"
+          : "Please select a study term",
       );
       return;
     }
 
-    if (!academicYears.length) {
+    if (!studyTerms.length) {
       toast.error(
         lang === "ar"
-          ? "لا توجد أعوام دراسية متاحة. أضف عامًا دراسيًا أولًا."
-          : "No academic years available. Create an academic year first."
+          ? "لا توجد محاور دراسية متاحة. أضف محورًا دراسيًا أولًا."
+          : "No study terms available. Create a study term first.",
       );
       return;
     }
 
     try {
-      const res = await createStudyTerm({
-        name_ar: form.name_ar,
-        name_en: form.name_en,
-        about_term: form.about_term,
-        academic_year_id: Number(form.academic_year_id),
+      const res = await createSubject({
+        name: form.name,
+        about_subject: form.about_subject,
+        study_term_id: Number(form.study_term_id),
         is_active: form.is_active,
+        cover: form.cover,
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/study-terms`);
+      router.push(`/${lang}/subjects`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -108,8 +109,8 @@ export default function CreateStudyTerm() {
     }
   };
 
-  if (!sessionReady || loadingYears) {
-    return <StudyTermFormSkeleton />;
+  if (!sessionReady || loadingStudyTerms) {
+    return <SubjectFormSkeleton />;
   }
 
   return (
@@ -118,12 +119,12 @@ export default function CreateStudyTerm() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-bold">
             <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <BookOpenCheck className="w-5 h-5 " />
+              <BookOpenText className="w-5 h-5 " />
             </div>
-            {translate?.pages.studyTerms.createStudyTerm.title}
+            {translate?.pages.subjects.createSubject.title}
           </CardTitle>
           <CardDescription>
-            {translate?.pages.studyTerms.createStudyTerm.description}
+            {translate?.pages.subjects.createSubject.description}
           </CardDescription>
         </CardHeader>
 
@@ -132,73 +133,65 @@ export default function CreateStudyTerm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label className="font-semibold mb-2">
-                  {translate?.pages.studyTerms.createStudyTerm.nameAr}
+                  {translate?.pages.subjects.createSubject.name}
                 </Label>
                 <Input
                   className="focus-visible:ring-0 border-[#999]"
-                  value={form.name_ar}
-                  onChange={(e) =>
-                    setForm({ ...form, name_ar: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.studyTerms.createStudyTerm.nameEn}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  value={form.name_en}
-                  onChange={(e) =>
-                    setForm({ ...form, name_en: e.target.value })
-                  }
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
               </div>
             </div>
 
             <div className="space-y-1">
               <Label className="font-semibold mb-2">
-                {translate?.pages.studyTerms.createStudyTerm.aboutTerm}
+                {translate?.pages.subjects.createSubject.aboutSubject}
               </Label>
               <Input
                 className="focus-visible:ring-0 border-[#999]"
-                value={form.about_term}
+                value={form.about_subject}
                 onChange={(e) =>
-                  setForm({ ...form, about_term: e.target.value })
+                  setForm({ ...form, about_subject: e.target.value })
                 }
               />
             </div>
 
             <div className="space-y-1">
               <Label className="font-semibold mb-2">
-                {translate?.pages.studyTerms.createStudyTerm.academicYear}
+                {translate?.pages.subjects.createSubject.studyTerm}
               </Label>
               <select
                 className="flex h-10 w-full rounded-md border border-[#999] bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-0"
                 value={
-                  form.academic_year_id === ""
-                    ? ""
-                    : String(form.academic_year_id)
+                  form.study_term_id === "" ? "" : String(form.study_term_id)
                 }
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    academic_year_id:
-                      e.target.value === ""
-                        ? ""
-                        : Number(e.target.value),
+                    study_term_id:
+                      e.target.value === "" ? "" : Number(e.target.value),
                   })
                 }
               >
                 <option value="">
-                  {translate?.pages.studyTerms.createStudyTerm.selectAcademicYear}
+                  {translate?.pages.subjects.createSubject.selectStudyTerm}
                 </option>
-                {academicYears.map((y) => (
-                  <option key={y.id} value={y.id}>
-                    {yearLabel(y)}
+                {studyTerms.map((st) => (
+                  <option key={st.id} value={st.id}>
+                    {studyTermLabel(st)}
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-1">
+              <Label className="font-semibold mb-2">
+                {translate?.pages.subjects.createSubject.cover}
+              </Label>
+              <ImageDropzone
+                file={form.cover}
+                onFileChange={(file) => setForm({ ...form, cover: file })}
+              />
             </div>
 
             <Separator />
@@ -211,18 +204,18 @@ export default function CreateStudyTerm() {
                 }
               />
               <span className="text-sm">
-                {translate?.pages.studyTerms.createStudyTerm.isActive}
+                {translate?.pages.subjects.createSubject.isActive}
               </span>
             </div>
 
             <Button
               type="submit"
-              disabled={isCreating || !academicYears.length}
+              disabled={isCreating || !studyTerms.length}
               className="mx-auto block bg-green-700 hover:bg-green-600 font-semibold"
             >
               {isCreating
-                ? `${translate?.pages.studyTerms.createStudyTerm.processing}...`
-                : `${translate?.pages.studyTerms.createStudyTerm.createBtn}`}
+                ? `${translate?.pages.subjects.createSubject.processing}...`
+                : `${translate?.pages.subjects.createSubject.createBtn}`}
             </Button>
           </form>
         </CardContent>

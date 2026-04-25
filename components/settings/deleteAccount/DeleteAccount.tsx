@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import dynamic from "next/dynamic";
 import DeleteAccountSkeleton, {
   DeleteAccountEditorSkeleton,
-} from "./DeleteAccountSkeleton";
+} from "@/components/skeleton/DeleteAccountSkeleton";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import TranslateHook from "@/translate/TranslateHook";
 import { CircleCheckBig } from "lucide-react";

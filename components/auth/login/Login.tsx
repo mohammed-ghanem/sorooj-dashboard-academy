@@ -11,7 +11,7 @@ import Image from "next/image";
 import logo from "@/public/assets/images/logo.png";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import LoginSkeleton from "./LoginSkeleton";
+import LoginSkeleton from "@/components/skeleton/LoginSkeleton";
 
 
 

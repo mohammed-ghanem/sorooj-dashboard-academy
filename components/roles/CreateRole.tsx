@@ -40,7 +40,7 @@ import {
 import { toast } from "sonner";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import RoleFormSkeleton from "./RoleFormSkeleton";
+import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
 
 export default function CreateRole() {
   const router = useRouter();

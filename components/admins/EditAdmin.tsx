@@ -31,7 +31,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
-import AdminFormSkeleton from "./AdminFormSkeleton";
+import AdminFormSkeleton from "@/components/skeleton/AdminFormSkeleton";
 
 
 /* ===================== TYPES ===================== */

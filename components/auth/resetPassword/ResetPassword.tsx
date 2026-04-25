@@ -11,7 +11,7 @@ import TranslateHook from "@/translate/TranslateHook";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import restpass from "@/public/assets/images/restpass.webp";
-import ResetPasswordSkeleton from "./ResetPasswordSkeleton";
+import ResetPasswordSkeleton from "@/components/skeleton/ResetPasswordSkeleton";
 import logo from "@/public/assets/images/logo.png";
 
 const ResetPassword = () => {

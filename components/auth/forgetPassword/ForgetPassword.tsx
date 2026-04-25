@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/assets/images/logo.png";
 import forgetPass from "@/public/assets/images/forgetPass.webp";
-import ForgetPasswordSkeleton from "./ForgetPasswordSkeleton";
+import ForgetPasswordSkeleton from "@/components/skeleton/ForgetPasswordSkeleton";
 
 const ForgetPassword = () => {
   const [sendResetCode, { isLoading }] = useSendResetCodeMutation();

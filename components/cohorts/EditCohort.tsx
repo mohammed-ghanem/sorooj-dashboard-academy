@@ -14,7 +14,7 @@ import {
 } from "@/store/cohorts/cohortsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import CohortFormSkeleton from "./CohortFormSkeleton";
+import CohortFormSkeleton from "@/components/skeleton/CohortFormSkeleton";
 
 import {
   Card,

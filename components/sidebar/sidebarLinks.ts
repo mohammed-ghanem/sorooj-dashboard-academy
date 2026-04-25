@@ -1,5 +1,6 @@
 import {
   BookOpenCheck,
+  BookOpenText,
   CalendarRange,
   GraduationCap,
   Home,
@@ -37,6 +38,11 @@ export const mainLinks = (lang: string) => [
     href: `/${lang}/study-terms`,
     icon: BookOpenCheck,
     key: "studyTerms",
+  },
+  {
+    href: `/${lang}/subjects`,
+    icon: BookOpenText,
+    key: "subjects",
   },
 ];
 
