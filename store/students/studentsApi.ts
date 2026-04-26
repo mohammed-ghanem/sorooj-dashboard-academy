@@ -113,8 +113,8 @@ export const studentsApi = createApi({
               if (row) {
                 row.is_active = !row.is_active;
               }
-            }
-          )
+            },
+          ),
         );
 
         try {
@@ -123,10 +123,7 @@ export const studentsApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: (_r, _e, id) => [
-        "Students",
-        { type: "Student", id },
-      ],
+      invalidatesTags: (_r, _e, id) => ["Students", { type: "Student", id }],
     }),
 
     deleteStudent: builder.mutation<IApiMessageResponse, number>({

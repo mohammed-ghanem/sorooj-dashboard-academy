@@ -45,7 +45,7 @@ export default function Students() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -56,15 +56,14 @@ export default function Students() {
     }
   };
 
-  const { getOptimisticStatus, toggle, isPending } = useOptimisticToggle<IStudent>(
-    {
+  const { getOptimisticStatus, toggle, isPending } =
+    useOptimisticToggle<IStudent>({
       getId: (row) => row.id,
       getStatus: (row) => row.is_active,
       onToggle: async (row) => {
         await toggleStatus(row.id);
       },
-    }
-  );
+    });
 
   const enrollmentLabel = (s: IStudent) =>
     s.enrollmentStatusLabel || s.enrollmentStatus || "—";
@@ -89,10 +88,12 @@ export default function Students() {
     {
       key: "country",
       header: headers.country,
-      render: (_, row) => <span className="truncate">{row.country?.name ?? "—"}</span>,
+      render: (_, row) => (
+        <span className="truncate">{row.country?.name ?? "—"}</span>
+      ),
     },
     {
-      key: "enrollment",
+      key: "enrollmentStatus",
       header: headers.enrollment,
       render: (_, row) => (
         <span className="text-sm text-muted-foreground">
@@ -115,7 +116,7 @@ export default function Students() {
                 toast.error(
                   lang === "ar"
                     ? "فشل تغيير الحالة"
-                    : "Failed to update status"
+                    : "Failed to update status",
                 );
               });
             }}
@@ -167,7 +168,9 @@ export default function Students() {
         data={students}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={translate?.pages.students.searchPlaceholder ?? "Search…"}
+        searchPlaceholder={
+          translate?.pages.students.searchPlaceholder ?? "Search…"
+        }
       />
     </div>
   );
