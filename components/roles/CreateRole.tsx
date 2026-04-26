@@ -266,7 +266,7 @@ export default function CreateRole() {
                            ${lang === "ar" ? "justify-end" : " flex-row-reverse justify-end"}
                           ${active
                             ? "border-green-500 bg-green-50 hover:bg-green-100"
-                            : "hover:bg-muted"
+                            : "hover:bg-muted" 
                           }`}
                       >
 

@@ -55,6 +55,7 @@ const SideBar = () => {
         fixed inset-y-0 inset-s-0 z-40
         h-screen w-14 md:w-60
         asideBg border-e flex flex-col
+        overflow-y-scroll
       "
     >
       <div className="p-4 font-bold text-lg mainColor flex justify-center md:justify-start">

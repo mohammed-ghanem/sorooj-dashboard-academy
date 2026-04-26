@@ -36,6 +36,25 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    students: {
+      name: "الطالب",
+      email: "البريد الإلكتروني",
+      mobile: "الجوال",
+      country: "الدولة",
+      enrollment: "حالة الالتحاق",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
+    doctors: {
+      name: "عضو هيئة التدريس",
+      email: "البريد الإلكتروني",
+      mobile: "الجوال",
+      specialization: "المجال التدريسي",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     roles: {
       name: "الدور",
       status: "الحالة",
@@ -87,6 +106,25 @@ export const TABLE_HEADERS = {
     subjects: {
       name: "Name",
       studyTerm: "Study term",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    students: {
+      name: "Student",
+      email: "Email",
+      mobile: "Mobile",
+      country: "Country",
+      enrollment: "Enrollment",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    doctors: {
+      name: "Teaching staff",
+      email: "Email",
+      mobile: "Mobile",
+      specialization: "Teaching field",
       status: "Status",
       actions: "Actions",
     },

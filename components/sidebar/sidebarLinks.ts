@@ -2,9 +2,11 @@ import {
   BookOpenCheck,
   BookOpenText,
   CalendarRange,
+  ShieldUser,
   GraduationCap,
   Home,
   ShieldCheck,
+  UserCircle,
   Users,
 } from "lucide-react";
 
@@ -15,14 +17,9 @@ export const mainLinks = (lang: string) => [
     key: "dashboard",
   },
   {
-    href: `/${lang}/roles`,
-    icon: ShieldCheck,
-    key: "roles",
-  },
-  {
-    href: `/${lang}/admins`,
-    icon: Users,
-    key: "admins",
+    href: `/${lang}/doctors`,
+    icon: ShieldUser,
+    key: "doctors",
   },
   {
     href: `/${lang}/cohorts`,
@@ -44,12 +41,31 @@ export const mainLinks = (lang: string) => [
     icon: BookOpenText,
     key: "subjects",
   },
+  {
+    href: `/${lang}/students`,
+    icon: UserCircle,
+    key: "students",
+  },
+  {
+    href: `/${lang}/admins`,
+    icon: Users,
+    key: "admins",
+  },
+  {
+    href: `/${lang}/roles`,
+    icon: ShieldCheck,
+    key: "roles",
+  },
 ];
 
 export const settingsLinks = (lang: string) => [
   {
     href: `/${lang}/privacy-policy`,
     key: "privacyPolicy",
+  },
+  {
+    href: `/${lang}/app-contacts`,
+    key: "appContacts",
   },
   {
     href: `/${lang}/terms-conditions`,

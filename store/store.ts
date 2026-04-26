@@ -13,6 +13,9 @@ import { contactsApi } from "./settings/contactsApi";
 import { termsAndConditionsApi } from "./settings/termsAndConditions";
 import { deleteAccountApi } from "./settings/deleteAcoount";
 import { subjectsApi } from "./subjects/subjectsApi";
+import { studentsApi } from "./students/studentsApi";
+import { appContactsApi } from "./settings/appContactsApi";
+import { doctorsApi } from "./doctors/doctorsApi";
 
 
 
@@ -20,6 +23,7 @@ export const store = configureStore({
   reducer: {
     app: appReducer,
     [privacyPolicyApi.reducerPath]: privacyPolicyApi.reducer,
+    [appContactsApi.reducerPath]: appContactsApi.reducer,
     [termsAndConditionsApi.reducerPath]: termsAndConditionsApi.reducer,
     [deleteAccountApi.reducerPath]: deleteAccountApi.reducer,
     [adminsApi.reducerPath]: adminsApi.reducer,
@@ -31,11 +35,14 @@ export const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [contactsApi.reducerPath]: contactsApi.reducer,
     [subjectsApi.reducerPath]: subjectsApi.reducer,
+    [studentsApi.reducerPath]: studentsApi.reducer,
+    [doctorsApi.reducerPath]: doctorsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      privacyPolicyApi.middleware , 
+      privacyPolicyApi.middleware ,
+      appContactsApi.middleware,
       termsAndConditionsApi.middleware,
       deleteAccountApi.middleware,
       adminsApi.middleware,
@@ -47,6 +54,8 @@ export const store = configureStore({
       authApi.middleware,
       contactsApi.middleware,
       subjectsApi.middleware,
+      studentsApi.middleware,
+      doctorsApi.middleware,
       ),
    
 });
