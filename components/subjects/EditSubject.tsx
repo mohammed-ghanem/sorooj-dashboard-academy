@@ -15,6 +15,8 @@ import {
   useUpdateSubjectMutation,
 } from "@/store/subjects/subjectsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 import SubjectFormSkeleton from "@/components/skeleton/SubjectFormSkeleton";
 
@@ -48,12 +50,19 @@ export default function EditSubject() {
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const t = translate?.pages.subjects.editSubject;
 
   const { data: studyTerms = [], isLoading: loadingStudyTerms } =
     useGetStudyTermsQuery(undefined, { skip: !sessionReady });
 
-  const { data: subject, isLoading } = useGetSubjectByIdQuery(Number(id), {
-    skip: !sessionReady,
+  const {
+    data: subject,
+    isLoading,
+    isError,
+  } = useGetSubjectByIdQuery(Number(id), {
+    skip: !sessionReady || !id || Number.isNaN(Number(id)),
   });
 
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
@@ -88,7 +97,9 @@ export default function EditSubject() {
   const onSubmit = async (data: EditSubjectForm) => {
     if (!data.study_term_id) {
       toast.error(
-        lang === "ar" ? "يرجى اختيار المحور الدراسي" : "Please select a study term"
+        lang === "ar"
+          ? "يرجى اختيار المحور الدراسي"
+          : "Please select a study term",
       );
       return;
     }
@@ -96,19 +107,19 @@ export default function EditSubject() {
     try {
       let coverFile: File | null = selectedCover;
 
-      // Browsers never prefill file inputs on edit.
-      // Reuse existing cover by converting its URL to File if user didn't pick a new one.
       if (!coverFile && subject?.cover) {
         try {
           const res = await fetch(subject.cover);
           const blob = await res.blob();
           const ext = blob.type?.split("/")[1] || "jpg";
-          coverFile = new File([blob], `cover.${ext}`, { type: blob.type || "image/jpeg" });
+          coverFile = new File([blob], `cover.${ext}`, {
+            type: blob.type || "image/jpeg",
+          });
         } catch {
           toast.error(
             lang === "ar"
               ? "تعذر استخدام صورة الغلاف الحالية، يرجى إعادة رفع صورة."
-              : "Couldn't reuse current cover image, please upload one."
+              : "Couldn't reuse current cover image, please upload one.",
           );
           return;
         }
@@ -131,7 +142,7 @@ export default function EditSubject() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -146,114 +157,154 @@ export default function EditSubject() {
     return <SubjectFormSkeleton />;
   }
 
+  if (isError || !subject) {
+    return (
+      <div
+        className={cn(dash.formPageNarrow, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {translate?.pages.subjects.viewSubject.notFound}
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold ">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <BookOpenText className="w-5 h-5 " />
-            </div>
-            {translate?.pages.subjects.editSubject.title}
+    <div className={dash.formPageNarrow} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <BookOpenText className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.subjects.editSubject.titleUpdate}
+          <CardDescription className={dash.listDescription}>
+            {t?.titleUpdate}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.subjects.editSubject.name}
+        <CardContent className={dash.formCardContent}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 md:space-y-10">
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <BookOpenText className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.titleUpdate}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.name}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    {...register("name", { required: true })}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
+                  {t?.aboutSubject}
                 </Label>
                 <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("name", { required: true })}
+                  className={cn("h-11", dash.input)}
+                  {...register("about_subject", { required: true })}
                 />
               </div>
-            </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
-                {translate?.pages.subjects.editSubject.aboutSubject}
-              </Label>
-              <Input
-                className="focus-visible:ring-0 border-[#999]"
-                {...register("about_subject", { required: true })}
-              />
-            </div>
+              <div className="mt-5 space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
+                  {t?.studyTerm}
+                </Label>
+                <Controller
+                  name="study_term_id"
+                  control={control}
+                  rules={{ validate: (v) => v > 0 }}
+                  render={({ field }) => (
+                    <select
+                      className={dash.select}
+                      value={field.value > 0 ? String(field.value) : ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        field.onChange(v === "" ? 0 : Number(v));
+                      }}
+                    >
+                      <option value="">{t?.selectStudyTerm}</option>
+                      {studyTerms.map((st) => (
+                        <option key={st.id} value={st.id}>
+                          {studyTermLabel(st)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
-                {translate?.pages.subjects.editSubject.studyTerm}
-              </Label>
-              <Controller
-                name="study_term_id"
-                control={control}
-                rules={{ validate: (v) => v > 0 }}
-                render={({ field }) => (
-                  <select
-                    className="flex h-10 w-full rounded-md border border-[#999] bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-0"
-                    value={field.value > 0 ? String(field.value) : ""}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      field.onChange(v === "" ? 0 : Number(v));
-                    }}
-                  >
-                    <option value="">
-                      {translate?.pages.subjects.editSubject.selectStudyTerm}
-                    </option>
-                    {studyTerms.map((st) => (
-                      <option key={st.id} value={st.id}>
-                        {studyTermLabel(st)}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
-                {translate?.pages.subjects.editSubject.cover}
-              </Label>
-              <ImageDropzone
-                file={selectedCover}
-                existingImageUrl={subject?.cover}
-                onFileChange={setSelectedCover}
-                showRemoveButton={false}
-              />
-            </div>
+              <div className="mt-6 space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
+                  {t?.cover}
+                </Label>
+                <ImageDropzone
+                  file={selectedCover}
+                  existingImageUrl={subject?.cover}
+                  onFileChange={setSelectedCover}
+                  showRemoveButton={false}
+                />
+              </div>
+            </section>
 
             <Separator />
 
-            <div className="flex items-center gap-3">
-              <Controller
-                name="is_active"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(v) => field.onChange(Boolean(v))}
-                  />
-                )}
-              />
-              <span className="text-sm">
-                {translate?.pages.subjects.editSubject.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Controller
+                  name="is_active"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={isUpdating || !studyTerms.length}
-              className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
-            >
-              {isUpdating
-                ? `${translate?.pages.subjects.editSubject.processing}...`
-                : `${translate?.pages.subjects.editSubject.editBtn}`}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isUpdating || !studyTerms.length}
+                className={dash.formSubmit}
+              >
+                {isUpdating ? `${t?.processing}...` : `${t?.editBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

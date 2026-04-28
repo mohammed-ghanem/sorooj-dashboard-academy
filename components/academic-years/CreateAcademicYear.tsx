@@ -5,10 +5,12 @@ import { useState } from "react";
 import "./style.css";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { GraduationCap } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 import { useCreateAcademicYearMutation } from "@/store/academicYears/academicYearsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 import AcademicYearFormSkeleton from "@/components/skeleton/AcademicYearFormSkeleton";
 
@@ -38,6 +40,9 @@ export default function CreateAcademicYear() {
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const t = translate?.pages.academicYears.createAcademicYear;
 
   const [createAcademicYear, { isLoading: isCreating }] =
     useCreateAcademicYearMutation();
@@ -64,7 +69,7 @@ export default function CreateAcademicYear() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -80,72 +85,93 @@ export default function CreateAcademicYear() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <GraduationCap className="w-5 h-5 " />
-            </div>
-            {translate?.pages.academicYears.createAcademicYear.title}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <CalendarDays className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription>
-            {translate?.pages.academicYears.createAcademicYear.description}
+          <CardDescription className={dash.listDescription}>
+            {t?.description}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={submit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.academicYears.createAcademicYear.nameAr}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  value={form.name_ar}
-                  onChange={(e) =>
-                    setForm({ ...form, name_ar: e.target.value })
-                  }
-                />
+        <CardContent className={dash.formCardContent}>
+          <form onSubmit={submit} className="space-y-8 md:space-y-10">
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <CalendarDays className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.description}
+                </p>
               </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.academicYears.createAcademicYear.nameEn}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  value={form.name_en}
-                  onChange={(e) =>
-                    setForm({ ...form, name_en: e.target.value })
-                  }
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.nameAr}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    value={form.name_ar}
+                    onChange={(e) =>
+                      setForm({ ...form, name_ar: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.nameEn}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    value={form.name_en}
+                    onChange={(e) =>
+                      setForm({ ...form, name_en: e.target.value })
+                    }
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
             <Separator />
 
-            <div className="flex items-center gap-3">
-              <Checkbox
-                checked={form.is_active}
-                onCheckedChange={(v) =>
-                  setForm({ ...form, is_active: Boolean(v) })
-                }
-              />
-              <span className="text-sm">
-                {translate?.pages.academicYears.createAcademicYear.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Checkbox
+                  checked={form.is_active}
+                  onCheckedChange={(v) =>
+                    setForm({ ...form, is_active: Boolean(v) })
+                  }
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={isCreating}
-              className="mx-auto block bg-green-700 hover:bg-green-600 font-semibold"
-            >
-              {isCreating
-                ? `${translate?.pages.academicYears.createAcademicYear.processing}...`
-                : `${translate?.pages.academicYears.createAcademicYear.createBtn}`}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isCreating}
+                className={dash.formSubmit}
+              >
+                {isCreating ? `${t?.processing}...` : `${t?.createBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

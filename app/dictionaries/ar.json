@@ -67,7 +67,10 @@
       "title": "تحديث الملف الشخصى",
       "titleUpdate": "تحديث البيانات الشخصية ",
       "name": "الاسم بالكامل",
+      "namePlaceholder": "اكتب اسمك الكامل",
+      "nameRequired": "الاسم مطلوب",
       "email": "البريد الالكترونى",
+      "emailNote": "لا يمكن تغيير البريد من هنا.",
       "phone": "رقم الجوال",
       "processing": "جارى تحديث الملف الشخصى",
       "confirmBtn": "تاكيد"
@@ -83,7 +86,8 @@
       "noData": "لا يوجد بيانات",
       "memberSince": "عضو منذ",
       "personalDetails": "بيانات شخصية ",
-      "editProfile": "تحديث الملف الشخصى"
+      "editProfile": "تحديث الملف الشخصى",
+      "member": "عضو"
     },
     "userDropDown": {
       "profile": "الملف الشخصى",
@@ -97,6 +101,7 @@
     },
     "admins": {
       "adminsTitle": "المسؤولين",
+      "listDescription": "إدارة مستخدمي لوحة التحكم والأدوار وحالة الحساب.",
       "searchPlaceholder": "ابحث عن مسؤول...",
       "protect": "محمى",
       "active": "نشط",
@@ -127,11 +132,13 @@
         "role": "الصلاحيات والمهام",
         "isActive": "مفعل",
         "processing": "جارى حفظ التغييرات",
-        "editBtn": " حفظ التغييرات"
+        "editBtn": " حفظ التغييرات",
+        "notFound": "المسؤول غير موجود"
       }
     },
     "cohorts": {
       "cohortsTitle": "الدفعات",
+      "listDescription": "إدارة الدفعات الدراسية ونطاق التواريخ والتفعيل.",
       "searchPlaceholder": "ابحث عن دفعة...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -178,6 +185,7 @@
     },
     "academicYears": {
       "listTitle": "الأعوام الدراسية",
+      "listDescription": "تعريف الأعوام الدراسية المستخدمة في المحاور والجدولة.",
       "searchPlaceholder": "ابحث عن عام دراسي...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -216,6 +224,7 @@
     },
     "studyTerms": {
       "listTitle": "المحاور الدراسية",
+      "listDescription": "تنظيم المحاور الدراسية وربط كل محور بعام دراسي.",
       "searchPlaceholder": "ابحث عن محور دراسي...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -262,6 +271,7 @@
     },
     "subjects": {
       "listTitle": "المواد الدراسية",
+      "listDescription": "إدارة المواد وربط كل مادة بالمحور الدراسي.",
       "searchPlaceholder": "ابحث عن مادة دراسية...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -305,8 +315,95 @@
         "notFound": "لم يتم العثور على المادة الدراسية"
       }
     },
+    "lessons": {
+      "listTitle": "الدروس",
+      "listDescription": "استعرض الدروس، ابحث، وافتح أي صف للعرض أو التعديل.",
+      "searchPlaceholder": "ابحث في الدروس...",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "deleteTitle": "تأكيد حذف الدرس",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذا الدرس؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancelBtn": "إلغاء",
+      "deleteBtn": "حذف",
+      "createLesson": {
+        "title": "إضافة درس",
+        "description": "أضف درسًا جديدًا، اربطه بمادة دراسية، وأضف مقاطع فيديو وملفات PDF",
+        "lessonNumber": "رقم أو تعريف الدرس",
+        "titleField": "العنوان",
+        "content": "المحتوى",
+        "subject": "المادة الدراسية",
+        "selectSubject": "اختر المادة الدراسية",
+        "doctor": "عضو هيئة التدريس",
+        "selectDoctor": "اختر عضو هيئة التدريس",
+        "videos": "مقاطع الفيديو",
+        "addVideo": "إضافة فيديو",
+        "videoTitle": "عنوان الفيديو",
+        "youtubeUrl": "رابط يوتيوب",
+        "videoActive": "الفيديو منشور",
+        "pdfs": "مرفقات PDF",
+        "addPdf": "إضافة ملف PDF",
+        "pdfFile": "ملف PDF",
+        "pdfDropHint": "اسحب ملف PDF وأفلته هنا",
+        "pdfBrowseBtn": "استعراض الملفات",
+        "pdfFormatsNote": "PDF فقط — الحد الأقصى يعتمد على الخادم",
+        "pdfInvalidType": "يرجى رفع ملف PDF فقط.",
+        "sectionLessonDetails": "بيانات الدرس",
+        "sectionLessonDetailsHint": "العنوان، المحتوى، المادة، والمحاضر",
+        "sectionVideosTitle": "مقاطع الفيديو",
+        "sectionVideosHint": "روابط يوتيوب وحالة النشر لكل مقطع",
+        "sectionContentHint": "نص منسّق — عناوين، قوائم، روابط، وصور",
+        "sectionPdfTitle": "مرفقات PDF",
+        "sectionPdfHint": "اسحب الملفات أو تصفح — أضف أكثر من خانة عند الحاجة",
+        "sectionPdfDivider": "PDF",
+        "removePdfSlot": "إزالة الخانة",
+        "isActive": "نشط",
+        "processing": "جارى إنشاء الدرس",
+        "createBtn": "إنشاء الدرس"
+      },
+      "editLesson": {
+        "title": "تعديل الدرس",
+        "titleUpdate": "تحديث بيانات الدرس والفيديوهات والملفات",
+        "lessonNumber": "رقم أو تعريف الدرس",
+        "titleField": "العنوان",
+        "content": "المحتوى",
+        "subject": "المادة الدراسية",
+        "selectSubject": "اختر المادة الدراسية",
+        "doctor": "عضو هيئة التدريس",
+        "selectDoctor": "اختر عضو هيئة التدريس",
+        "existingPdfs": "ملفات PDF الحالية",
+        "removePdf": "إزالة",
+        "videos": "مقاطع الفيديو",
+        "addVideo": "إضافة فيديو",
+        "videoTitle": "عنوان الفيديو",
+        "youtubeUrl": "رابط يوتيوب",
+        "videoActive": "الفيديو منشور",
+        "newPdfs": "إضافة ملفات PDF جديدة",
+        "addPdf": "إضافة ملف PDF",
+        "pdfFile": "ملف PDF",
+        "sectionContentHint": "نص منسّق — عناوين، قوائم، روابط، وصور",
+        "isActive": "نشط",
+        "processing": "جارى حفظ التغييرات",
+        "editBtn": "حفظ التغييرات"
+      },
+      "viewLesson": {
+        "title": "تفاصيل الدرس",
+        "sectionBasics": "نظرة على الدرس",
+        "description": "عرض بيانات الدرس",
+        "lessonNumber": "رقم أو تعريف الدرس",
+        "titleField": "العنوان",
+        "content": "المحتوى",
+        "subject": "المادة الدراسية",
+        "doctor": "عضو هيئة التدريس",
+        "videos": "مقاطع الفيديو",
+        "attachments": "مرفقات PDF",
+        "status": "الحالة",
+        "backBtn": "رجوع",
+        "notFound": "لم يتم العثور على الدرس"
+      }
+    },
     "students": {
       "listTitle": "الطلاب المسجلون",
+      "listDescription": "عرض ملفات الطلاب وحالة الالتحاق والحساب.",
       "searchPlaceholder": "ابحث عن طالب...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -337,6 +434,7 @@
     },
     "doctors": {
       "listTitle": "اعضاء هيئة التدريس",
+      "listDescription": "إدارة أعضاء هيئة التدريس والمجالات التعليمية.",
       "searchPlaceholder": "ابحث عن عضو هيئة التدريس...",
       "active": "نشط",
       "inactive": "غير نشط",
@@ -392,6 +490,7 @@
     },
     "roles": {
       "rolesTitle": "الصلاحيات والمهام",
+      "listDescription": "تعريف الأدوار ومجموعات الصلاحيات لفريق العمل.",
       "searchPlaceholder": "ابحث عن صلاحية...",
       "protect": "محمى",
       "active": "نشط",
@@ -419,6 +518,7 @@
       "editRole": {
         "title": "تعديل الدور",
         "titleUpdate": "تحديث بيانات الدور والصلاحيات",
+        "notFound": "الدور غير موجود",
         "roleInfo": "معلومات الدور",
         "nameAr": "الاسم بالعربية",
         "nameArPlaceholder": "مدير النظام بالعربية",
@@ -442,7 +542,8 @@
         "inactive": "غير نشط",
         "permissions": "الصلاحيات",
         "noPermissions": "لا صلاحيات متاحة",
-        "backBtn": "العودة"
+        "backBtn": "العودة",
+        "notFound": "الدور غير موجود"
       }
     }
   },
@@ -456,6 +557,7 @@
     "academicYears": "الأعوام الدراسية",
     "studyTerms": "المحاور الدراسية",
     "subjects": "المواد الدراسية",
+    "lessons": "الدروس",
     "settings": "الإعدادات",
     "privacyPolicy": "سياسة الخصوصية",
     "appContacts": "بيانات التواصل",
@@ -472,7 +574,8 @@
       "processing": "جارى حفظ التغييرات",
       "saveBtn": "حفظ ",
       "successMessage": "تم حفظ التغييرات بنجاح",
-      "errorMessage": "فشل حفظ التغييرات"
+      "errorMessage": "فشل حفظ التغييرات",
+      "loadError": "تعذر تحميل سياسة الخصوصية."
     },
     "appContacts": {
       "title": "روابط بيانات التواصل",
@@ -499,7 +602,8 @@
       "processing": "جارى حفظ التغييرات",
       "saveBtn": "حفظ ",
       "successMessage": "تم حفظ التغييرات بنجاح",
-      "errorMessage": "فشل حفظ التغييرات"
+      "errorMessage": "فشل حفظ التغييرات",
+      "loadError": "تعذر تحميل الشروط والأحكام."
     },
     "deleteAccount": {
       "title": "سياسة حذف الحساب",
@@ -508,10 +612,12 @@
       "processing": "جارى حفظ التغييرات",
       "saveBtn": "حفظ ",
       "successMessage": "تم حفظ التغييرات بنجاح",
-      "errorMessage": "فشل حفظ التغييرات"
+      "errorMessage": "فشل حفظ التغييرات",
+      "loadError": "تعذر تحميل سياسة حذف الحساب."
     },
     "contactUs": {
       "title": "تواصل معنا",
+      "listDescription": "عرض الرسائل الواردة والرد عليها.",
       "searchPlaceholder": "ابحث عن رسالة...",
       "message": "الرسالة",
       "deleteTitle": "تأكيد حذف الرسالة",
@@ -519,7 +625,12 @@
       "replyed": "تم الرد",
       "notReplyed": "قيد المراجعة",
       "cancelBtn": "إلغاء",
-      "deleteBtn": "حذف"
+      "deleteBtn": "حذف",
+      "replyBtn": "رد",
+      "replyDialogTitle": "الرد على الرسالة",
+      "replyPlaceholder": "اكتب الرد...",
+      "sendReply": "إرسال الرد",
+      "replySectionLabel": "الرد"
     }
   },
   "footer": {

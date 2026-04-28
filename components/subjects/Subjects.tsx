@@ -19,9 +19,11 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Edit3, Eye } from "lucide-react";
+import { BookOpenText, Edit3, Eye } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
+import { dash } from "@/constants/dashboardUi";
+import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 
@@ -32,8 +34,10 @@ export default function Subjects() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
 
   const headers = TABLE_HEADERS[lang as "ar" | "en"].subjects;
+  const pg = translate?.pages.subjects;
 
   const { data: studyTerms = [] } = useGetStudyTermsQuery(undefined, {
     skip: !sessionReady,
@@ -43,7 +47,8 @@ export default function Subjects() {
     const m = new Map<number, string>();
     studyTerms.forEach((st) => {
       const loc = parseLocalizedNameFromModel(st);
-      const label = lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
+      const label =
+        lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
       m.set(st.id, label);
     });
     return m;
@@ -68,13 +73,14 @@ export default function Subjects() {
   const [deleteSubject] = useDeleteSubjectMutation();
   const [toggleStatus] = useToggleSubjectStatusMutation();
 
-  const { getOptimisticStatus, toggle, isPending } = useOptimisticToggle<ISubject>({
-    getId: (row) => row.id,
-    getStatus: (row) => row.is_active,
-    onToggle: async (row) => {
-      await toggleStatus(row.id);
-    },
-  });
+  const { getOptimisticStatus, toggle, isPending } =
+    useOptimisticToggle<ISubject>({
+      getId: (row) => row.id,
+      getStatus: (row) => row.is_active,
+      onToggle: async (row) => {
+        await toggleStatus(row.id);
+      },
+    });
 
   const displayName = (s: ISubject) => {
     const loc = parseLocalizedNameFromModel(s);
@@ -89,7 +95,7 @@ export default function Subjects() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -104,12 +110,16 @@ export default function Subjects() {
     {
       key: "name_ar",
       header: headers.name,
-      render: (_, s) => <span className="font-medium">{displayName(s)}</span>,
+      render: (_, s) => (
+        <span className="font-medium text-slate-900">{displayName(s)}</span>
+      ),
     },
     {
       key: "study_term_id",
       header: headers.studyTerm,
-      render: (_, row) => <span className="text-sm">{displayStudyTerm(row)}</span>,
+      render: (_, row) => (
+        <span className="text-sm text-slate-700">{displayStudyTerm(row)}</span>
+      ),
     },
     {
       key: "is_active",
@@ -118,21 +128,21 @@ export default function Subjects() {
       render: (_, row) => (
         <div className="flex items-center justify-center gap-2" dir="ltr">
           <Switch
-            className="data-[state=checked]:bg-green-600"
+            className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
             disabled={isPending(row)}
             onCheckedChange={(checked) => {
               toggle(row, checked).catch(() => {
                 toast.error(
-                  lang === "ar" ? "فشل تغيير الحالة" : "Failed to update status"
+                  lang === "ar"
+                    ? "فشل تغيير الحالة"
+                    : "Failed to update status",
                 );
               });
             }}
           />
-          <span className="text-sm">
-            {getOptimisticStatus(row)
-              ? translate?.pages.subjects.active
-              : translate?.pages.subjects.inactive}
+          <span className="text-sm text-slate-600">
+            {getOptimisticStatus(row) ? pg?.active : pg?.inactive}
           </span>
         </div>
       ),
@@ -144,27 +154,21 @@ export default function Subjects() {
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
           <Link href={`/${lang}/subjects/view/${row.id}`}>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2 focus:ring-yellow-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableView}>
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
           <Link href={`/${lang}/subjects/edit/${row.id}`}>
-            <Button
-              className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out focus:ring-green-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableEdit}>
               <Edit3 className="h-4 w-4" />
             </Button>
           </Link>
 
           <DeleteConfirmDialog
-            title={translate?.pages.subjects.deleteTitle}
-            description={translate?.pages.subjects.deleteMessage}
-            confirmText={translate?.pages.subjects.deleteBtn}
-            cancelText={translate?.pages.subjects.cancelBtn}
+            title={pg?.deleteTitle ?? ""}
+            description={pg?.deleteMessage ?? ""}
+            confirmText={pg?.deleteBtn ?? ""}
+            cancelText={pg?.cancelBtn ?? ""}
             onConfirm={() => handleDelete(row.id)}
           />
         </div>
@@ -175,25 +179,24 @@ export default function Subjects() {
   const showSkeleton = !sessionReady || isLoading;
 
   return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-32!" : ""}`}>
-        {translate?.pages.subjects.listTitle || ""}
-      </h2>
-      <div className="mt-10">
-        <Link
-          href={`/${lang}/subjects/create`}
-          className={`createBtn ${showSkeleton ? "block w-40 h-9 py-2.5 opacity-50" : ""}`}
-        >
-          {!showSkeleton && `${translate?.pages.subjects.createSubject.title}`}
-        </Link>
-      </div>
-
+    <IndexListPage
+      icon={BookOpenText}
+      title={pg?.listTitle ?? ""}
+      description={pg?.listDescription}
+      createHref={`/${lang}/subjects/create`}
+      createLabel={pg?.createSubject?.title ?? ""}
+      showSkeleton={showSkeleton}
+      dir={pageDir}
+    >
       <DataTable
         data={subjects}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.subjects.searchPlaceholder}`}
+        searchPlaceholder={`${pg?.searchPlaceholder}`}
+        className={dash.dataTableOuter}
+        tableCardClassName={dash.dataTableCard}
+        tableHeaderClassName={dash.dataTableHeader}
       />
-    </div>
+    </IndexListPage>
   );
 }

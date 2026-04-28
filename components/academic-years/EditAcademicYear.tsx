@@ -6,13 +6,15 @@ import "./style.css";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { GraduationCap } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 
 import {
   useGetAcademicYearByIdQuery,
   useUpdateAcademicYearMutation,
 } from "@/store/academicYears/academicYearsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 import AcademicYearFormSkeleton from "@/components/skeleton/AcademicYearFormSkeleton";
 
@@ -43,13 +45,18 @@ export default function EditAcademicYear() {
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const t = translate?.pages.academicYears.editAcademicYear;
 
-  const { data: academicYear, isLoading } = useGetAcademicYearByIdQuery(
-    Number(id),
-    {
-      skip: !sessionReady,
-    }
-  );
+  const {
+    data: academicYear,
+    isLoading,
+    isError,
+  } = useGetAcademicYearByIdQuery(Number(id), {
+    skip:
+      !sessionReady || !id || Number.isNaN(Number(id)),
+  });
 
   const [updateAcademicYear, { isLoading: isUpdating }] =
     useUpdateAcademicYearMutation();
@@ -90,7 +97,7 @@ export default function EditAcademicYear() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -105,71 +112,106 @@ export default function EditAcademicYear() {
     return <AcademicYearFormSkeleton />;
   }
 
+  if (isError || !academicYear) {
+    return (
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {translate?.pages.academicYears.viewAcademicYear.notFound}
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold ">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <GraduationCap className="w-5 h-5 " />
-            </div>
-            {translate?.pages.academicYears.editAcademicYear.title}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <CalendarDays className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.academicYears.editAcademicYear.titleUpdate}
+          <CardDescription className={dash.listDescription}>
+            {t?.titleUpdate}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.academicYears.editAcademicYear.nameAr}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("name_ar", { required: true })}
-                />
+        <CardContent className={dash.formCardContent}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 md:space-y-10"
+          >
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <CalendarDays className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.titleUpdate}
+                </p>
               </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.academicYears.editAcademicYear.nameEn}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("name_en", { required: true })}
-                />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.nameAr}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    {...register("name_ar", { required: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.nameEn}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    {...register("name_en", { required: true })}
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
             <Separator />
 
-            <div className="flex items-center gap-3">
-              <Controller
-                name="is_active"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(v) => field.onChange(Boolean(v))}
-                  />
-                )}
-              />
-              <span className="text-sm">
-                {translate?.pages.academicYears.editAcademicYear.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Controller
+                  name="is_active"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={isUpdating}
-              className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
-            >
-              {isUpdating
-                ? `${translate?.pages.academicYears.editAcademicYear.processing}...`
-                : `${translate?.pages.academicYears.editAcademicYear.editBtn}`}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isUpdating}
+                className={dash.formSubmit}
+              >
+                {isUpdating ? `${t?.processing}...` : `${t?.editBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

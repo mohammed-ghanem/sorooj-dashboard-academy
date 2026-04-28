@@ -20,11 +20,16 @@ export const rolesApi = createApi({
           limit: 0,
         },
       }), 
-      transformResponse: (res: any ) => {
+      transformResponse: (res: any) => {
+        const payload = res?.data;
+        // API: { status, message, data: Role[] } — data is the array directly
+        if (Array.isArray(payload)) return payload;
+        if (Array.isArray(payload?.data)) return payload.data;
         return (
+          payload?.roles ??
+          payload?.data?.roles ??
           res?.data?.data?.roles ??
           res?.data?.roles ??
-          res?.data?.data ??
           res?.roles ??
           []
         );

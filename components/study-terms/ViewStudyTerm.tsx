@@ -2,12 +2,14 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Eye } from "lucide-react";
+import { Eye, Layers } from "lucide-react";
 
 import { useGetAcademicYearsQuery } from "@/store/academicYears/academicYearsApi";
 import { useGetStudyTermByIdQuery } from "@/store/studyTerms/studyTermsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import LangUseParams from "@/translate/LangUseParams";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
 
 import {
   Card,
@@ -29,7 +31,9 @@ export default function ViewStudyTerm() {
   const router = useRouter();
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
   const translate = TranslateHook();
+  const t = translate?.pages.studyTerms.viewStudyTerm;
 
   const { data: academicYears = [] } = useGetAcademicYearsQuery(undefined, {
     skip: !sessionReady,
@@ -37,7 +41,7 @@ export default function ViewStudyTerm() {
 
   const { data: studyTerm, isLoading, isError } = useGetStudyTermByIdQuery(
     Number(id),
-    { skip: !sessionReady || !id || Number.isNaN(Number(id)) }
+    { skip: !sessionReady || !id || Number.isNaN(Number(id)) },
   );
 
   const displayAcademicYear = () => {
@@ -67,79 +71,96 @@ export default function ViewStudyTerm() {
 
   if (isError || !studyTerm) {
     return (
-      <div className="max-w-5xl mx-auto py-10 px-4 text-center text-muted-foreground">
-        {translate?.pages.studyTerms.viewStudyTerm.notFound}
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl icon_bg">
-              <Eye className="w-5 h-5" />
-            </div>
-            <div>
-              {translate?.pages.studyTerms.viewStudyTerm.title}
-              <CardDescription>
-                {translate?.pages.studyTerms.viewStudyTerm.description}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <Eye className="w-6 h-6" />
+            </span>
+            <div className="space-y-2 min-w-0">
+              <span className="leading-tight block">{t?.title}</span>
+              <CardDescription className={cn(dash.listDescription, "mt-0")}>
+                {t?.description}
               </CardDescription>
             </div>
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label className="font-semibold">
-                {translate?.pages.studyTerms.viewStudyTerm.nameAr}
-              </Label>
-              <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-                {studyTerm.name_ar || "—"}
+        <CardContent className="space-y-8 px-4 py-8 md:px-10 md:py-10">
+          <section className={dash.sectionNeutral}>
+            <div className="mb-6 flex flex-wrap items-start gap-4">
+              <span className={dash.sectionIconWrap}>
+                <Layers className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+                {t?.description}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {t?.nameAr}
+                </Label>
+                <div className={dash.viewFieldBox}>
+                  {studyTerm.name_ar || "—"}
+                </div>
+              </div>
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {t?.nameEn}
+                </Label>
+                <div className={dash.viewFieldBox}>
+                  {studyTerm.name_en || "—"}
+                </div>
               </div>
             </div>
-            <div>
-              <Label className="font-semibold">
-                {translate?.pages.studyTerms.viewStudyTerm.nameEn}
+
+            <div className="mt-6">
+              <Label className="font-semibold text-slate-800">
+                {t?.aboutTerm}
               </Label>
-              <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-                {studyTerm.name_en || "—"}
+              <div
+                className={cn(
+                  dash.viewFieldBox,
+                  "whitespace-pre-wrap min-h-12",
+                )}
+              >
+                {studyTerm.about_term || "—"}
               </div>
             </div>
-          </div>
 
-          <div>
-            <Label className="font-semibold">
-              {translate?.pages.studyTerms.viewStudyTerm.aboutTerm}
-            </Label>
-            <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted whitespace-pre-wrap">
-              {studyTerm.about_term || "—"}
+            <div className="mt-6">
+              <Label className="font-semibold text-slate-800">
+                {t?.academicYear}
+              </Label>
+              <div className={dash.viewFieldBox}>{displayAcademicYear()}</div>
             </div>
-          </div>
-
-          <div>
-            <Label className="font-semibold">
-              {translate?.pages.studyTerms.viewStudyTerm.academicYear}
-            </Label>
-            <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-              {displayAcademicYear()}
-            </div>
-          </div>
+          </section>
 
           <Separator />
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Label className="font-semibold">
-              {translate?.pages.studyTerms.viewStudyTerm.status}
+          <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 px-5 py-4">
+            <Label className="font-semibold text-slate-800">
+              {t?.status}
             </Label>
             {studyTerm.is_active ? (
-              <Badge className="bg-green-600 font-semibold">
+              <Badge className="bg-emerald-600 hover:bg-emerald-600 font-semibold px-3 py-1">
                 {translate?.pages.studyTerms.active}
               </Badge>
             ) : (
-              <Badge variant="destructive" className="font-semibold">
+              <Badge variant="destructive" className="font-semibold px-3 py-1">
                 {translate?.pages.studyTerms.inactive}
               </Badge>
             )}
@@ -149,22 +170,20 @@ export default function ViewStudyTerm() {
             <>
               <Separator />
               <div>
-                <Label className="font-semibold">
-                  {translate?.pages.studyTerms.viewStudyTerm.createdAt}
+                <Label className="font-semibold text-slate-800">
+                  {t?.createdAt}
                 </Label>
-                <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-                  {studyTerm.created_at}
-                </div>
+                <div className={dash.viewFieldBox}>{studyTerm.created_at}</div>
               </div>
             </>
           ) : null}
 
           <Button
             type="button"
-            className="block submitButton pt-1.5!"
+            className={dash.viewBackButton}
             onClick={() => router.back()}
           >
-            {translate?.pages.studyTerms.viewStudyTerm.backBtn}
+            {t?.backBtn}
           </Button>
         </CardContent>
       </Card>

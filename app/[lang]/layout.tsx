@@ -51,7 +51,7 @@ export default async function RootLayout({
 
               {/* Main Content */}
               <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 mainBackGroundColor">
-                <div className="max-w-7xl mx-auto">
+                <div className="w-full mx-auto">
                   {children}
                 </div>
               </main>

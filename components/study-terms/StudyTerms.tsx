@@ -19,9 +19,11 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Edit3, Eye } from "lucide-react";
+import { Edit3, Eye, Layers } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
+import { dash } from "@/constants/dashboardUi";
+import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 
@@ -33,8 +35,10 @@ export default function StudyTerms() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
 
   const headers = TABLE_HEADERS[lang as "ar" | "en"].studyTerms;
+  const pg = translate?.pages.studyTerms;
 
   const { data: academicYears = [] } = useGetAcademicYearsQuery(undefined, {
     skip: !sessionReady,
@@ -44,9 +48,7 @@ export default function StudyTerms() {
     const m = new Map<number, string>();
     academicYears.forEach((y: IAcademicYear) => {
       const label =
-        lang === "ar"
-          ? y.name_ar || y.name
-          : y.name_en || y.name;
+        lang === "ar" ? y.name_ar || y.name : y.name_en || y.name;
       m.set(y.id, label);
     });
     return m;
@@ -65,10 +67,10 @@ export default function StudyTerms() {
     return row.academic_year_id ? `#${row.academic_year_id}` : "—";
   };
 
-  const {
-    data: studyTerms = [],
-    isLoading,
-  } = useGetStudyTermsQuery(undefined, { skip: !sessionReady });
+  const { data: studyTerms = [], isLoading } = useGetStudyTermsQuery(
+    undefined,
+    { skip: !sessionReady },
+  );
   const [deleteStudyTerm] = useDeleteStudyTermMutation();
   const [toggleStatus] = useToggleStudyTermStatusMutation();
 
@@ -94,7 +96,7 @@ export default function StudyTerms() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -127,7 +129,7 @@ export default function StudyTerms() {
       render: (_, row) => (
         <div className="flex items-center justify-center gap-2" dir="ltr">
           <Switch
-            className="data-[state=checked]:bg-green-600"
+            className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
             disabled={isPending(row)}
             onCheckedChange={(checked) => {
@@ -135,15 +137,13 @@ export default function StudyTerms() {
                 toast.error(
                   lang === "ar"
                     ? "فشل تغيير الحالة"
-                    : "Failed to update status"
+                    : "Failed to update status",
                 );
               });
             }}
           />
-          <span className="text-sm">
-            {getOptimisticStatus(row)
-              ? translate?.pages.studyTerms.active
-              : translate?.pages.studyTerms.inactive}
+          <span className="text-sm text-slate-600">
+            {getOptimisticStatus(row) ? pg?.active : pg?.inactive}
           </span>
         </div>
       ),
@@ -155,29 +155,21 @@ export default function StudyTerms() {
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
           <Link href={`/${lang}/study-terms/view/${row.id}`}>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
-               focus:ring-yellow-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableView}>
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
           <Link href={`/${lang}/study-terms/edit/${row.id}`}>
-            <Button
-              className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
-                 focus:ring-green-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableEdit}>
               <Edit3 className="h-4 w-4" />
             </Button>
           </Link>
 
           <DeleteConfirmDialog
-            title={translate?.pages.studyTerms.deleteTitle}
-            description={translate?.pages.studyTerms.deleteMessage}
-            confirmText={translate?.pages.studyTerms.deleteBtn}
-            cancelText={translate?.pages.studyTerms.cancelBtn}
+            title={pg?.deleteTitle ?? ""}
+            description={pg?.deleteMessage ?? ""}
+            confirmText={pg?.deleteBtn ?? ""}
+            cancelText={pg?.cancelBtn ?? ""}
             onConfirm={() => handleDelete(row.id)}
           />
         </div>
@@ -188,26 +180,24 @@ export default function StudyTerms() {
   const showSkeleton = !sessionReady || isLoading;
 
   return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-32!" : ""}`}>
-        {translate?.pages.studyTerms.listTitle || ""}
-      </h2>
-      <div className="mt-10">
-        <Link
-          href={`/${lang}/study-terms/create`}
-          className={`createBtn  ${showSkeleton ? "block w-40 h-9 py-2.5 opacity-50" : ""}`}
-        >
-          {!showSkeleton &&
-            `${translate?.pages.studyTerms.createStudyTerm.title}`}
-        </Link>
-      </div>
-
+    <IndexListPage
+      icon={Layers}
+      title={pg?.listTitle ?? ""}
+      description={pg?.listDescription}
+      createHref={`/${lang}/study-terms/create`}
+      createLabel={pg?.createStudyTerm?.title ?? ""}
+      showSkeleton={showSkeleton}
+      dir={pageDir}
+    >
       <DataTable
         data={studyTerms}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.studyTerms.searchPlaceholder}`}
+        searchPlaceholder={`${pg?.searchPlaceholder}`}
+        className={dash.dataTableOuter}
+        tableCardClassName={dash.dataTableCard}
+        tableHeaderClassName={dash.dataTableHeader}
       />
-    </div>
+    </IndexListPage>
   );
 }

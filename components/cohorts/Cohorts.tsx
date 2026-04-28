@@ -17,9 +17,11 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Edit3, Eye } from "lucide-react";
+import { Edit3, Eye, UsersRound } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
+import { dash } from "@/constants/dashboardUi";
+import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 import { formatGregorianDateAr, formatHijriDateAr } from "@/utils/dateFormat";
@@ -30,13 +32,14 @@ export default function Cohorts() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
 
   const headers = TABLE_HEADERS[lang as "ar" | "en"].cohorts;
+  const pg = translate?.pages.cohorts;
 
-  const {
-    data: cohorts = [],
-    isLoading,
-  } = useGetCohortsQuery(undefined, { skip: !sessionReady });
+  const { data: cohorts = [], isLoading } = useGetCohortsQuery(undefined, {
+    skip: !sessionReady,
+  });
   const [deleteCohort] = useDeleteCohortMutation();
   const [toggleStatus] = useToggleCohortStatusMutation();
 
@@ -47,7 +50,7 @@ export default function Cohorts() {
       onToggle: async (row) => {
         await toggleStatus(row.id);
       },
-    }
+    },
   );
 
   const displayName = (c: ICohort) =>
@@ -61,7 +64,7 @@ export default function Cohorts() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -111,7 +114,7 @@ export default function Cohorts() {
       render: (_, row) => (
         <div className="flex items-center justify-center gap-2" dir="ltr">
           <Switch
-            className="data-[state=checked]:bg-green-600"
+            className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
             disabled={isPending(row)}
             onCheckedChange={(checked) => {
@@ -119,15 +122,13 @@ export default function Cohorts() {
                 toast.error(
                   lang === "ar"
                     ? "فشل تغيير الحالة"
-                    : "Failed to update status"
+                    : "Failed to update status",
                 );
               });
             }}
           />
-          <span className="text-sm">
-            {getOptimisticStatus(row)
-              ? translate?.pages.cohorts.active
-              : translate?.pages.cohorts.inactive}
+          <span className="text-sm text-slate-600">
+            {getOptimisticStatus(row) ? pg?.active : pg?.inactive}
           </span>
         </div>
       ),
@@ -139,29 +140,21 @@ export default function Cohorts() {
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
           <Link href={`/${lang}/cohorts/view/${row.id}`}>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
-               focus:ring-yellow-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableView}>
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
           <Link href={`/${lang}/cohorts/edit/${row.id}`}>
-            <Button
-              className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
-                 focus:ring-green-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableEdit}>
               <Edit3 className="h-4 w-4" />
             </Button>
           </Link>
 
           <DeleteConfirmDialog
-            title={translate?.pages.cohorts.deleteTitle}
-            description={translate?.pages.cohorts.deleteMessage}
-            confirmText={translate?.pages.cohorts.deleteBtn}
-            cancelText={translate?.pages.cohorts.cancelBtn}
+            title={pg?.deleteTitle ?? ""}
+            description={pg?.deleteMessage ?? ""}
+            confirmText={pg?.deleteBtn ?? ""}
+            cancelText={pg?.cancelBtn ?? ""}
             onConfirm={() => handleDelete(row.id)}
           />
         </div>
@@ -172,26 +165,24 @@ export default function Cohorts() {
   const showSkeleton = !sessionReady || isLoading;
 
   return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-24!" : ""}`}>
-        {translate?.pages.cohorts.cohortsTitle || ""}
-      </h2>
-      <div className="mt-10">
-        <Link
-          href={`/${lang}/cohorts/create`}
-          className={`createBtn  ${showSkeleton ? "block w-40 h-9 py-2.5 opacity-50" : ""}`}
-        >
-          {!showSkeleton &&
-            `${translate?.pages.cohorts.createCohort.title}`}
-        </Link>
-      </div>
-
+    <IndexListPage
+      icon={UsersRound}
+      title={pg?.cohortsTitle ?? ""}
+      description={pg?.listDescription}
+      createHref={`/${lang}/cohorts/create`}
+      createLabel={pg?.createCohort?.title ?? ""}
+      showSkeleton={showSkeleton}
+      dir={pageDir}
+    >
       <DataTable
         data={cohorts}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.cohorts.searchPlaceholder}`}
+        searchPlaceholder={`${pg?.searchPlaceholder}`}
+        className={dash.dataTableOuter}
+        tableCardClassName={dash.dataTableCard}
+        tableHeaderClassName={dash.dataTableHeader}
       />
-    </div>
+    </IndexListPage>
   );
 }

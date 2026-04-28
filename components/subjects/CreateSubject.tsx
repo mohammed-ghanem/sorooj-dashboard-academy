@@ -29,6 +29,8 @@ import ImageDropzone from "@/components/shared/ImageDropzone";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 type FormState = {
   name: string;
@@ -43,6 +45,8 @@ export default function CreateSubject() {
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
 
   const { data: studyTerms = [], isLoading: loadingStudyTerms } =
     useGetStudyTermsQuery(undefined, { skip: !sessionReady });
@@ -114,41 +118,63 @@ export default function CreateSubject() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <BookOpenText className="w-5 h-5 " />
-            </div>
-            {translate?.pages.subjects.createSubject.title}
+    <div className={dash.formPageNarrow} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <BookOpenText className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">
+              {translate?.pages.subjects.createSubject.title}
+            </span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className={dash.listDescription}>
             {translate?.pages.subjects.createSubject.description}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={submit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
+        <CardContent className={dash.formCardContent}>
+          <form onSubmit={submit} className="space-y-8 md:space-y-10">
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <BookOpenText className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {translate?.pages.subjects.createSubject.description}
+                </p>
+              </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              <div className="space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
                   {translate?.pages.subjects.createSubject.name}
                 </Label>
                 <Input
-                  className="focus-visible:ring-0 border-[#999]"
+                  className={cn("h-11", dash.input)}
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
+            <div className="space-y-2">
+              <Label
+                className={cn(
+                  "text-sm font-semibold text-slate-800",
+                  labelAlign,
+                )}
+              >
                 {translate?.pages.subjects.createSubject.aboutSubject}
               </Label>
               <Input
-                className="focus-visible:ring-0 border-[#999]"
+                className={cn("h-11", dash.input)}
                 value={form.about_subject}
                 onChange={(e) =>
                   setForm({ ...form, about_subject: e.target.value })
@@ -156,12 +182,17 @@ export default function CreateSubject() {
               />
             </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
+            <div className="space-y-2">
+              <Label
+                className={cn(
+                  "text-sm font-semibold text-slate-800",
+                  labelAlign,
+                )}
+              >
                 {translate?.pages.subjects.createSubject.studyTerm}
               </Label>
               <select
-                className="flex h-10 w-full rounded-md border border-[#999] bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-0"
+                className={dash.select}
                 value={
                   form.study_term_id === "" ? "" : String(form.study_term_id)
                 }
@@ -184,8 +215,13 @@ export default function CreateSubject() {
               </select>
             </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
+            <div className="space-y-2">
+              <Label
+                className={cn(
+                  "text-sm font-semibold text-slate-800",
+                  labelAlign,
+                )}
+              >
                 {translate?.pages.subjects.createSubject.cover}
               </Label>
               <ImageDropzone
@@ -193,30 +229,33 @@ export default function CreateSubject() {
                 onFileChange={(file) => setForm({ ...form, cover: file })}
               />
             </div>
+            </section>
 
             <Separator />
 
-            <div className="flex items-center gap-3">
-              <Checkbox
-                checked={form.is_active}
-                onCheckedChange={(v) =>
-                  setForm({ ...form, is_active: Boolean(v) })
-                }
-              />
-              <span className="text-sm">
-                {translate?.pages.subjects.createSubject.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Checkbox
+                  checked={form.is_active}
+                  onCheckedChange={(v) =>
+                    setForm({ ...form, is_active: Boolean(v) })
+                  }
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {translate?.pages.subjects.createSubject.isActive}
+                </span>
+              </div>
 
             <Button
               type="submit"
               disabled={isCreating || !studyTerms.length}
-              className="mx-auto block bg-green-700 hover:bg-green-600 font-semibold"
+              className={dash.formSubmit}
             >
               {isCreating
                 ? `${translate?.pages.subjects.createSubject.processing}...`
                 : `${translate?.pages.subjects.createSubject.createBtn}`}
             </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

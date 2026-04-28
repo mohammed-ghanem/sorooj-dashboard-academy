@@ -2,9 +2,12 @@
 
 import { useGetProfileQuery } from "@/store/auth/authApi";
 import Link from "next/link";
-import { SquarePen, User, Mail, Phone } from "lucide-react";
+import { SquarePen, User, Mail, Phone, Eye } from "lucide-react";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
+
 import {
   Card,
   CardContent,
@@ -14,12 +17,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 
 function ProfileDetails() {
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const t = translate?.pages.profile;
 
   const { data, isLoading } = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
@@ -27,103 +33,102 @@ function ProfileDetails() {
 
   const user = data?.data || data?.user || data;
 
-
-
   if (isLoading) return <ProfileSkeleton />;
   if (!user) return null;
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <Card className="shadow-lg border-0">
-        {/* Header */}
-        <CardHeader className="text-center space-y-3 pb-6">
-          <div className="mx-auto relative">
-            <div className="w-20 h-20 rounded-full bg-linear-to-br from-blue-100 to-purple-100 flex items-center justify-center">
-              {user.avatar ? (
-                <Image
-                  src={user.avatar}
-                  alt={user.name}
-                  width={80}
-                  height={80}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              ) : (
-                <User className="w-10 h-10 text-blue-600" />
-              )}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <Eye className="w-6 h-6" />
+            </span>
+            <div className="space-y-2 min-w-0 text-start">
+              <span className="leading-tight block">{t?.title?.trim()}</span>
+              <CardDescription className={cn(dash.listDescription, "mt-0")}>
+                {t?.titleUpdate?.trim()}
+              </CardDescription>
             </div>
-          </div>
-
-          <CardTitle className="text-xl font-semibold tracking-tight">
-            {user.name}
           </CardTitle>
-
-          <CardDescription className="text-sm">
-            {translate?.pages.profile.title}
-          </CardDescription>
-
-          <Badge variant="secondary" className="mx-auto">
-            {user.roles || translate?.pages.profile.member}
-          </Badge>
         </CardHeader>
 
-        {/* Content */}
-        <CardContent className="space-y-6">
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-muted-foreground border-b pb-2">
-              {translate?.pages.profile.personalDetails}
-            </h3>
-
-            {/* Name */}
-            <div className="flex items-center gap-4 rounded-xl border p-4 transition hover:bg-muted/40">
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground">
-                  {translate?.pages.profile.name}
-                </p>
-                <p className="font-medium">{user.name}</p>
+        <CardContent className={cn(dash.formCardContent, "space-y-8")}>
+          <div className="flex flex-col items-center gap-4 pb-2 md:flex-row md:items-start md:gap-8">
+            <div className="relative shrink-0">
+              <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-slate-200/90 bg-linear-to-br from-emerald-50 to-teal-50 shadow-inner ring-2 ring-white">
+                {user.avatar ? (
+                  <Image
+                    src={user.avatar}
+                    alt={user.name}
+                    width={96}
+                    height={96}
+                    className="h-24 w-24 object-cover"
+                  />
+                ) : (
+                  <User className="h-10 w-10 text-emerald-800" />
+                )}
               </div>
             </div>
-
-            {/* Email */}
-            <div className="flex items-center gap-4 rounded-xl border p-4 transition hover:bg-muted/40">
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                <Mail className="w-5 h-5 text-green-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground">
-                  {translate?.pages.profile.email}
-                </p>
-                <p className="font-medium">{user.email}</p>
-              </div>
+            <div className="min-w-0 flex-1 space-y-2 text-center md:text-start">
+              <p className="text-xl font-semibold text-slate-900">{user.name}</p>
+              <Badge className="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-900 ring-1 ring-emerald-200/70">
+                {user.roles || t?.member}
+              </Badge>
             </div>
-
-            {/* Phone */}
-            {user.mobile && (
-              <div className="flex items-center gap-4 rounded-xl border p-4 transition hover:bg-muted/40">
-                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <Phone className="w-5 h-5 text-purple-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-xs text-muted-foreground">
-                    {translate?.pages.profile.phone}
-                  </p>
-                  <p className="font-medium">{user.mobile}</p>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Action */}
+          <section className={dash.sectionNeutral}>
+            <div className="mb-6 flex flex-wrap items-start gap-4">
+              <span className={dash.sectionIconWrap}>
+                <User className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <p className="text-sm font-semibold text-slate-800">
+                {t?.personalDetails}
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <Label className="font-semibold text-slate-800">{t?.name}</Label>
+                <div className={cn(dash.viewFieldBox, "mt-1 flex items-start gap-3")}>
+                  <User className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+                  <span>{user.name}</span>
+                </div>
+              </div>
+
+              <div>
+                <Label className="font-semibold text-slate-800">{t?.email}</Label>
+                <div className={cn(dash.viewFieldBox, "mt-1 flex items-start gap-3")}>
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+                  <span className="break-all">{user.email}</span>
+                </div>
+              </div>
+
+              {user.mobile ? (
+                <div>
+                  <Label className="font-semibold text-slate-800">
+                    {t?.phone}
+                  </Label>
+                  <div
+                    className={cn(dash.viewFieldBox, "mt-1 flex items-start gap-3")}
+                    dir="ltr"
+                  >
+                    <Phone className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+                    <span>{user.mobile}</span>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </section>
+
           <Button
             asChild
-            size="lg"
-            className="flex items-center w-fit m-auto font-semibold rounded-xl createBtn"
+            className={cn(dash.formSubmit, "mx-auto flex w-full max-w-xs gap-2")}
           >
             <Link href={`/${lang}/update-profile`}>
-              <SquarePen className="w-4 h-4 " />
-              {translate?.pages.profile.editProfile}
+              <SquarePen className="h-4 w-4 shrink-0" />
+              {t?.editProfile}
             </Link>
           </Button>
         </CardContent>

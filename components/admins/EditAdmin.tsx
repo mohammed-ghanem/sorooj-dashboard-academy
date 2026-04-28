@@ -18,6 +18,11 @@ import { useSessionReady } from "@/hooks/useSessionReady";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
+import TranslateHook from "@/translate/TranslateHook";
+import LangUseParams from "@/translate/LangUseParams";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
+
 import {
   Card,
   CardContent,
@@ -30,11 +35,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import TranslateHook from "@/translate/TranslateHook";
 import AdminFormSkeleton from "@/components/skeleton/AdminFormSkeleton";
 
-
-/* ===================== TYPES ===================== */
 type EditAdminForm = {
   name: string;
   email: string;
@@ -48,9 +50,16 @@ export default function EditAdmin() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const translate = TranslateHook();
+  const lang = LangUseParams();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const t = translate?.pages.admins?.editAdmin;
 
-  const { data: admin, isLoading } = useGetAdminByIdQuery(Number(id), {
-    skip: !sessionReady,
+  const idNum = id != null ? Number(id) : NaN;
+  const invalidId = id == null || Number.isNaN(idNum);
+
+  const { data: admin, isLoading, isError } = useGetAdminByIdQuery(idNum, {
+    skip: !sessionReady || invalidId,
   });
 
   const { data: rolesResponse, isLoading: rolesLoading } =
@@ -86,7 +95,7 @@ export default function EditAdmin() {
       email: admin.email ?? "",
       phone: admin.mobile ?? "",
       roles_ids: Array.isArray(admin.roles_ids)
-        ? admin.roles_ids.map((id: number) => Number(id))
+        ? admin.roles_ids.map((rid: number) => Number(rid))
         : [],
       isActive: Boolean(admin.is_active),
     });
@@ -95,7 +104,7 @@ export default function EditAdmin() {
   const onSubmit = async (data: EditAdminForm) => {
     try {
       const res = await updateAdmin({
-        id: Number(id),
+        id: idNum,
         data: {
           name: data.name,
           email: data.email,
@@ -106,7 +115,7 @@ export default function EditAdmin() {
       }).unwrap();
 
       toast.success(res?.message);
-      router.push("/admins");
+      router.push(`/${lang}/admins`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -117,158 +126,204 @@ export default function EditAdmin() {
       }
       if (errorData?.message) {
         toast.error(errorData.message);
-        return; 
+        return;
       }
     }
   };
 
   const selectedRoles = watch("roles_ids") ?? [];
+  const inputIconPad = "ps-10";
 
-  if (!sessionReady || isLoading || rolesLoading) {
-    return  <AdminFormSkeleton />
+  if (!sessionReady || rolesLoading) {
+    return <AdminFormSkeleton />;
+  }
+
+  if (invalidId) {
+    return (
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return <AdminFormSkeleton />;
+  }
+
+  if (isError || !admin) {
+    return (
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold ">
-          <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <User className="w-5 h-5 " />
-            </div>
-            {translate?.pages.admins.editAdmin.title}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <User className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.admins.editAdmin.titleUpdate}
+          <CardDescription className={dash.listDescription}>
+            {t?.titleUpdate}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* BASIC INFO */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.admins.editAdmin.name}
-                </Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    className="pl-9 focus-visible:ring-0 border-[#999]"
-                    {...register("name", { required: true })}
-                    placeholder="Admin name"
-                  />
-                </div>
+        <CardContent className={dash.formCardContent}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 md:space-y-10"
+          >
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <User className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.titleUpdate}
+                </p>
               </div>
 
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.admins.editAdmin.email}
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    className="pl-9 focus-visible:ring-0 border-[#999]"
-                    {...register("email", { required: true })}
-                    placeholder="Email address"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* PHONE */}
-            <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                {translate?.pages.admins.editAdmin.phone}
-                </Label>
-              <div dir="ltr" className="focus-visible:border-[#999] border-[#999]">
-                <Controller
-                  name="phone"
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field }) => (
-                    <PhoneInput
-                      country="eg"
-                      value={field.value}
-                      onChange={field.onChange}
-                      containerClass="!w-full"
-                      inputClass="!w-full !h-10 !pl-12 !text-sm rounded-md "
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.name}
+                  </Label>
+                  <div className="relative">
+                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      {...register("name", { required: true })}
+                      placeholder="Admin name"
                     />
-                  )}
-                />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.email}
+                  </Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      {...register("email", { required: true })}
+                      placeholder="Email address"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2" dir="ltr">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.phone}
+                  </Label>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <PhoneInput
+                        country="eg"
+                        value={field.value}
+                        onChange={field.onChange}
+                        containerClass="!w-full"
+                        inputClass="!w-full !h-11 !ps-12 !rounded-xl !border-slate-200 !bg-white/95 !shadow-sm"
+                      />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
+            </section>
 
             <Separator />
 
-            {/* ROLES */}
-            <div className="space-y-3">
-              <Label className="flex items-center gap-2 font-bold">
-              <div className="flex items-center gap-2 rounded-xl icon_bg">
-                    <ShieldCheck className="w-4 h-4" />
-                </div>
-                {translate?.pages.admins.editAdmin.role}
+            <section className={dash.sectionNeutral}>
+              <Label className="flex flex-wrap items-center gap-3 font-semibold text-slate-900 mb-4">
+                <span className={dash.sectionIconWrap}>
+                  <ShieldCheck className="h-5 w-5" strokeWidth={2} />
+                </span>
+                {t?.role}
               </Label>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border rounded-lg p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-2xl border border-slate-200/90 bg-white/60 p-4">
                 {roles.map((role: any) => (
                   <label
-                        key={role.id}
-                        htmlFor={`role-${role.id}`}
-                        className={`flex items-center gap-2 rounded-md 
-                          px-2 py-2 cursor-pointer hover:bg-gray-50 border
-                          ${selectedRoles.includes(role.id) 
-                            ? 'border-green-500 bg-green-50' 
-                            : 'border-gray-200'
-                          }`}
-                      >  
+                    key={role.id}
+                    htmlFor={`role-${role.id}`}
+                    className={cn(
+                      "flex items-center gap-2 rounded-xl border px-3 py-2.5 cursor-pointer transition",
+                      selectedRoles.includes(role.id)
+                        ? "border-emerald-500 bg-emerald-50/80 ring-1 ring-emerald-200/60"
+                        : "border-slate-200 hover:bg-slate-50/80",
+                    )}
+                  >
                     <Checkbox
-                        id={`role-${role.id}`}
-                        className="border-stone-400"
-                        checked={selectedRoles.includes(role.id)}
-                        onCheckedChange={(checked) => {
-                          const newRoles = checked
-                            ? [...selectedRoles, role.id]
-                            : selectedRoles.filter((rid) => rid !== role.id);
+                      id={`role-${role.id}`}
+                      checked={selectedRoles.includes(role.id)}
+                      onCheckedChange={(checked) => {
+                        const newRoles = checked
+                          ? [...selectedRoles, role.id]
+                          : selectedRoles.filter((rid) => rid !== role.id);
 
-                          setValue("roles_ids", newRoles, {
-                            shouldDirty: true,
-                          });
-                        }}
-                      />
+                        setValue("roles_ids", newRoles, {
+                          shouldDirty: true,
+                        });
+                      }}
+                    />
                     <span className="text-sm">{role.name}</span>
                   </label>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* STATUS */}
-            <div className="flex items-center gap-3">
-              <Checkbox
-                className=" border-stone-400!"
-                checked={watch("isActive")}
-                onCheckedChange={(v) =>
-                  setValue("isActive", Boolean(v))
-                }
-              />
-              <span className="text-sm">
-                {translate?.pages.admins.editAdmin.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Checkbox
+                  checked={watch("isActive")}
+                  onCheckedChange={(v) =>
+                    setValue("isActive", Boolean(v))
+                  }
+                />
+                <span className="text-sm text-slate-700">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            {/* ACTION */}
-            <Button
-              type="submit"
-              disabled={isUpdating}
-              className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
-            >
-              {isUpdating 
-              ?
-              `${translate?.pages.admins.editAdmin.processing}...`
-              :
-              `${translate?.pages.admins.editAdmin.editBtn}`
-                }
-            </Button>
+              <Button
+                type="submit"
+                disabled={isUpdating}
+                className={dash.formSubmit}
+              >
+                {isUpdating
+                  ? `${t?.processing}...`
+                  : `${t?.editBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

@@ -3,7 +3,10 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { useGetProfileQuery, useUpdateProfileMutation } from "@/store/auth/authApi";
+import {
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "@/store/auth/authApi";
 import PhoneInput from "react-phone-input-2";
 import { toast } from "sonner";
 import {
@@ -16,7 +19,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, User, Mail, Camera, Upload, X } from "lucide-react";
+import { Loader2, User, Mail, Upload, X, UserCircle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import "react-phone-input-2/lib/style.css";
 import "./style.css";
@@ -24,22 +27,29 @@ import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import { useRouter } from "next/navigation";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
 
 function UpdateProfile() {
   const lang = LangUseParams();
   const translate = TranslateHook();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const t = translate?.pages.updateProfile;
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const inputIconPad = "ps-10";
 
   const {
     data: profileData,
     isLoading: isLoadingProfile,
-    refetch
+    refetch,
   } = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
 
-  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
+  const [updateProfile, { isLoading: isUpdating }] =
+    useUpdateProfileMutation();
   const user = profileData?.data || profileData?.user || profileData;
 
   const [form, setForm] = useState({
@@ -51,7 +61,6 @@ function UpdateProfile() {
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -61,10 +70,6 @@ function UpdateProfile() {
         mobile: user.mobile ?? "",
         avatar: user.avatar ?? "",
       });
-
-
-
-      setInitialLoading(false);
     }
   }, [user]);
 
@@ -76,6 +81,8 @@ function UpdateProfile() {
     setForm((prev) => ({ ...prev, mobile: `+${value}` }));
   };
 
+  const phoneDigits = form.mobile ? form.mobile.replace(/\D/g, "") : "";
+
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
@@ -86,18 +93,18 @@ function UpdateProfile() {
 
     setSelectedFile(file);
 
-    // preview
     const reader = new FileReader();
     reader.onloadend = () => {
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
         avatar: reader.result as string,
       }));
     };
     reader.readAsDataURL(file);
 
-    // ✅ Auto Upload
-    const toastId = toast.loading("جاري رفع الصورة...");
+    const toastId = toast.loading(
+      lang === "ar" ? "جاري رفع الصورة..." : "Uploading image...",
+    );
     setIsUploading(true);
 
     try {
@@ -106,19 +113,19 @@ function UpdateProfile() {
 
       const res = await updateProfile(formData as any).unwrap();
 
-      toast.success(res?.message || "تم رفع الصورة", { id: toastId });
-
-      await refetch(); // تحديث البيانات
-
-    } catch (err: any) {
-      console.error(err);
-
-      toast.error(err?.data?.message || "فشل رفع الصورة", {
+      toast.success(res?.message || (lang === "ar" ? "تم الرفع" : "Uploaded"), {
         id: toastId,
       });
 
-      // ❗ رجّع الصورة القديمة لو فشل
-      setForm(prev => ({
+      await refetch();
+    } catch (err: any) {
+      toast.error(
+        err?.data?.message ||
+          (lang === "ar" ? "فشل الرفع" : "Upload failed"),
+        { id: toastId },
+      );
+
+      setForm((prev) => ({
         ...prev,
         avatar: user?.avatar || "",
       }));
@@ -128,12 +135,12 @@ function UpdateProfile() {
   };
 
   const handleRemoveImage = () => {
-    setForm(prev => ({ ...prev, avatar: "" }));
+    setForm((prev) => ({ ...prev, avatar: "" }));
 
     setSelectedFile(null);
 
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -143,41 +150,38 @@ function UpdateProfile() {
     if (isUpdating || isUploading) return;
 
     if (!form.name.trim()) {
-      toast.error(translate?.pages.updateProfile.nameRequired);
+      toast.error(t?.nameRequired ?? "");
       return;
     }
 
-    const toastId = toast.loading("جاري رفع الصورة...");
+    const toastId = toast.loading(
+      lang === "ar" ? "جاري الحفظ..." : "Saving...",
+    );
 
     try {
       setIsUploading(true);
 
       const formData = new FormData();
-      formData.append('name', form.name);
-      formData.append('email', form.email);
-      formData.append('mobile', form.mobile);
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("mobile", form.mobile);
 
       if (selectedFile) {
-        formData.append('avatar', selectedFile);
+        formData.append("avatar", selectedFile);
       }
 
       const res = await updateProfile(formData as any).unwrap();
 
-      toast.success(res?.message || "تم التحديث بنجاح", { id: toastId });
+      toast.success(res?.message || "", { id: toastId });
 
       await refetch();
       router.push(`/${lang}/profile`);
-
     } catch (err: any) {
-      console.error("Update error:", err);
-
       const errorData = err?.data ?? err;
 
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) =>
-            toast.error(msg, { id: toastId })
-          )
+          messages.forEach((msg: string) => toast.error(msg, { id: toastId })),
         );
         return;
       }
@@ -187,8 +191,9 @@ function UpdateProfile() {
         return;
       }
 
-      toast.error("فشل التحديث", { id: toastId });
-
+      toast.error(lang === "ar" ? "فشل التحديث" : "Update failed", {
+        id: toastId,
+      });
     } finally {
       setIsUploading(false);
     }
@@ -196,9 +201,9 @@ function UpdateProfile() {
 
   const getInitials = (name: string) => {
     return name
-      .split(' ')
-      .map(word => word[0])
-      .join('')
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
       .toUpperCase()
       .slice(0, 2);
   };
@@ -207,61 +212,24 @@ function UpdateProfile() {
   if (!user) return null;
 
   return (
-    <div className="max-w-3xl mx-auto p-6" dir="ltr">
-      <Card className="shadow-lg border-0">
-        <CardHeader className="text-center space-y-3 pb-6">
-          <div className="flex justify-center mb-2">
-            <div className="relative group">
-
-              {/* Remove Image Button */}
-              {(form.avatar || selectedFile) && (
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="absolute top-0 right-0 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow hover:bg-red-600 transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              )}
-
-              <Avatar
-                className="w-24 h-24 border-4 border-blue-100 cursor-pointer"
-                onClick={!isUploading ? handleImageClick : undefined}
-              >
-                <AvatarImage src={form.avatar || user?.avatar || ""} />
-                <AvatarFallback className="bg-blue-100 text-blue-600 text-xl">
-                  {getInitials(form.name || "User")}
-                </AvatarFallback>
-              </Avatar>
-
-              {/* Overlay with camera icon */}
-
-              {/* Upload button */}
-              <Button
-                type="button"
-                size="icon"
-                variant="secondary"
-                className="absolute bottom-0 right-0 rounded-full w-8 h-8"
-                onClick={handleImageClick}
-                disabled={isUploading}
-              >
-                <Upload className="w-4 h-4" />
-              </Button>
-
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <UserCircle className="w-6 h-6" />
+            </span>
+            <div className="space-y-2 min-w-0">
+              <span className="leading-tight block">{t?.title}</span>
+              <CardDescription className={cn(dash.listDescription, "mt-0")}>
+                {t?.titleUpdate}
+              </CardDescription>
             </div>
-          </div>
-
-          <CardTitle className="text-xl font-bold">
-            {translate?.pages.updateProfile.title}
           </CardTitle>
-          <CardDescription>
-            {translate?.pages.updateProfile.titleUpdate}
-          </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Hidden file input */}
+        <CardContent className={dash.formCardContent}>
+          <form onSubmit={handleSubmit} className="space-y-8 md:space-y-10">
             <input
               type="file"
               ref={fileInputRef}
@@ -271,78 +239,145 @@ function UpdateProfile() {
               disabled={isUploading}
             />
 
-            {/* Name */}
-            <div className="space-y-2">
-              <Label htmlFor="name" className={`block ${lang === "ar" ? "text-right!" : "text-left"}`}>
-                {translate?.pages.updateProfile.name}
-              </Label>
+            <div className="flex justify-center pb-2">
               <div className="relative">
-                <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="name"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="pl-10 focus-visible:ring-0! border-gray-300!"
-                  required
-                  placeholder={translate?.pages.updateProfile.namePlaceholder}
-                />
+                {(form.avatar || selectedFile) && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="absolute end-0 top-0 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow transition hover:bg-red-600"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+
+                <Avatar
+                  className="h-28 w-28 cursor-pointer border-4 border-emerald-100 shadow-md ring-2 ring-white"
+                  onClick={!isUploading ? handleImageClick : undefined}
+                >
+                  <AvatarImage src={form.avatar || user?.avatar || ""} />
+                  <AvatarFallback className="bg-emerald-50 text-lg font-semibold text-emerald-800">
+                    {getInitials(form.name || "User")}
+                  </AvatarFallback>
+                </Avatar>
+
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="secondary"
+                  className="absolute bottom-0 end-0 h-9 w-9 rounded-full shadow-md ring-2 ring-white"
+                  onClick={handleImageClick}
+                  disabled={isUploading}
+                >
+                  <Upload className="h-4 w-4" />
+                </Button>
               </div>
             </div>
 
-            {/* Email (Disabled) */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className={`block ${lang === "ar" ? "text-right!" : "text-left"}`}>
-                {translate?.pages.updateProfile.email}
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="email"
-                  name="email"
-                  value={form.email}
-                  disabled
-                  className="pl-10 bg-gray-50"
-                  readOnly
-                />
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <User className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.titleUpdate}
+                </p>
               </div>
-              <p className="text-xs text-gray-500">
-                {translate?.pages.updateProfile.emailNote}
-              </p>
-            </div>
 
-            {/* Phone */}
-            <div className="space-y-2">
-              <Label htmlFor="phone" className={`block ${lang === "ar" ? "text-right!" : "text-left"}`}>
-                {translate?.pages.updateProfile.phone}
-              </Label>
-              <PhoneInput
-                country="eg"
-                value={form.mobile.replace("+", "")}
-                onChange={handlePhoneChange}
-                inputClass="!w-full !h-10 !pl-12"
-                containerClass="!w-full"
-                inputProps={{
-                  id: "phone",
-                  name: "mobile",
-                }}
-              />
-            </div>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="update-profile-name"
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.name}
+                  </Label>
+                  <div className="relative">
+                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="update-profile-name"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      required
+                      placeholder={t?.namePlaceholder}
+                    />
+                  </div>
+                </div>
 
-            {/* Action Buttons */}
-            <div className="flex gap-3">
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="update-profile-email"
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.email}
+                  </Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="update-profile-email"
+                      name="email"
+                      value={form.email}
+                      disabled
+                      className={cn(
+                        "h-11",
+                        inputIconPad,
+                        dash.input,
+                        "bg-slate-50",
+                      )}
+                      readOnly
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t?.emailNote}
+                  </p>
+                </div>
+
+                <div className="space-y-2" dir="ltr">
+                  <Label
+                    htmlFor="phone"
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.phone ?? translate?.pages.profile.phone}
+                  </Label>
+                  <PhoneInput
+                    country="eg"
+                    value={phoneDigits}
+                    onChange={handlePhoneChange}
+                    inputClass="!w-full !h-11 !ps-12 !rounded-xl !border-slate-200 !bg-white/95 !shadow-sm"
+                    containerClass="!w-full"
+                    inputProps={{
+                      id: "phone",
+                      name: "mobile",
+                    }}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <div className={dash.formFooterBar}>
               <Button
                 type="submit"
                 disabled={isUpdating || isUploading}
-                className="flex items-center w-fit m-auto font-semibold rounded-xl createBtn"
+                className={cn(dash.formSubmit, "gap-2")}
               >
-                {(isUpdating || isUploading) ? (
+                {isUpdating || isUploading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    {translate?.pages.updateProfile.processing} ...
+                    <Loader2 className="h-5 w-5 shrink-0 animate-spin" />
+                    {t?.processing} ...
                   </>
                 ) : (
-                  translate?.pages.updateProfile.confirmBtn
+                  t?.confirmBtn
                 )}
               </Button>
             </div>

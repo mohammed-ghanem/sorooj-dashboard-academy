@@ -17,9 +17,11 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Eye } from "lucide-react";
+import { Eye, UserCircle } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
+import { dash } from "@/constants/dashboardUi";
+import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 import type { IStudent } from "@/types/student";
@@ -28,8 +30,10 @@ export default function Students() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
 
   const headers = TABLE_HEADERS[lang as "ar" | "en"].students;
+  const pg = translate?.pages.students;
 
   const { data: students = [], isLoading } = useGetStudentsQuery(undefined, {
     skip: !sessionReady,
@@ -79,7 +83,9 @@ export default function Students() {
     {
       key: "email",
       header: headers.email,
-      render: (v) => <span className="truncate max-w-[200px] block">{v}</span>,
+      render: (v) => (
+        <span className="truncate max-w-[200px] block">{v}</span>
+      ),
     },
     {
       key: "mobile",
@@ -108,7 +114,7 @@ export default function Students() {
       render: (_, row) => (
         <div className="flex items-center justify-center gap-2" dir="ltr">
           <Switch
-            className="data-[state=checked]:bg-green-600"
+            className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
             disabled={isPending(row)}
             onCheckedChange={(checked) => {
@@ -121,10 +127,8 @@ export default function Students() {
               });
             }}
           />
-          <span className="text-sm">
-            {getOptimisticStatus(row)
-              ? translate?.pages.students.active
-              : translate?.pages.students.inactive}
+          <span className="text-sm text-slate-600">
+            {getOptimisticStatus(row) ? pg?.active : pg?.inactive}
           </span>
         </div>
       ),
@@ -136,19 +140,15 @@ export default function Students() {
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
           <Link href={`/${lang}/students/view/${row.id}`}>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600 focus:ring-2
-               focus:ring-yellow-300 cursor-pointer"
-              size="sm"
-            >
+            <Button type="button" size="sm" className={dash.tableView}>
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
           <DeleteConfirmDialog
-            title={translate?.pages.students.deleteTitle}
-            description={translate?.pages.students.deleteMessage}
-            confirmText={translate?.pages.students.deleteBtn}
-            cancelText={translate?.pages.students.cancelBtn}
+            title={pg?.deleteTitle ?? ""}
+            description={pg?.deleteMessage ?? ""}
+            confirmText={pg?.deleteBtn ?? ""}
+            cancelText={pg?.cancelBtn ?? ""}
             onConfirm={() => handleDelete(row.id)}
           />
         </div>
@@ -159,19 +159,27 @@ export default function Students() {
   const showSkeleton = !sessionReady || isLoading;
 
   return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-48!" : ""}`}>
-        {translate?.pages.students.listTitle || ""}
-      </h2>
-
+    <IndexListPage
+      icon={UserCircle}
+      title={pg?.listTitle ?? ""}
+      description={pg?.listDescription}
+      createHref=""
+      createLabel=""
+      showCreate={false}
+      showSkeleton={showSkeleton}
+      dir={pageDir}
+    >
       <DataTable
         data={students}
         columns={columns}
         isSkeleton={showSkeleton}
         searchPlaceholder={
-          translate?.pages.students.searchPlaceholder ?? "Search…"
+          pg?.searchPlaceholder ?? "Search…"
         }
+        className={dash.dataTableOuter}
+        tableCardClassName={dash.dataTableCard}
+        tableHeaderClassName={dash.dataTableHeader}
       />
-    </div>
+    </IndexListPage>
   );
 }

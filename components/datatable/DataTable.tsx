@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 
 export type Column<T> = {
@@ -25,6 +26,12 @@ interface DataTableProps<T> {
   searchPlaceholder?: string;
   onToggleStatus?: (row: T) => void;
   isSkeleton?: boolean;
+  /** Extra classes on the outer wrapper (spacing, input/table tweaks per page). */
+  className?: string;
+  /** Classes for the bordered card that wraps the `<table>`. */
+  tableCardClassName?: string;
+  /** Override/extend table header row background. */
+  tableHeaderClassName?: string;
 }
 
 export function DataTable<T extends Record<string, any>>({
@@ -35,6 +42,9 @@ export function DataTable<T extends Record<string, any>>({
   searchPlaceholder = "Search...",
   onToggleStatus,
   isSkeleton = false,
+  className,
+  tableCardClassName,
+  tableHeaderClassName,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -60,7 +70,7 @@ export function DataTable<T extends Record<string, any>>({
   }, [filteredData, page, pageSize]);
 
   return (
-    <div className="space-y-4">
+    <div className={cn("space-y-4", className)}>
       {/* Top Controls */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Input
@@ -97,9 +107,16 @@ export function DataTable<T extends Record<string, any>>({
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+      <div
+        className={cn(
+          "rounded-xl border bg-white shadow-sm overflow-hidden",
+          tableCardClassName
+        )}
+      >
         <Table>
-          <TableHeader className="bg-slate-100 ">
+          <TableHeader
+            className={cn(!tableHeaderClassName && "bg-slate-100", tableHeaderClassName)}
+          >
             <TableRow>
               {columns.map((col) => (
                 <TableHead

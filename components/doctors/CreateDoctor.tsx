@@ -21,6 +21,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import { useCreateDoctorMutation } from "@/store/doctors/doctorsApi";
 import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 import {
   Card,
@@ -58,7 +59,8 @@ export default function CreateDoctor() {
   const lang = LangUseParams();
   const translate = TranslateHook();
   const t = translate?.pages.doctors.createDoctor;
-  const labelAlign = lang === "ar" ? "text-right" : "text-left";
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
 
   const [createDoctor, { isLoading: isCreating }] = useCreateDoctorMutation();
   const [form, setForm] = useState<FormState>({
@@ -104,212 +106,233 @@ export default function CreateDoctor() {
     return <DoctorFormSkeleton />;
   }
 
+  const inputIconPad = "ps-10";
+
   return (
-    <div className="w-[75%] mx-auto py-10 px-4" dir="rtl">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <ShieldUser className="w-5 h-5" />
-            </div>
-            {t?.title}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <ShieldUser className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription className={cn(lang === "ar" && "text-right")}>
+          <CardDescription className={dash.listDescription}>
             {t?.description}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={submit} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-name"
+        <CardContent className={dash.formCardContent}>
+          <form onSubmit={submit} className="space-y-8 md:space-y-10">
+            <section
+              aria-labelledby="doctor-create-profile"
+              className={dash.sectionNeutral}
+            >
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <User className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p
+                  id="doctor-create-profile"
+                  className="text-sm text-muted-foreground leading-relaxed max-w-2xl"
                 >
-                  {t?.name}
-                </Label>
-                <div className="relative">
-                  <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="doctor-create-name"
-                    className="h-10 border-[#999] pl-10 focus-visible:ring-0"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    autoComplete="name"
+                  {t?.description}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-name"
+                  >
+                    {t?.name}
+                  </Label>
+                  <div className="relative">
+                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="doctor-create-name"
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      value={form.name}
+                      onChange={(e) =>
+                        setForm({ ...form, name: e.target.value })
+                      }
+                      autoComplete="name"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-email"
+                  >
+                    {t?.email}
+                  </Label>
+                  <div className="relative">
+                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="doctor-create-email"
+                      type="email"
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      value={form.email}
+                      onChange={(e) =>
+                        setForm({ ...form, email: e.target.value })
+                      }
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 md:col-span-2" dir="ltr">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-mobile"
+                  >
+                    {t?.mobile}
+                  </Label>
+                  <PhoneInput
+                    country="eg"
+                    value={phoneDigits}
+                    onChange={handlePhoneChange}
+                    inputClass="!w-full !h-11 !ps-12 !rounded-xl !border-slate-200 !bg-white/95 !shadow-sm"
+                    containerClass="!w-full"
+                    inputProps={{
+                      id: "doctor-create-mobile",
+                      name: "mobile",
+                    }}
                   />
                 </div>
-              </div>
-              <div className="space-y-1">
-                <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-email"
-                >
-                  {t?.email}
-                </Label>
-                <div className="relative">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="doctor-create-email"
-                    type="email"
-                    className="h-10 border-[#999] pl-10 focus-visible:ring-0"
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
+
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-position"
+                  >
+                    {t?.position}
+                  </Label>
+                  <div className="relative">
+                    <Briefcase className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="doctor-create-position"
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      value={form.position}
+                      onChange={(e) =>
+                        setForm({ ...form, position: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-specialization"
+                  >
+                    {t?.specialization}
+                  </Label>
+                  <div className="relative">
+                    <GraduationCap className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="doctor-create-specialization"
+                      className={cn("h-11", inputIconPad, dash.input)}
+                      value={form.specialization}
+                      onChange={(e) =>
+                        setForm({ ...form, specialization: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-password"
+                  >
+                    {t?.password}
+                  </Label>
+                  <PasswordInputWithToggle
+                    id="doctor-create-password"
+                    value={form.password}
+                    onChange={(v) => setForm({ ...form, password: v })}
+                    autoComplete="new-password"
+                    inputClassName={cn("h-11", dash.input, "pl-10 pr-10")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                    htmlFor="doctor-create-password-confirm"
+                  >
+                    {t?.confirmPassword}
+                  </Label>
+                  <PasswordInputWithToggle
+                    id="doctor-create-password-confirm"
+                    value={form.password_confirmation}
+                    onChange={(v) =>
+                      setForm({ ...form, password_confirmation: v })
                     }
-                    autoComplete="email"
+                    autoComplete="new-password"
+                    inputClassName={cn("h-11", dash.input, "pl-10 pr-10")}
                   />
                 </div>
               </div>
 
-              <div className="space-y-1 md:col-span-2" dir="ltr">
+              <div className="mt-5 space-y-2">
                 <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-mobile"
+                  className={cn("text-sm font-semibold text-slate-800", labelAlign)}
+                  htmlFor="doctor-create-about"
                 >
-                  {t?.mobile}
-                </Label>
-                <PhoneInput
-                  country="eg"
-                  value={phoneDigits}
-                  onChange={handlePhoneChange}
-                  inputClass="!w-full !h-10 !pl-12 !border-[#999] !rounded-md"
-                  containerClass="!w-full"
-                  inputProps={{
-                    id: "doctor-create-mobile",
-                    name: "mobile",
-                  }}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-position"
-                >
-                  {t?.position}
+                  {t?.aboutDoctor}
                 </Label>
                 <div className="relative">
-                  <Briefcase className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="doctor-create-position"
-                    className="h-10 border-[#999] pl-10 focus-visible:ring-0"
-                    value={form.position}
+                  <FileText className="pointer-events-none absolute start-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Textarea
+                    id="doctor-create-about"
+                    className={cn("min-h-[120px] pt-2.5", inputIconPad, dash.input)}
+                    value={form.about_doctor}
                     onChange={(e) =>
-                      setForm({ ...form, position: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-specialization"
-                >
-                  {t?.specialization}
-                </Label>
-                <div className="relative">
-                  <GraduationCap className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <Input
-                    id="doctor-create-specialization"
-                    className="h-10 border-[#999] pl-10 focus-visible:ring-0"
-                    value={form.specialization}
-                    onChange={(e) =>
-                      setForm({ ...form, specialization: e.target.value })
+                      setForm({ ...form, about_doctor: e.target.value })
                     }
                   />
                 </div>
               </div>
 
-              <div className="space-y-1">
+              <div className="mt-6 space-y-2">
                 <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-password"
+                  className={cn("text-sm font-semibold text-slate-800", labelAlign)}
                 >
-                  {t?.password}
+                  {t?.avatar}
                 </Label>
-                <PasswordInputWithToggle
-                  id="doctor-create-password"
-                  value={form.password}
-                  onChange={(v) => setForm({ ...form, password: v })}
-                  autoComplete="new-password"
+                <ImageDropzone
+                  file={form.avatar}
+                  onFileChange={(file) => setForm({ ...form, avatar: file })}
                 />
               </div>
-              <div className="space-y-1">
-                <Label
-                  className={cn("font-semibold mb-2 block", labelAlign)}
-                  htmlFor="doctor-create-password-confirm"
-                >
-                  {t?.confirmPassword}
-                </Label>
-                <PasswordInputWithToggle
-                  id="doctor-create-password-confirm"
-                  value={form.password_confirmation}
-                  onChange={(v) =>
-                    setForm({ ...form, password_confirmation: v })
-                  }
-                  autoComplete="new-password"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <Label
-                className={cn("font-semibold mb-2 block", labelAlign)}
-                htmlFor="doctor-create-about"
-              >
-                {t?.aboutDoctor}
-              </Label>
-              <div className="relative">
-                <FileText className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Textarea
-                  id="doctor-create-about"
-                  className="min-h-[100px] border-[#999] pl-10 pt-2.5 focus-visible:ring-0"
-                  value={form.about_doctor}
-                  onChange={(e) =>
-                    setForm({ ...form, about_doctor: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <Label className={cn("font-semibold mb-2 block", labelAlign)}>
-                {t?.avatar}
-              </Label>
-              <ImageDropzone
-                file={form.avatar}
-                onFileChange={(file) => setForm({ ...form, avatar: file })}
-              />
-            </div>
+            </section>
 
             <Separator />
 
-            <label
-              className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition w-fit
-                ${lang === "ar" ? "justify-end" : " flex-row-reverse justify-end"}
-                ${
-                  form.is_active
-                    ? "border-green-500 bg-green-50 hover:bg-green-100"
-                    : "hover:bg-muted"
-                }`}
-            >
-              <span className="text-sm font-medium">{t?.isActive}</span>
-              <Checkbox
-                checked={form.is_active}
-                onCheckedChange={(v) =>
-                  setForm({ ...form, is_active: Boolean(v) })
-                }
-              />
-            </label>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Checkbox
+                  checked={form.is_active}
+                  onCheckedChange={(v) =>
+                    setForm({ ...form, is_active: Boolean(v) })
+                  }
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={isCreating}
-              className="mx-auto block bg-green-700 hover:bg-green-600 font-semibold"
-            >
-              {isCreating ? `${t?.processing}...` : `${t?.createBtn}`}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isCreating}
+                className={dash.formSubmit}
+              >
+                {isCreating ? `${t?.processing}...` : `${t?.createBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

@@ -36,6 +36,15 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    lessons: {
+      lessonNumber: "رقم / تعريف الدرس",
+      title: "العنوان",
+      subject: "المادة الدراسية",
+      doctor: "عضو هيئة التدريس",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     students: {
       name: "الطالب",
       email: "البريد الإلكتروني",
@@ -106,6 +115,15 @@ export const TABLE_HEADERS = {
     subjects: {
       name: "Name",
       studyTerm: "Study term",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    lessons: {
+      lessonNumber: "Lesson no.",
+      title: "Title",
+      subject: "Subject",
+      doctor: "Instructor",
       status: "Status",
       actions: "Actions",
     },

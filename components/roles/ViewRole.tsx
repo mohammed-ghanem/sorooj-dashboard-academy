@@ -20,136 +20,132 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
+import ViewRoleSkeleton from "@/components/skeleton/ViewRoleSkeleton";
 
-/* ===================== COMPONENT ===================== */
 export default function ViewRole() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const sessionReady = useSessionReady();
   const translate = TranslateHook();
-  const lang = LangUseParams(); 
+  const lang = LangUseParams();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const t = translate?.pages.roles?.viewRole;
 
+  const idNum = id != null ? Number(id) : NaN;
+  const invalidId = id == null || Number.isNaN(idNum);
 
-  const { data: role, isLoading } =
-  useGetRoleByIdQuery(
-    { id: Number(id), lang },
-    { skip: !sessionReady }
+  const { data: role, isLoading, isError } = useGetRoleByIdQuery(
+    { id: idNum, lang },
+    {
+      skip: !sessionReady || invalidId,
+    },
   );
 
-
-
   if (!sessionReady || isLoading) {
-    return null;
+    return <ViewRoleSkeleton />;
   }
 
-  if (!role) {
+  if (invalidId || isError || !role) {
     return (
-      <div className="text-center py-10 text-muted-foreground">
-        Role not found
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl icon_bg">
-                <Eye className="w-5 h-5" />
-            </div>
-            <div>
-                 {translate?.pages.roles.viewRole.title}
-                <CardDescription>
-                  {translate?.pages.roles.viewRole.description}
-                </CardDescription>
+    <div className={dash.formPageWide} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <Eye className="w-6 h-6" />
+            </span>
+            <div className="space-y-2 min-w-0">
+              <span className="leading-tight block">{t?.title}</span>
+              <CardDescription className={cn(dash.listDescription, "mt-0")}>
+                {t?.description}
+              </CardDescription>
             </div>
           </CardTitle>
-
         </CardHeader>
 
-        <CardContent className="space-y-6">
-          {/* ROLE NAME */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <Label className="font-semibold">
-                    {translate?.pages.roles.viewRole.nameAr}
+        <CardContent className="space-y-8 px-4 py-8 md:px-10 md:py-10">
+          <section className={dash.sectionNeutral}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {t?.nameAr}
                 </Label>
-              <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-                {role?.name_ar}
+                <div className={dash.viewFieldBox}>{role?.name_ar ?? "—"}</div>
+              </div>
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {t?.nameEn}
+                </Label>
+                <div className={dash.viewFieldBox}>{role?.name_en ?? "—"}</div>
               </div>
             </div>
-            <div>
-                <Label className="font-semibold">
-                    {translate?.pages.roles.viewRole.nameEn}
-                </Label>
-              <div className="mt-1 text-sm border rounded-md px-3 py-2 bg-muted">
-                {role?.name_en}
-              </div>
-            </div>
-          </div>
+          </section>
+
           <Separator />
-          {/* STATUS */}
-          <div className="flex items-center gap-3">
-            <Label className="font-semibold icon_bg">
-              {translate?.pages.roles.viewRole.status}
+
+          <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 px-5 py-4">
+            <Label className="font-semibold text-slate-800">
+              {t?.status}
             </Label>
             {role.is_active ? (
-              <Badge className="bg-green-600 font-semibold">
-                {translate?.pages.roles.viewRole.active}
+              <Badge className="bg-emerald-600 hover:bg-emerald-600 font-semibold px-3 py-1">
+                {t?.active}
               </Badge>
             ) : (
-              <Badge variant="destructive" className="font-semibold">
-                {translate?.pages.roles.viewRole.inactive}
+              <Badge variant="destructive" className="font-semibold px-3 py-1">
+                {t?.inactive}
               </Badge>
             )}
           </div>
+
           <Separator />
 
-          {/* PERMISSIONS */}
-          <div className="space-y-3">
-            <Label className="flex items-center gap-2 font-semibold">
-                <div className="icon_bg">
-                <ShieldCheck className="w-4 h-4 " />
-                </div>
-                {translate?.pages.roles.viewRole.permissions}
+          <div className="space-y-4">
+            <Label className="flex flex-wrap items-center gap-3 font-semibold text-slate-900">
+              <span className={dash.sectionIconWrap}>
+                <ShieldCheck className="w-5 h-5" />
+              </span>
+              {t?.permissions}
             </Label>
 
             {role.permissions?.length ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 border rounded-lg p-4">
-                {/* {role.permissions.map((perm: any) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 rounded-2xl border border-slate-200/90 bg-white/70 p-4 ring-1 ring-slate-900/4">
+                {role.permissions?.map((perm: any) => (
                   <div
                     key={perm.id}
-                    className="text-sm px-3 py-2 rounded-md bg-muted"
+                    className={cn(dash.viewFieldBox, "text-sm")}
                   >
-                    {perm.name}
+                    {lang === "ar"
+                      ? perm.name_ar ?? perm.name
+                      : perm.name_en ?? perm.name}
                   </div>
-                ))} */}
-
-                {role?.permissions?.map((perm: any) => (
-                <div
-                    key={perm.id}
-                    className="px-3 py-2 text-sm rounded-md bg-muted"
-                >
-                    {/* get the right lang from backend accept language header */}
-                {lang === "ar" ? perm.name_ar ?? perm.name : perm.name_en ?? perm.name}
-                    </div>
                 ))}
-
               </div>
             ) : (
               <div className="text-sm text-muted-foreground">
-                {translate?.pages.roles.viewRole.noPermissions}
+                {t?.noPermissions}
               </div>
             )}
           </div>
 
-          {/* ACTION */}
           <Button
-            className="block submitButton pt-1.5! "
+            type="button"
+            className={dash.viewBackButton}
             onClick={() => router.back()}
           >
-            {translate?.pages.roles.viewRole.backBtn}
+            {t?.backBtn}
           </Button>
         </CardContent>
       </Card>

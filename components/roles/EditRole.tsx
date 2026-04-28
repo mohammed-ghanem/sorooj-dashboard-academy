@@ -1,40 +1,34 @@
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 
-// Hooks
 import { useSessionReady } from "@/hooks/useSessionReady";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 
-// RTK
 import { useGetPermissionsQuery } from "@/store/permissions/permissionsApi";
 import {
   useGetRoleByIdQuery,
   useUpdateRoleMutation,
 } from "@/store/roles/rolesApi";
 
-// UI
 import {
   Card,
   CardHeader,
   CardContent,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-// Icons
 import {
   Shield,
   CheckSquare,
@@ -43,43 +37,50 @@ import {
   CircleCheckBig,
 } from "lucide-react";
 
-// Toast
 import { toast } from "sonner";
 import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
+import { dash } from "@/constants/dashboardUi";
+import { cn } from "@/lib/utils";
 
 export default function EditRole() {
   const router = useRouter();
   const params = useParams();
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
-  const translate = TranslateHook(); 
+  const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const t = translate?.pages.roles?.editRole;
 
-  const roleId =
-    typeof params.id === "string" ? Number(params.id) : undefined;
+  const rawId = typeof params.id === "string" ? params.id : "";
+  const roleId = rawId !== "" ? Number(rawId) : NaN;
+  const invalidId = rawId === "" || Number.isNaN(roleId);
 
-  /* ===================== API ===================== */
   const {
     data: permissions,
     isLoading: permLoading,
   } = useGetPermissionsQuery(lang as any, {
     skip: !sessionReady,
   });
-  //===================== ROLE DATA ===================== //
-  const {data: roleData,isLoading: roleLoading,} = useGetRoleByIdQuery(
-    { id: roleId as number, lang: lang as string }, {
-    skip: !sessionReady || !roleId,
-  });
+
+  const {
+    data: roleData,
+    isLoading: roleLoading,
+    isError: roleError,
+  } = useGetRoleByIdQuery(
+    { id: roleId as number, lang: lang as string },
+    {
+      skip: !sessionReady || invalidId,
+    },
+  );
 
   const [updateRole, { isLoading: isUpdating }] =
     useUpdateRoleMutation();
 
-  /* ===================== STATE ===================== */
   const [name_en, setNameEn] = useState("");
   const [name_ar, setNameAr] = useState("");
   const [selected, setSelected] = useState<number[]>([]);
   const [search, setSearch] = useState("");
 
-  /* ===================== FILL DATA ===================== */
   useEffect(() => {
     if (!roleData) return;
 
@@ -88,41 +89,39 @@ export default function EditRole() {
 
     if (roleData.permissions) {
       const ids = roleData.permissions.flatMap((g: any) =>
-        g.controls.map((c: any) => c.id)
+        g.controls.map((c: any) => c.id),
       );
       setSelected(ids);
     }
   }, [roleData]);
 
-  /* ===================== HELPERS ===================== */
   const toggleControl = (id: number) => {
     setSelected((prev) =>
       prev.includes(id)
         ? prev.filter((x) => x !== id)
-        : [...prev, id]
+        : [...prev, id],
     );
   };
 
   const selectGroup = (controls: any[]) => {
     const ids = controls.map((c) => c.id);
     setSelected((prev) =>
-      ids.every((id) => prev.includes(id))
-        ? prev.filter((id) => !ids.includes(id))
-        : [...prev, ...ids.filter((id) => !prev.includes(id))]
+      ids.every((pid) => prev.includes(pid))
+        ? prev.filter((pid) => !ids.includes(pid))
+        : [...prev, ...ids.filter((pid) => !prev.includes(pid))],
     );
   };
 
   const selectAllPermissions = () => {
     if (!permissions) return;
     const allIds = permissions.flatMap((g) =>
-      g.controls.map((c: any) => c.id)
+      g.controls.map((c: any) => c.id),
     );
     setSelected((prev) =>
-      allIds.every((id) => prev.includes(id)) ? [] : allIds
+      allIds.every((pid) => prev.includes(pid)) ? [] : allIds,
     );
   };
 
-  /* ===================== SEARCH ===================== */
   const filteredPermissions = useMemo(() => {
     if (!permissions) return [];
     if (!search.trim()) return permissions;
@@ -131,15 +130,14 @@ export default function EditRole() {
       .map((group: any) => ({
         ...group,
         controls: group.controls.filter((c: any) =>
-          c.name.toLowerCase().includes(search.toLowerCase())
+          c.name.toLowerCase().includes(search.toLowerCase()),
         ),
       }))
       .filter((g: any) => g.controls.length > 0);
   }, [permissions, search]);
 
-  /* ===================== SUBMIT ===================== */
   const handleUpdate = async () => {
-    if (!roleId) return;
+    if (invalidId) return;
 
     try {
       const res = await updateRole({
@@ -157,186 +155,207 @@ export default function EditRole() {
           router.push(`/${lang}/roles`);
         },
       });
-
     } catch (err: any) {
-      toast.error(err?.message);
+      toast.error(err?.message ?? err?.data?.message);
     }
   };
 
-  if (!sessionReady) return null;
+  const searchIconSide = lang === "ar" ? "left-3" : "right-3";
+  const searchInputPad =
+    lang === "ar" ? "ps-10" : "pe-10";
 
-  /* ===================== SKELETON ===================== */
-  if (roleLoading || permLoading) {
+  if (!sessionReady || permLoading) {
     return <RoleFormSkeleton />;
   }
 
-
-
-  /* ===================== UI ===================== */
-  return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl icon_bg">
-          <Shield className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-semibold">
-            {translate?.pages.roles.editRole.title}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {translate?.pages.roles.editRole.titleUpdate}
-          </p>
-        </div>
+  if (invalidId) {
+    return (
+      <div
+        className={cn(dash.formPageWide, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
       </div>
+    );
+  }
 
-      <Separator />
+  if (roleLoading) {
+    return <RoleFormSkeleton />;
+  }
 
-      {/* Role Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base icon_bg w-fit">
-            {translate?.pages.roles.editRole.roleInfo}
+  if (roleError || !roleData) {
+    return (
+      <div
+        className={cn(dash.formPageWide, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {t?.notFound}
+      </div>
+    );
+  }
+
+  return (
+    <div className={dash.formPageWide} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <Shield className="w-6 h-6" />
+            </span>
+            <div className="space-y-2 min-w-0">
+              <span className="leading-tight block">{t?.title}</span>
+              <CardDescription className={cn(dash.listDescription, "mt-0")}>
+                {t?.titleUpdate}
+              </CardDescription>
+            </div>
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="grid gap-5 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label>
-              {translate?.pages.roles.editRole.nameAr}
-            </Label>
-            <Input
-              value={name_ar}
-              onChange={(e) => setNameAr(e.target.value)}
-              className="focus-visible:ring-0"
-            />
-          </div>
+        <CardContent className={dash.formCardContent}>
+          <div className="space-y-8 md:space-y-10">
+            <section className={dash.sectionNeutral}>
+              <CardTitle className="text-base font-semibold text-slate-900 mb-6">
+                {t?.roleInfo}
+              </CardTitle>
+              <div className="grid gap-5 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label className="font-semibold text-slate-800">
+                    {t?.nameAr}
+                  </Label>
+                  <Input
+                    value={name_ar}
+                    onChange={(e) => setNameAr(e.target.value)}
+                    className={cn("h-11", dash.input)}
+                  />
+                </div>
 
-          <div className="space-y-2">
-            <Label>
-              {translate?.pages.roles.editRole.nameEn}
-            </Label>
-            <Input
-              value={name_en}
-              onChange={(e) => setNameEn(e.target.value)}
-              className="focus-visible:ring-0"
-            />
+                <div className="space-y-2">
+                  <Label className="font-semibold text-slate-800">
+                    {t?.nameEn}
+                  </Label>
+                  <Input
+                    value={name_en}
+                    onChange={(e) => setNameEn(e.target.value)}
+                    className={cn("h-11", dash.input)}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <h2 className="text-lg font-semibold text-slate-900">
+                  {t?.permissions}
+                </h2>
+                <Badge className="rounded-full bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200/70 px-3 py-1 font-semibold">
+                  <span className="mx-1">{selected.length}</span>
+                  {t?.isSelected}
+                </Badge>
+              </div>
+
+              <Button
+                size="sm"
+                type="button"
+                onClick={selectAllPermissions}
+                className="gap-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white shadow-sm"
+              >
+                <CheckSquare className="h-4 w-4" />
+                {t?.selectAll}
+              </Button>
+            </div>
+
+            <div className={cn("relative max-w-sm", lang === "ar" && "ms-auto")}>
+              <Search
+                className={`pointer-events-none absolute ${searchIconSide} top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground`}
+              />
+              <Input
+                className={cn("h-11", searchInputPad, dash.input)}
+                placeholder={t?.searchPlaceholder}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <ScrollArea className="h-[60vh] pe-4">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 pb-4">
+                {filteredPermissions.map((group: any) => (
+                  <Card
+                    key={group.name}
+                    className="rounded-2xl border-slate-200/90 shadow-sm ring-1 ring-slate-900/4"
+                  >
+                    <CardHeader className="flex flex-row items-center justify-between gap-2 pb-3">
+                      <div className="flex items-center gap-2 rounded-lg bg-emerald-50/80 px-2 py-1 ring-1 ring-emerald-100">
+                        <FolderCheck className="h-4 w-4 text-emerald-800" />
+                        <CardTitle className="text-sm capitalize font-semibold">
+                          {group.name}
+                        </CardTitle>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        type="button"
+                        variant="ghost"
+                        onClick={() => selectGroup(group.controls)}
+                        className="gap-2 shrink-0 rounded-xl text-emerald-800 hover:bg-emerald-50"
+                      >
+                        {t?.selectAll}
+                        <CheckSquare className="h-4 w-4" />
+                      </Button>
+                    </CardHeader>
+
+                    <CardContent className="space-y-2 pt-0">
+                      {group.controls.map((control: any) => {
+                        const active = selected.includes(control.id);
+                        return (
+                          <label
+                            key={control.id}
+                            className={cn(
+                              "flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition",
+                              lang === "ar"
+                                ? "justify-end"
+                                : "flex-row-reverse justify-end",
+                              active
+                                ? "border-emerald-500 bg-emerald-50/90 ring-1 ring-emerald-200/50"
+                                : "border-slate-200 hover:bg-slate-50/80",
+                            )}
+                          >
+                            <span className="text-sm font-medium">
+                              {control.name}
+                            </span>
+                            <Checkbox
+                              checked={active}
+                              onCheckedChange={() =>
+                                toggleControl(control.id)
+                              }
+                            />
+                          </label>
+                        );
+                      })}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+
+            <div className={dash.formFooterBar}>
+              <Button
+                type="button"
+                size="lg"
+                className={cn(dash.formSubmit, "gap-2")}
+                onClick={handleUpdate}
+                disabled={isUpdating}
+              >
+                <CircleCheckBig className="h-5 w-5 shrink-0" />
+                {isUpdating
+                  ? `${t?.processing}...`
+                  : `${t?.editBtn}`}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
-
-      {/* Permissions Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <h2 className="text-lg font-semibold">
-            {translate?.pages.roles.editRole.permissions}
-          </h2>
-          <Badge className="icon_bg text-black">
-            <span className="mx-1.5">
-              {selected.length}
-            </span>
-            {translate?.pages.roles.editRole.isSelected}
-          </Badge>
-        </div>
-
-        <Button
-          size="sm"
-          onClick={selectAllPermissions}
-          className="gap-2 greenBgIcon"
-        >
-          <CheckSquare className="h-4 w-4" />
-          {translate?.pages.roles.editRole.selectAll}
-        </Button>
-      </div>
-
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search
-          className={`absolute top-3 h-4 w-4 text-muted-foreground ${lang === "ar" ? "left-3" : "right-3"
-            }`}
-        />
-        <Input
-          className="pl-9 focus-visible:ring-0"
-          placeholder={
-            translate?.pages.roles.editRole.searchPlaceholder
-          }
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
-      {/* Permissions */}
-      <ScrollArea className="h-[60vh] pr-4">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPermissions.map((group: any) => (
-            <Card key={group.name}>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <div className="flex items-center gap-2 icon_bg p-1 rounded-md">
-                  <FolderCheck className="h-4 w-4 text-primary" />
-                  <CardTitle className="text-sm capitalize">
-                    {group.name}
-                  </CardTitle>
-                </div>
-
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => selectGroup(group.controls)}
-                  className="gap-2 greenBgIcon"
-                >
-                  {translate?.pages.roles.editRole.selectAll}
-                  <CheckSquare className="h-4 w-4" />
-                </Button>
-              </CardHeader>
-
-              <CardContent className="space-y-2">
-                {group.controls.map((control: any) => {
-                  const active = selected.includes(control.id);
-                  return (
-                    <label
-                      key={control.id}
-                      className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition
-                        ${lang === "ar" ? "justify-end" : " flex-row-reverse justify-end"}
-                        ${active
-                          ? "border-green-500 bg-green-50"
-                          : "hover:bg-muted"
-                        }`}
-                    >
-                      <span className="text-sm font-medium">
-                        {control.name}
-                      </span>
-                      <Checkbox
-                        checked={active}
-                        onCheckedChange={() =>
-                          toggleControl(control.id)
-                        }
-                      />
-                    </label>
-                  );
-                })}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </ScrollArea>
-
-      {/* Submit */}
-      <div className="flex justify-end">
-        <Button
-          size="lg"
-          className="gap-2 submitButton"
-          onClick={handleUpdate}
-          disabled={isUpdating}
-        >
-          <CircleCheckBig className="h-5 w-5" />
-          {isUpdating
-            ?
-            `${translate?.pages.roles.editRole.processing}...`
-            :
-            `${translate?.pages.roles.editRole.editBtn}`
-          }
-        </Button>
-      </div>
     </div>
   );
 }

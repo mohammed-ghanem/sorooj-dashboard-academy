@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import Link from "next/link";
 import LangUseParams from "@/translate/LangUseParams";
 
@@ -17,9 +18,11 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Edit3, ShieldX } from "lucide-react";
+import { Edit3, ShieldX, UserCog } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
+import { dash } from "@/constants/dashboardUi";
+import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 
@@ -35,31 +38,26 @@ export default function Admins() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
 
   const headers = TABLE_HEADERS[lang as "ar" | "en"].admins;
+  const pg = translate?.pages.admins;
 
-  const {
-    data: admins = [], isLoading } = useGetAdminsQuery(undefined, { skip: !sessionReady });
+  const { data: admins = [], isLoading } = useGetAdminsQuery(undefined, {
+    skip: !sessionReady,
+  });
   const [deleteAdmin] = useDeleteAdminMutation();
   const [toggleStatus] = useToggleAdminStatusMutation();
 
-  // Optimistic Toggle 
-  const { getOptimisticStatus, toggle, isPending } = useOptimisticToggle<Admin>(
-    {
+  const { getOptimisticStatus, toggle, isPending } =
+    useOptimisticToggle<Admin>({
       getId: (admin) => admin.id,
       getStatus: (admin) => admin.is_active,
-
       onToggle: async (admin) => {
         await toggleStatus(admin.id);
-        return;
       },
-    }
-  );
+    });
 
-
-  /* ========================
-     Helpers
-  ======================== */
   const isProtectedAdmin = (roles: any) => {
     if (Array.isArray(roles)) {
       return roles.some(
@@ -69,7 +67,7 @@ export default function Admins() {
           r === "ادمن" ||
           r?.name === "admin" ||
           r?.name === "أدمن" ||
-          r?.name === "ادمن"
+          r?.name === "ادمن",
       );
     }
     return roles === "admin" || roles === "أدمن" || roles === "ادمن";
@@ -82,8 +80,8 @@ export default function Admins() {
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
-        Object.values(errorData.errors).forEach((messages: any) => 
-          messages.forEach((msg: string) => toast.error(msg))
+        Object.values(errorData.errors).forEach((messages: any) =>
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -94,9 +92,6 @@ export default function Admins() {
     }
   };
 
-  /* ========================
-     Columns
-  ======================== */
   const columns: Column<Admin>[] = [
     {
       key: "name",
@@ -125,25 +120,27 @@ export default function Admins() {
         !isProtectedAdmin(admin.roles) ? (
           <div className="flex items-center justify-center gap-2" dir="ltr">
             <Switch
-              className="data-[state=checked]:bg-green-600"
+              className={dash.statusSwitch}
               checked={getOptimisticStatus(admin)}
               disabled={isPending(admin)}
               onCheckedChange={(checked) => {
                 toggle(admin, checked).catch(() => {
-                  toast.error("فشل تغيير الحالة");
+                  toast.error(
+                    lang === "ar"
+                      ? "فشل تغيير الحالة"
+                      : "Failed to update status",
+                  );
                 });
               }}
             />
 
-            <span className="text-sm">
-              {getOptimisticStatus(admin)
-                ? translate?.pages.admins.active
-                : translate?.pages.admins.inactive}
+            <span className="text-sm text-slate-600">
+              {getOptimisticStatus(admin) ? pg?.active : pg?.inactive}
             </span>
           </div>
         ) : (
           <Badge variant="destructive">
-            {translate?.pages.admins.protect}
+            {pg?.protect}
             <ShieldX />
           </Badge>
         ),
@@ -154,30 +151,24 @@ export default function Admins() {
       align: "center",
       render: (_, admin) =>
         !isProtectedAdmin(admin.roles) ? (
-          <div className="flex justify-center gap-2">
-            {/* EDIT */}
+          <div className="flex justify-center gap-2 flex-wrap">
             <Link href={`/${lang}/admins/edit/${admin.id}`}>
-              <Button
-                className="bg-green-600 hover:bg-green-700 focus:ring-2 ease-in-out
-                 focus:ring-green-300 cursor-pointer"
-                size="sm"
-              >
+              <Button type="button" size="sm" className={dash.tableEdit}>
                 <Edit3 className="h-4 w-4" />
               </Button>
             </Link>
 
-            {/* DELETE */}
             <DeleteConfirmDialog
-              title={translate?.pages.admins.deleteTitle}
-              description={translate?.pages.admins.deleteMessage}
-              confirmText={translate?.pages.admins.deleteBtn }
-              cancelText={translate?.pages.admins.cancelBtn}
+              title={pg?.deleteTitle ?? ""}
+              description={pg?.deleteMessage ?? ""}
+              confirmText={pg?.deleteBtn ?? ""}
+              cancelText={pg?.cancelBtn ?? ""}
               onConfirm={() => handleDelete(admin.id)}
             />
           </div>
         ) : (
           <Badge variant="destructive">
-            {translate?.pages.admins.protect}
+            {pg?.protect}
             <ShieldX />
           </Badge>
         ),
@@ -185,27 +176,26 @@ export default function Admins() {
   ];
 
   const showSkeleton = !sessionReady || isLoading;
-  return (
-    <div className="p-6 mx-4 my-10 bg-white rounded-2xl border space-y-6">
-      <h2 className={`titleStyle ${showSkeleton ? "block h-11 w-24!" : ""}`}>
-        {translate?.pages.admins.adminsTitle || ""}
-      </h2>
-      <div className="mt-10">
-        <Link
-          href={`/${lang}/admins/create`}
-          className={`createBtn  ${showSkeleton ? "block w-40 h-9 py-2.5 opacity-50" : ""}`}
-        >
-          {!showSkeleton &&
-            `${translate?.pages.admins.createAdmin.title}`}
-        </Link>
-      </div>
 
+  return (
+    <IndexListPage
+      icon={UserCog}
+      title={pg?.adminsTitle ?? ""}
+      description={pg?.listDescription}
+      createHref={`/${lang}/admins/create`}
+      createLabel={pg?.createAdmin?.title ?? ""}
+      showSkeleton={showSkeleton}
+      dir={pageDir}
+    >
       <DataTable
         data={admins}
         columns={columns}
         isSkeleton={showSkeleton}
-        searchPlaceholder={`${translate?.pages.admins.searchPlaceholder}`}
+        searchPlaceholder={`${pg?.searchPlaceholder}`}
+        className={dash.dataTableOuter}
+        tableCardClassName={dash.dataTableCard}
+        tableHeaderClassName={dash.dataTableHeader}
       />
-    </div>
+    </IndexListPage>
   );
 }

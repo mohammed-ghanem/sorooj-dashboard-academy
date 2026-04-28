@@ -2,6 +2,7 @@ import {
   BookOpenCheck,
   BookOpenText,
   CalendarRange,
+  Film,
   ShieldUser,
   GraduationCap,
   Home,
@@ -40,6 +41,11 @@ export const mainLinks = (lang: string) => [
     href: `/${lang}/subjects`,
     icon: BookOpenText,
     key: "subjects",
+  },
+  {
+    href: `/${lang}/lessons`,
+    icon: Film,
+    key: "lessons",
   },
   {
     href: `/${lang}/students`,

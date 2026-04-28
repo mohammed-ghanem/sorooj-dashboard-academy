@@ -6,7 +6,7 @@ import "./style.css";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { BookOpenCheck } from "lucide-react";
+import { Layers } from "lucide-react";
 
 import { useGetAcademicYearsQuery } from "@/store/academicYears/academicYearsApi";
 import {
@@ -14,6 +14,8 @@ import {
   useUpdateStudyTermMutation,
 } from "@/store/studyTerms/studyTermsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { cn } from "@/lib/utils";
+import { dash } from "@/constants/dashboardUi";
 
 import StudyTermFormSkeleton from "@/components/skeleton/StudyTermFormSkeleton";
 
@@ -48,12 +50,19 @@ export default function EditStudyTerm() {
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+  const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const labelAlign = lang === "ar" ? "text-end" : "text-start";
+  const t = translate?.pages.studyTerms.editStudyTerm;
 
   const { data: academicYears = [], isLoading: loadingYears } =
     useGetAcademicYearsQuery(undefined, { skip: !sessionReady });
 
-  const { data: studyTerm, isLoading } = useGetStudyTermByIdQuery(Number(id), {
-    skip: !sessionReady,
+  const {
+    data: studyTerm,
+    isLoading,
+    isError,
+  } = useGetStudyTermByIdQuery(Number(id), {
+    skip: !sessionReady || !id || Number.isNaN(Number(id)),
   });
 
   const [updateStudyTerm, { isLoading: isUpdating }] =
@@ -74,9 +83,7 @@ export default function EditStudyTerm() {
     if (!studyTerm) return;
 
     const yearId =
-      studyTerm.academic_year_id ||
-      studyTerm.academic_year?.id ||
-      0;
+      studyTerm.academic_year_id || studyTerm.academic_year?.id || 0;
 
     reset({
       name_ar: studyTerm.name_ar ?? "",
@@ -95,7 +102,7 @@ export default function EditStudyTerm() {
       toast.error(
         lang === "ar"
           ? "يرجى اختيار العام الدراسي"
-          : "Please select an academic year"
+          : "Please select an academic year",
       );
       return;
     }
@@ -118,7 +125,7 @@ export default function EditStudyTerm() {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
         Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
+          messages.forEach((msg: string) => toast.error(msg)),
         );
         return;
       }
@@ -133,111 +140,154 @@ export default function EditStudyTerm() {
     return <StudyTermFormSkeleton />;
   }
 
+  if (isError || !studyTerm) {
+    return (
+      <div
+        className={cn(dash.formPage, "text-center text-muted-foreground")}
+        dir={pageDir}
+      >
+        {translate?.pages.studyTerms.viewStudyTerm.notFound}
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4">
-      <Card className="rounded-2xl shadow-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-bold ">
-            <div className="flex items-center gap-2 rounded-xl icon_bg">
-              <BookOpenCheck className="w-5 h-5 " />
-            </div>
-            {translate?.pages.studyTerms.editStudyTerm.title}
+    <div className={dash.formPage} dir={pageDir}>
+      <Card className={dash.formCard}>
+        <CardHeader className={dash.formCardHeader}>
+          <CardTitle className="flex flex-wrap items-center gap-4 text-xl md:text-2xl font-bold text-slate-900">
+            <span className={dash.pageIconBox}>
+              <Layers className="w-6 h-6" />
+            </span>
+            <span className="leading-tight">{t?.title}</span>
           </CardTitle>
-          <CardDescription className="mr-1 font-semibold">
-            {translate?.pages.studyTerms.editStudyTerm.titleUpdate}
+          <CardDescription className={dash.listDescription}>
+            {t?.titleUpdate}
           </CardDescription>
         </CardHeader>
 
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.studyTerms.editStudyTerm.nameAr}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("name_ar", { required: true })}
-                />
+        <CardContent className={dash.formCardContent}>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 md:space-y-10"
+          >
+            <section className={dash.sectionNeutral}>
+              <div className="mb-6 flex flex-wrap items-start gap-4">
+                <span className={dash.sectionIconWrap}>
+                  <Layers className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  {t?.titleUpdate}
+                </p>
               </div>
-              <div className="space-y-1">
-                <Label className="font-semibold mb-2">
-                  {translate?.pages.studyTerms.editStudyTerm.nameEn}
-                </Label>
-                <Input
-                  className="focus-visible:ring-0 border-[#999]"
-                  {...register("name_en", { required: true })}
-                />
-              </div>
-            </div>
 
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
-                {translate?.pages.studyTerms.editStudyTerm.aboutTerm}
-              </Label>
-              <Input
-                className="focus-visible:ring-0 border-[#999]"
-                {...register("about_term", { required: true })}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Label className="font-semibold mb-2">
-                {translate?.pages.studyTerms.editStudyTerm.academicYear}
-              </Label>
-              <Controller
-                name="academic_year_id"
-                control={control}
-                rules={{ validate: (v) => v > 0 }}
-                render={({ field }) => (
-                  <select
-                    className="flex h-10 w-full rounded-md border border-[#999] bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-0"
-                    value={field.value > 0 ? String(field.value) : ""}
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      field.onChange(v === "" ? 0 : Number(v));
-                    }}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
                   >
-                    <option value="">
-                      {translate?.pages.studyTerms.editStudyTerm.selectAcademicYear}
-                    </option>
-                    {academicYears.map((y) => (
-                      <option key={y.id} value={y.id}>
-                        {yearLabel(y)}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-            </div>
+                    {t?.nameAr}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    {...register("name_ar", { required: true })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.nameEn}
+                  </Label>
+                  <Input
+                    className={cn("h-11", dash.input)}
+                    {...register("name_en", { required: true })}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
+                  {t?.aboutTerm}
+                </Label>
+                <Input
+                  className={cn("h-11", dash.input)}
+                  {...register("about_term", { required: true })}
+                />
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label
+                  className={cn(
+                    "text-sm font-semibold text-slate-800",
+                    labelAlign,
+                  )}
+                >
+                  {t?.academicYear}
+                </Label>
+                <Controller
+                  name="academic_year_id"
+                  control={control}
+                  rules={{ validate: (v) => v > 0 }}
+                  render={({ field }) => (
+                    <select
+                      className={dash.select}
+                      value={field.value > 0 ? String(field.value) : ""}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        field.onChange(v === "" ? 0 : Number(v));
+                      }}
+                    >
+                      <option value="">{t?.selectAcademicYear}</option>
+                      {academicYears.map((y) => (
+                        <option key={y.id} value={y.id}>
+                          {yearLabel(y)}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+              </div>
+            </section>
 
             <Separator />
 
-            <div className="flex items-center gap-3">
-              <Controller
-                name="is_active"
-                control={control}
-                render={({ field }) => (
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={(v) => field.onChange(Boolean(v))}
-                  />
-                )}
-              />
-              <span className="text-sm">
-                {translate?.pages.studyTerms.editStudyTerm.isActive}
-              </span>
-            </div>
+            <div className={dash.formFooterBar}>
+              <div className="flex flex-wrap items-center gap-3">
+                <Controller
+                  name="is_active"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {t?.isActive}
+                </span>
+              </div>
 
-            <Button
-              type="submit"
-              disabled={isUpdating || !academicYears.length}
-              className="w-content block mx-auto gap-2 bg-green-700 hover:bg-green-600 font-semibold cursor-pointer"
-            >
-              {isUpdating
-                ? `${translate?.pages.studyTerms.editStudyTerm.processing}...`
-                : `${translate?.pages.studyTerms.editStudyTerm.editBtn}`}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isUpdating || !academicYears.length}
+                className={dash.formSubmit}
+              >
+                {isUpdating ? `${t?.processing}...` : `${t?.editBtn}`}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
