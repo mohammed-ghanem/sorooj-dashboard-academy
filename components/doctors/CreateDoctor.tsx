@@ -150,7 +150,7 @@ export default function CreateDoctor() {
                     {t?.name}
                   </Label>
                   <div className="relative">
-                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <User className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="doctor-create-name"
                       className={cn("h-11", inputIconPad, dash.input)}
@@ -170,7 +170,7 @@ export default function CreateDoctor() {
                     {t?.email}
                   </Label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Mail className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="doctor-create-email"
                       type="email"
@@ -212,7 +212,7 @@ export default function CreateDoctor() {
                     {t?.position}
                   </Label>
                   <div className="relative">
-                    <Briefcase className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Briefcase className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="doctor-create-position"
                       className={cn("h-11", inputIconPad, dash.input)}
@@ -231,7 +231,7 @@ export default function CreateDoctor() {
                     {t?.specialization}
                   </Label>
                   <div className="relative">
-                    <GraduationCap className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <GraduationCap className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="doctor-create-specialization"
                       className={cn("h-11", inputIconPad, dash.input)}
@@ -285,7 +285,7 @@ export default function CreateDoctor() {
                   {t?.aboutDoctor}
                 </Label>
                 <div className="relative">
-                  <FileText className="pointer-events-none absolute start-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <FileText className="pointer-events-none absolute inset-s-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Textarea
                     id="doctor-create-about"
                     className={cn("min-h-[120px] pt-2.5", inputIconPad, dash.input)}

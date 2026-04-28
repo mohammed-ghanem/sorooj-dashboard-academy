@@ -101,9 +101,9 @@ export default function ViewLesson() {
   return (
     <div className="w-full mx-auto py-10 px-4 md:px-4">
       <Card className="overflow-hidden rounded-3xl border-slate-200/80 shadow-xl shadow-slate-900/6 ring-1 ring-slate-900/4">
-        <CardHeader className="space-y-3 border-b border-slate-100 bg-gradient-to-br from-slate-50 via-white to-emerald-50/40 pb-8 pt-8 md:pt-10 md:pb-10 px-6 md:px-10">
+        <CardHeader className="space-y-3 border-b border-slate-100 bg-linear-to-br from-slate-50 via-white to-emerald-50/40 pb-8 pt-8 md:pt-10 md:pb-10 px-6 md:px-10">
           <CardTitle className="flex flex-wrap items-start gap-4 text-xl md:text-2xl font-bold text-slate-900">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-800 shadow-inner ring-1 ring-emerald-200/60">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-100 to-teal-50 text-emerald-800 shadow-inner ring-1 ring-emerald-200/60">
               <Eye className="w-6 h-6" />
             </span>
             <div className="space-y-2 min-w-0">
@@ -116,7 +116,7 @@ export default function ViewLesson() {
         </CardHeader>
 
         <CardContent className="px-4 py-8 md:px-10 md:py-10 space-y-10">
-          <section className="rounded-2xl border border-slate-200/90 bg-gradient-to-br from-white via-slate-50/30 to-emerald-50/15 p-6 md:p-8 shadow-sm ring-1 ring-slate-900/3">
+          <section className="rounded-2xl border border-slate-200/90 bg-linear-to-br from-white via-slate-50/30 to-emerald-50/15 p-6 md:p-8 shadow-sm ring-1 ring-slate-900/3">
             <div className="mb-6 flex flex-wrap items-center gap-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-800 shadow-sm ring-1 ring-emerald-100">
                 <ClipboardList className="h-5 w-5" strokeWidth={2} />
@@ -141,7 +141,7 @@ export default function ViewLesson() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/25 via-white to-teal-50/15 p-6 md:p-8 shadow-sm ring-1 ring-emerald-900/5">
+          <section className="rounded-2xl border border-emerald-200/70 bg-linear-to-br from-emerald-50/25 via-white to-teal-50/15 p-6 md:p-8 shadow-sm ring-1 ring-emerald-900/5">
             <div className="mb-4 flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-800 shadow-sm ring-1 ring-emerald-100">
                 <FileText className="h-5 w-5" />
@@ -178,11 +178,11 @@ export default function ViewLesson() {
             </div>
           </section>
 
-          <Separator className="bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+          <Separator className="bg-linear-to-r from-transparent via-slate-200 to-transparent" />
 
-          <section className="rounded-2xl border-2 border-violet-200/70 bg-gradient-to-b from-violet-50/45 via-white to-white p-6 md:p-8 shadow-md shadow-violet-950/6 ring-1 ring-violet-900/4">
+          <section className="rounded-2xl border-2 border-violet-200/70 bg-linear-to-b from-violet-50/45 via-white to-white p-6 md:p-8 shadow-md shadow-violet-950/6 ring-1 ring-violet-900/4">
             <div className="mb-5 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/20">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/20">
                 <PlaySquare className="h-5 w-5" />
               </span>
               <Label className="font-bold text-slate-900 text-base">
@@ -221,9 +221,9 @@ export default function ViewLesson() {
             )}
           </section>
 
-          <section className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-amber-50/35 via-white to-orange-50/20 p-6 md:p-8 shadow-lg shadow-amber-950/5 ring-1 ring-amber-900/6">
+          <section className="rounded-2xl border border-amber-200/80 bg-linear-to-br from-amber-50/35 via-white to-orange-50/20 p-6 md:p-8 shadow-lg shadow-amber-950/5 ring-1 ring-amber-900/6">
             <div className="mb-5 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-600/25">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-600/25">
                 <FileStack className="h-5 w-5" />
               </span>
               <Label className="font-bold text-slate-900 text-base">
@@ -269,7 +269,7 @@ export default function ViewLesson() {
 
           <Button
             type="button"
-            className="rounded-xl bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white px-8 py-6 shadow-lg"
+            className="rounded-xl bg-linear-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white px-8 py-6 shadow-lg"
             onClick={() => router.back()}
           >
             {vl?.backBtn}

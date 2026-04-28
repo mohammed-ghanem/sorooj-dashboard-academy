@@ -94,8 +94,8 @@ export default function PdfDropzone({
           "focus-visible:ring-2 focus-visible:ring-amber-400/80 focus-visible:ring-offset-2",
           disabled && "pointer-events-none opacity-50",
           isDragging
-            ? "scale-[1.01] border-amber-500 bg-gradient-to-br from-amber-100/90 via-orange-50 to-amber-50 shadow-lg shadow-amber-500/15"
-            : "border-amber-200/90 bg-gradient-to-br from-amber-50/40 via-white to-orange-50/30 hover:border-amber-400/70 hover:shadow-md hover:shadow-amber-900/5"
+            ? "scale-[1.01] border-amber-500 bg-linear-to-br from-amber-100/90 via-orange-50 to-amber-50 shadow-lg shadow-amber-500/15"
+            : "border-amber-200/90 bg-linear-to-br from-amber-50/40 via-white to-orange-50/30 hover:border-amber-400/70 hover:shadow-md hover:shadow-amber-900/5"
         )}
         onDragOver={(e) => {
           e.preventDefault();

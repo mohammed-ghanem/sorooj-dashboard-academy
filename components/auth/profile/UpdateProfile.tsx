@@ -245,7 +245,7 @@ function UpdateProfile() {
                   <button
                     type="button"
                     onClick={handleRemoveImage}
-                    className="absolute end-0 top-0 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow transition hover:bg-red-600"
+                    className="absolute inset-e-0 top-0 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow transition hover:bg-red-600"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -265,7 +265,7 @@ function UpdateProfile() {
                   type="button"
                   size="icon"
                   variant="secondary"
-                  className="absolute bottom-0 end-0 h-9 w-9 rounded-full shadow-md ring-2 ring-white"
+                  className="absolute bottom-0 inset-e-0 h-9 w-9 rounded-full shadow-md ring-2 ring-white"
                   onClick={handleImageClick}
                   disabled={isUploading}
                 >
@@ -296,7 +296,7 @@ function UpdateProfile() {
                     {t?.name}
                   </Label>
                   <div className="relative">
-                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <User className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="update-profile-name"
                       name="name"
@@ -320,7 +320,7 @@ function UpdateProfile() {
                     {t?.email}
                   </Label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Mail className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="update-profile-email"
                       name="email"

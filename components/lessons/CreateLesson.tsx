@@ -317,7 +317,7 @@ export default function CreateLesson() {
             >
               <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
                 <div className="flex flex-wrap items-start gap-4 min-w-0">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/25">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-600/25">
                     <PlaySquare className="h-5 w-5" strokeWidth={2} />
                   </span>
                   <div className="space-y-1 min-w-0">
@@ -442,7 +442,7 @@ export default function CreateLesson() {
 
             {/* Visual separation between videos and PDF */}
             <div className="relative py-6 md:py-8" aria-hidden>
-              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-gradient-to-r from-transparent via-slate-300/90 to-transparent" />
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-px bg-linear-to-r from-transparent via-slate-300/90 to-transparent" />
               <div className="relative mx-auto flex w-fit items-center gap-3 rounded-full border border-slate-200/90 bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400 shadow-sm">
                 <span className="h-1 w-1 rounded-full bg-amber-400" />
                 {cl?.sectionPdfDivider}
@@ -457,7 +457,7 @@ export default function CreateLesson() {
             >
               <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
                 <div className="flex flex-wrap items-start gap-4 min-w-0">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-600/30">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-600/30">
                     <FileStack className="h-5 w-5" strokeWidth={2} />
                   </span>
                   <div className="space-y-1 min-w-0">

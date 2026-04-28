@@ -157,7 +157,7 @@ export default function CreateAdmin() {
                     {t?.name}
                   </Label>
                   <div className="relative">
-                    <User className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <User className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       className={cn("h-11", inputIconPad, dash.input)}
                       value={form.name}
@@ -178,7 +178,7 @@ export default function CreateAdmin() {
                     {t?.email}
                   </Label>
                   <div className="relative">
-                    <Mail className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Mail className="pointer-events-none absolute inset-s-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       type="email"
                       className={cn("h-11", inputIconPad, dash.input)}
