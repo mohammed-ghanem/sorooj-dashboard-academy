@@ -9,6 +9,7 @@ import type {
   LessonExamQuestionType,
 } from "@/types/lessonExam";
 import type { IApiMessageResponse } from "@/types/subject";
+import { pickExamRawFromResponse } from "@/store/utils/pickExamFromApiResponse";
 
 function normalizeOption(item: any): ILessonExamMcOption {
   return {
@@ -30,8 +31,13 @@ function normalizeQuestion(item: any): ILessonExamQuestion {
   };
 
   if (base.type === "multiple_choice") {
-    const raw = item?.options ?? [];
-    const options = (Array.isArray(raw) ? raw : []).map(normalizeOption);
+    const raw = item?.options ?? item?.Options ?? [];
+    const list = Array.isArray(raw)
+      ? raw
+      : raw && typeof raw === "object"
+        ? Object.values(raw)
+        : [];
+    const options = list.map(normalizeOption);
     return { ...base, options: options.length >= 2 ? options : options };
   }
 
@@ -47,24 +53,15 @@ function normalizeQuestion(item: any): ILessonExamQuestion {
   return base;
 }
 
-function pickExamRaw(response: any): any {
-  const outer = response?.data ?? response;
-  if (!outer || typeof outer !== "object") return null;
-  if ((outer as any).exam != null) return (outer as any).exam;
-  if ((outer as any).lesson_exam != null) return (outer as any).lesson_exam;
-  if (Array.isArray((outer as any).questions)) return outer;
-  const inner = (outer as any).data;
-  if (inner && typeof inner === "object") {
-    if (inner.exam != null) return inner.exam;
-    if (Array.isArray(inner.questions)) return inner;
-  }
-  return null;
-}
-
 export function normalizeLessonExam(row: any): ILessonExam {
   const r = row ?? {};
-  const qRaw = r?.questions ?? [];
-  const questions = (Array.isArray(qRaw) ? qRaw : []).map(normalizeQuestion);
+  const qRaw = r?.questions ?? r?.Questions ?? [];
+  const qList = Array.isArray(qRaw)
+    ? qRaw
+    : qRaw && typeof qRaw === "object"
+      ? Object.values(qRaw)
+      : [];
+  const questions = qList.map(normalizeQuestion);
 
   return {
     id: r?.id != null ? Number(r.id) : undefined,
@@ -144,7 +141,7 @@ export const lessonExamsApi = createApi({
         method: "get",
       }),
       transformResponse: (response: any) => {
-        const raw = pickExamRaw(response);
+        const raw = pickExamRawFromResponse(response);
         if (raw == null) throw new Error("Exam data not found");
         return normalizeLessonExam(raw);
       },
