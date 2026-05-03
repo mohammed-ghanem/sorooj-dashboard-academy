@@ -37,6 +37,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -122,6 +123,7 @@ export default function EditLesson() {
 
   const [lessonNumber, setLessonNumber] = useState("");
   const [title, setTitle] = useState("");
+  const [briefContent, setBriefContent] = useState("");
   const [content, setContent] = useState("");
   const [subjectId, setSubjectId] = useState<number | "">("");
   const [doctorId, setDoctorId] = useState<number | "">("");
@@ -139,6 +141,7 @@ export default function EditLesson() {
 
     setLessonNumber(lesson.lesson_number ?? "");
     setTitle(lesson.title ?? "");
+    setBriefContent(lesson.brief_content ?? "");
     setContent(lesson.content ?? "");
     setSubjectId(lesson.subject_id || "");
     setDoctorId(lesson.doctor_id || "");
@@ -183,6 +186,7 @@ export default function EditLesson() {
         data: {
           lesson_number: lessonNumber.trim(),
           title: title.trim(),
+          brief_content: briefContent.trim(),
           content: content.trim(),
           subject_id: Number(subjectId),
           doctor_id: Number(doctorId),
@@ -367,6 +371,20 @@ export default function EditLesson() {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label className="text-sm font-semibold text-slate-800">
+                  {el?.briefContent}
+                </Label>
+                <Textarea
+                  className={cn("min-h-[100px] resize-y", dash.input)}
+                  value={briefContent}
+                  onChange={(e) => setBriefContent(e.target.value)}
+                />
+                <p className="text-sm text-muted-foreground">
+                  {el?.briefContentHint}
+                </p>
               </div>
             </section>
 

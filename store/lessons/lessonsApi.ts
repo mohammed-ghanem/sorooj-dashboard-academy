@@ -62,6 +62,7 @@ function normalizeLesson(item: any): ILesson {
     id: Number(row?.id) || 0,
     lesson_number: String(row?.lesson_number ?? ""),
     title: String(row?.title ?? ""),
+    brief_content: String(row?.brief_content ?? ""),
     content: String(row?.content ?? ""),
     subject_id: Number(row?.subject_id ?? subject?.id ?? 0),
     doctor_id: Number(row?.doctor_id ?? doctor?.id ?? 0),
@@ -109,6 +110,7 @@ function appendLessonFields(
 ) {
   fd.append("lesson_number", data.lesson_number);
   fd.append("title", data.title);
+  fd.append("brief_content", data.brief_content);
   fd.append("content", data.content);
   fd.append("subject_id", String(data.subject_id));
   fd.append("doctor_id", String(data.doctor_id));

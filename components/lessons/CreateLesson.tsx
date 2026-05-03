@@ -33,6 +33,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -95,6 +96,7 @@ export default function CreateLesson() {
 
   const [lessonNumber, setLessonNumber] = useState("");
   const [title, setTitle] = useState("");
+  const [briefContent, setBriefContent] = useState("");
   const [content, setContent] = useState("");
   const [subjectId, setSubjectId] = useState<number | "">("");
   const [doctorId, setDoctorId] = useState<number | "">("");
@@ -143,6 +145,7 @@ export default function CreateLesson() {
       const res = await createLesson({
         lesson_number: lessonNumber.trim(),
         title: title.trim(),
+        brief_content: briefContent.trim(),
         content: content.trim(),
         subject_id: Number(subjectId),
         doctor_id: Number(doctorId),
@@ -307,6 +310,20 @@ export default function CreateLesson() {
                     ))}
                   </select>
                 </div>
+              </div>
+
+              <div className="mt-5 space-y-2">
+                <Label className="text-sm font-semibold text-slate-800">
+                  {cl?.briefContent}
+                </Label>
+                <Textarea
+                  className={cn("min-h-[100px] resize-y", dash.input)}
+                  value={briefContent}
+                  onChange={(e) => setBriefContent(e.target.value)}
+                />
+                <p className="text-sm text-muted-foreground">
+                  {cl?.briefContentHint}
+                </p>
               </div>
             </section>
 
@@ -495,7 +512,7 @@ export default function CreateLesson() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="text-red-600 hover:bg-red-50"
+                        className="text-red-600 hover:bg-red-50" 
                         onClick={() => removePdfRow(row.key)}
                         disabled={pdfRows.length <= 1}
                       >

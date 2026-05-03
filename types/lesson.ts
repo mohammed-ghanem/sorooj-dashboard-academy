@@ -15,6 +15,7 @@ export interface ILesson {
   id: number;
   lesson_number: string;
   title: string;
+  brief_content: string;
   content: string;
   subject_id: number;
   doctor_id: number;
@@ -47,6 +48,7 @@ export interface ILessonVideoPayload {
 export interface ICreateLessonPayload {
   lesson_number: string;
   title: string;
+  brief_content: string;
   content: string;
   subject_id: number;
   doctor_id: number;
@@ -58,6 +60,7 @@ export interface ICreateLessonPayload {
 export interface IUpdateLessonPayload {
   lesson_number: string;
   title: string;
+  brief_content: string;
   content: string;
   subject_id: number;
   doctor_id: number;

@@ -11,6 +11,7 @@ import {
   useDeleteSubjectMutation,
   useToggleSubjectStatusMutation,
 } from "@/store/subjects/subjectsApi";
+import { useDeleteSubjectExamMutation } from "@/store/subjectExams/subjectExamsApi";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -26,6 +27,7 @@ import { dash } from "@/constants/dashboardUi";
 import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
+import SubjectExamActionsCell from "@/components/subjects/exam/SubjectExamActionsCell";
 
 import type { ISubject } from "@/types/subject";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
@@ -71,6 +73,7 @@ export default function Subjects() {
     skip: !sessionReady,
   });
   const [deleteSubject] = useDeleteSubjectMutation();
+  const [deleteSubjectExam] = useDeleteSubjectExamMutation();
   const [toggleStatus] = useToggleSubjectStatusMutation();
 
   const { getOptimisticStatus, toggle, isPending } =
@@ -85,6 +88,24 @@ export default function Subjects() {
   const displayName = (s: ISubject) => {
     const loc = parseLocalizedNameFromModel(s);
     return lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
+  };
+
+  const handleDeleteExam = async (subjectId: number) => {
+    try {
+      const res = await deleteSubjectExam(subjectId).unwrap();
+      toast.success(res?.message);
+    } catch (err: any) {
+      const errorData = err?.data ?? err;
+      if (errorData?.message) {
+        toast.error(errorData.message);
+        return;
+      }
+      if (errorData?.errors) {
+        Object.values(errorData.errors).forEach((messages: any) =>
+          messages.forEach((msg: string) => toast.error(msg)),
+        );
+      }
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -152,24 +173,43 @@ export default function Subjects() {
       header: headers.actions,
       align: "center",
       render: (_, row) => (
-        <div className="flex justify-center gap-2 flex-wrap">
-          <Link href={`/${lang}/subjects/view/${row.id}`}>
-            <Button type="button" size="sm" className={dash.tableView}>
-              <Eye className="w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href={`/${lang}/subjects/edit/${row.id}`}>
-            <Button type="button" size="sm" className={dash.tableEdit}>
-              <Edit3 className="h-4 w-4" />
-            </Button>
-          </Link>
+        <div className="flex flex-col items-center gap-2 min-w-[200px]">
+          <div className="flex justify-center gap-2 flex-wrap">
+            <Link href={`/${lang}/subjects/view/${row.id}`}>
+              <Button
+                type="button"
+                size="sm"
+                className={dash.tableView}
+                title={translate?.pages.subjects.viewSubject?.title}
+              >
+                <Eye className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href={`/${lang}/subjects/edit/${row.id}`}>
+              <Button
+                type="button"
+                size="sm"
+                className={dash.tableEdit}
+                title={translate?.pages.subjects.editSubject?.title}
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+            </Link>
 
-          <DeleteConfirmDialog
-            title={pg?.deleteTitle ?? ""}
-            description={pg?.deleteMessage ?? ""}
-            confirmText={pg?.deleteBtn ?? ""}
-            cancelText={pg?.cancelBtn ?? ""}
-            onConfirm={() => handleDelete(row.id)}
+            <DeleteConfirmDialog
+              title={pg?.deleteTitle ?? ""}
+              description={pg?.deleteMessage ?? ""}
+              confirmText={pg?.deleteBtn ?? ""}
+              cancelText={pg?.cancelBtn ?? ""}
+              onConfirm={() => handleDelete(row.id)}
+            />
+          </div>
+
+          <SubjectExamActionsCell
+            subjectId={row.id}
+            lang={lang ?? "ar"}
+            examUi={pg?.subjectExam}
+            onDeleteExam={() => handleDeleteExam(row.id)}
           />
         </div>
       ),

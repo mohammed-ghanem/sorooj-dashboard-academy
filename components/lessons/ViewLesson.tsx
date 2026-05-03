@@ -138,6 +138,17 @@ export default function ViewLesson() {
                 </Label>
                 <div className={fieldBox}>{lesson.title || "—"}</div>
               </div>
+              <div className="md:col-span-2">
+                <Label className="font-semibold text-slate-800">
+                  {vl?.briefContent}
+                </Label>
+                <div
+                  className={`${fieldBox} whitespace-pre-wrap`}
+                  dir={lang === "ar" ? "rtl" : "ltr"}
+                >
+                  {lesson.brief_content?.trim() ? lesson.brief_content : "—"}
+                </div>
+              </div>
             </div>
           </section>
 

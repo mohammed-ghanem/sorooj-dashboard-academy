@@ -9,6 +9,7 @@ import {
   useDeleteLessonMutation,
   useToggleLessonStatusMutation,
 } from "@/store/lessons/lessonsApi";
+import { useDeleteLessonExamMutation } from "@/store/lessonExams/lessonExamsApi";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -24,6 +25,7 @@ import { dash } from "@/constants/dashboardUi";
 import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
+import LessonExamActionsCell from "@/components/lessons/exam/LessonExamActionsCell";
 
 import type { ILesson } from "@/types/lesson";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
@@ -41,6 +43,7 @@ export default function Lessons() {
     skip: !sessionReady,
   });
   const [deleteLesson] = useDeleteLessonMutation();
+  const [deleteLessonExam] = useDeleteLessonExamMutation();
   const [toggleStatus] = useToggleLessonStatusMutation();
 
   const { getOptimisticStatus, toggle, isPending } =
@@ -67,6 +70,24 @@ export default function Lessons() {
     const n = lesson.doctor?.name?.trim();
     if (n) return n;
     return lesson.doctor_id ? `#${lesson.doctor_id}` : "—";
+  };
+
+  const handleDeleteExam = async (lessonId: number) => {
+    try {
+      const res = await deleteLessonExam(lessonId).unwrap();
+      toast.success(res?.message);
+    } catch (err: any) {
+      const errorData = err?.data ?? err;
+      if (errorData?.message) {
+        toast.error(errorData.message);
+        return;
+      }
+      if (errorData?.errors) {
+        Object.values(errorData.errors).forEach((messages: any) =>
+          messages.forEach((msg: string) => toast.error(msg)),
+        );
+      }
+    }
   };
 
   const handleDelete = async (id: number) => {
@@ -152,32 +173,43 @@ export default function Lessons() {
       header: headers.actions,
       align: "center",
       render: (_, row) => (
-        <div className="flex justify-center gap-2 flex-wrap">
-          <Link href={`/${lang}/lessons/view/${row.id}`}>
-            <Button
-              type="button"
-              size="sm"
-              className={dash.tableView}
-            >
-              <Eye className="w-5 h-5" />
-            </Button>
-          </Link>
-          <Link href={`/${lang}/lessons/edit/${row.id}`}>
-            <Button
-              type="button"
-              size="sm"
-              className={dash.tableEdit}
-            >
-              <Edit3 className="h-4 w-4" />
-            </Button>
-          </Link>
+        <div className="flex flex-col items-center gap-2 min-w-[200px]">
+          <div className="flex justify-center gap-2 flex-wrap">
+            <Link href={`/${lang}/lessons/view/${row.id}`}>
+              <Button
+                type="button"
+                size="sm"
+                className={dash.tableView}
+                title={translate?.pages.lessons.viewLesson?.title}
+              >
+                <Eye className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href={`/${lang}/lessons/edit/${row.id}`}>
+              <Button
+                type="button"
+                size="sm"
+                className={dash.tableEdit}
+                title={translate?.pages.lessons.editLesson?.title}
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+            </Link>
 
-          <DeleteConfirmDialog
-            title={pg?.deleteTitle ?? ""}
-            description={pg?.deleteMessage ?? ""}
-            confirmText={pg?.deleteBtn ?? ""}
-            cancelText={pg?.cancelBtn ?? ""}
-            onConfirm={() => handleDelete(row.id)}
+            <DeleteConfirmDialog
+              title={pg?.deleteTitle ?? ""}
+              description={pg?.deleteMessage ?? ""}
+              confirmText={pg?.deleteBtn ?? ""}
+              cancelText={pg?.cancelBtn ?? ""}
+              onConfirm={() => handleDelete(row.id)}
+            />
+          </div>
+
+          <LessonExamActionsCell
+            lessonId={row.id}
+            lang={lang ?? "ar"}
+            examUi={pg?.lessonExam}
+            onDeleteExam={() => handleDeleteExam(row.id)}
           />
         </div>
       ),

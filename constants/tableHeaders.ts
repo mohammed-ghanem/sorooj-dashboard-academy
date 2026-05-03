@@ -33,7 +33,7 @@ export const TABLE_HEADERS = {
       name: "الاسم",
       studyTerm: "المحور الدراسي",
       status: "الحالة",
-      actions: "الإجراءات",
+      actions: "الإجراءات -- الاختبارات",
     },
 
     lessons: {
@@ -42,7 +42,7 @@ export const TABLE_HEADERS = {
       subject: "المادة الدراسية",
       doctor: "عضو هيئة التدريس",
       status: "الحالة",
-      actions: "الإجراءات",
+      actions: "الإجراءات -- الاختبارات",
     },
 
     students: {
@@ -74,7 +74,7 @@ export const TABLE_HEADERS = {
       name: "الاسم",
       email: "البريد الإلكتروني",
       mobile: "رقم الهاتف",
-      type: "النوع", 
+      type: "النوع",
       message: "الرسالة",
       date: "التاريخ",
       status: "حالة الرد",
@@ -116,7 +116,7 @@ export const TABLE_HEADERS = {
       name: "Name",
       studyTerm: "Study term",
       status: "Status",
-      actions: "Actions",
+      actions: "Actions -- Exams",
     },
 
     lessons: {
@@ -125,7 +125,7 @@ export const TABLE_HEADERS = {
       subject: "Subject",
       doctor: "Instructor",
       status: "Status",
-      actions: "Actions",
+      actions: "Actions -- Exams",
     },
 
     students: {
@@ -152,12 +152,12 @@ export const TABLE_HEADERS = {
       status: "Description",
       actions: "Actions",
     },
- 
+
     contacts: {
       name: "Name",
       email: "Email",
       mobile: "Mobile",
-      type: "Type", 
+      type: "Type",
       message: "Message",
       date: "Date",
       status: "Status",

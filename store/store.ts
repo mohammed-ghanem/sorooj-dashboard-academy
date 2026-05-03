@@ -17,6 +17,8 @@ import { studentsApi } from "./students/studentsApi";
 import { appContactsApi } from "./settings/appContactsApi";
 import { doctorsApi } from "./doctors/doctorsApi";
 import { lessonsApi } from "./lessons/lessonsApi";
+import { lessonExamsApi } from "./lessonExams/lessonExamsApi";
+import { subjectExamsApi } from "./subjectExams/subjectExamsApi";
 
 
 
@@ -39,6 +41,8 @@ export const store = configureStore({
     [studentsApi.reducerPath]: studentsApi.reducer,
     [doctorsApi.reducerPath]: doctorsApi.reducer,
     [lessonsApi.reducerPath]: lessonsApi.reducer,
+    [lessonExamsApi.reducerPath]: lessonExamsApi.reducer,
+    [subjectExamsApi.reducerPath]: subjectExamsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -59,6 +63,8 @@ export const store = configureStore({
       studentsApi.middleware,
       doctorsApi.middleware,
       lessonsApi.middleware,
+      lessonExamsApi.middleware,
+      subjectExamsApi.middleware,
       ),
    
 });
