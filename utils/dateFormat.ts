@@ -26,34 +26,40 @@ function parseYmd(dateStr?: string) {
   return { y, m, d, clean };
 }
 
-export function formatGregorianDateAr(dateStr?: string) {
+/** Gregorian date for tables/UI (UTC). */
+export function formatGregorianDateUi(
+  dateStr: string | undefined,
+  lang: "ar" | "en",
+): string {
   const parsed = parseYmd(dateStr);
-  if (!parsed) return dateStr ? dateStr.slice(0, 10) : "—";
-
-  // Use UTC to avoid timezone shifting the day.
-  const monthName = new Intl.DateTimeFormat("ar", {
-    month: "long",
+  if (!parsed) return dateStr ? String(dateStr).slice(0, 10) : "—";
+  if (lang === "ar") {
+    const monthName = new Intl.DateTimeFormat("ar", {
+      month: "long",
+      timeZone: "UTC",
+    }).format(new Date(Date.UTC(parsed.y, parsed.m - 1, parsed.d)));
+    return `${parsed.d} ${monthName} ${parsed.y}`;
+  }
+  return new Intl.DateTimeFormat("en-US", {
+    dateStyle: "medium",
     timeZone: "UTC",
   }).format(new Date(Date.UTC(parsed.y, parsed.m - 1, parsed.d)));
-
-  return `${parsed.d} ${monthName} ${parsed.y}`;
 }
 
-export function formatHijriDateAr(dateStr?: string) {
-  const parsed = parseYmd(dateStr);
-  if (!parsed) return dateStr ? dateStr.slice(0, 10) : "—";
-
-  const monthName = hijriMonthsAr[parsed.m - 1] ?? String(parsed.m);
-  return `${parsed.d} ${monthName} ${parsed.y}`;
+export function formatGregorianDateAr(dateStr?: string) {
+  return formatGregorianDateUi(dateStr, "ar");
 }
 
-export function formatHijriFromGregorianDateAr(dateStr?: string) {
+/** Hijri (Islamic calendar) from a Gregorian `YYYY-MM-DD`, localized month names. */
+export function formatHijriFromGregorianUi(
+  dateStr: string | undefined,
+  lang: "ar" | "en",
+): string {
   const parsed = parseYmd(dateStr);
-  if (!parsed) return dateStr ? dateStr.slice(0, 10) : "—";
-
-  // Convert selected Gregorian date to Hijri using Islamic calendar.
+  if (!parsed) return dateStr ? String(dateStr).slice(0, 10) : "—";
   const dt = new Date(Date.UTC(parsed.y, parsed.m - 1, parsed.d));
-  const parts = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+  const locale = lang === "ar" ? "ar-SA-u-ca-islamic" : "en-SA-u-ca-islamic";
+  const parts = new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -67,3 +73,53 @@ export function formatHijriFromGregorianDateAr(dateStr?: string) {
   return day && month && year ? `${day} ${month} ${year}` : "—";
 }
 
+export function formatHijriDateAr(dateStr?: string) {
+  const parsed = parseYmd(dateStr);
+  if (!parsed) return dateStr ? dateStr.slice(0, 10) : "—";
+
+  const monthName = hijriMonthsAr[parsed.m - 1] ?? String(parsed.m);
+  return `${parsed.d} ${monthName} ${parsed.y}`;
+}
+
+export function formatHijriFromGregorianDateAr(dateStr?: string) {
+  return formatHijriFromGregorianUi(dateStr, "ar");
+}
+
+/** Hijri calendar year only (numeric), from a Gregorian `YYYY-MM-DD` (uses UTC). */
+export function formatHijriYearOnlyFromGregorianUi(
+  dateStr: string | undefined,
+  lang: "ar" | "en",
+): string {
+  const parsed = parseYmd(dateStr);
+  if (!parsed) return "";
+
+  const dt = new Date(Date.UTC(parsed.y, parsed.m - 1, parsed.d));
+  const locale =
+    lang === "ar" ? "ar-SA-u-ca-islamic" : "en-u-ca-islamic";
+  const parts = new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    timeZone: "UTC",
+  }).formatToParts(dt);
+
+  const year = parts.find((p) => p.type === "year")?.value;
+  return year ? year.trim() : "";
+}
+
+export function formatHijriYearOnlyFromGregorianDateAr(dateStr?: string): string {
+  return formatHijriYearOnlyFromGregorianUi(dateStr, "ar");
+}
+
+/** First four digits from `YYYY-MM-DD` (cohort year fields). */
+export function gregorianYearFromIsoDate(iso?: string): string {
+  if (!iso) return "";
+  const head = iso.slice(0, 10);
+  const m = head.match(/^(\d{4})/);
+  return m ? m[1] : "";
+}
+
+/** Store a picked Gregorian year as 1 January (API-friendly date string). */
+export function isoDateFromGregorianYear(y: string): string {
+  const s = String(y).trim();
+  if (!/^\d{4}$/.test(s)) return "";
+  return `${s}-01-01`;
+}

@@ -6,7 +6,7 @@ import "./style.css";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { CalendarRange } from "lucide-react";
+import { CalendarRange, Clock3, Languages, Sparkles } from "lucide-react";
 
 import {
   useGetCohortByIdQuery,
@@ -15,8 +15,13 @@ import {
 import { useSessionReady } from "@/hooks/useSessionReady";
 import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
+import type { ICreateCohortPayload } from "@/types/cohort";
+import { cohortToFormPayload, defaultCohortFormPayload } from "@/types/cohort";
+import { validateCohortFormDates } from "@/utils/cohortFormValidate";
 
 import CohortFormSkeleton from "@/components/skeleton/CohortFormSkeleton";
+import CohortEnrollmentPeriodsSection from "@/components/cohorts/CohortEnrollmentPeriodsSection";
+import { CohortYearGridPicker } from "@/components/cohorts/CohortYearGridPicker";
 
 import {
   Card,
@@ -29,21 +34,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import {
-  formatGregorianDateAr,
-  formatHijriFromGregorianDateAr,
-} from "@/utils/dateFormat";
-
-type EditCohortForm = {
-  name_ar: string;
-  name_en: string;
-  start_date: string;
-  end_date: string;
-  is_active: boolean;
-};
 
 export default function EditCohort() {
   const sessionReady = useSessionReady();
@@ -60,49 +52,31 @@ export default function EditCohort() {
     isLoading,
     isError,
   } = useGetCohortByIdQuery(Number(id), {
-    skip:
-      !sessionReady || !id || Number.isNaN(Number(id)),
+    skip: !sessionReady || !id || Number.isNaN(Number(id)),
   });
 
   const [updateCohort, { isLoading: isUpdating }] = useUpdateCohortMutation();
 
   const { register, handleSubmit, reset, control, watch } =
-    useForm<EditCohortForm>({
-      defaultValues: {
-        name_ar: "",
-        name_en: "",
-        start_date: "",
-        end_date: "",
-        is_active: true,
-      },
+    useForm<ICreateCohortPayload>({
+      defaultValues: defaultCohortFormPayload(),
     });
-
-  const watchedStartDate = watch("start_date");
-  const watchedEndDate = watch("end_date");
 
   useEffect(() => {
     if (!cohort) return;
-
-    reset({
-      name_ar: cohort.name_ar ?? "",
-      name_en: cohort.name_en ?? "",
-      start_date: cohort.start_date?.slice(0, 10) ?? "",
-      end_date: cohort.end_date?.slice(0, 10) ?? "",
-      is_active: Boolean(cohort.is_active),
-    });
+    reset(cohortToFormPayload(cohort));
   }, [cohort, reset]);
 
-  const onSubmit = async (data: EditCohortForm) => {
+  const onSubmit = async (data: ICreateCohortPayload) => {
+    const msg = validateCohortFormDates(data, lang === "ar" ? "ar" : "en");
+    if (msg) {
+      toast.error(msg);
+      return;
+    }
     try {
       const res = await updateCohort({
         id: Number(id),
-        data: {
-          name_ar: data.name_ar,
-          name_en: data.name_en,
-          start_date: data.start_date,
-          end_date: data.end_date,
-          is_active: data.is_active,
-        },
+        data,
       }).unwrap();
 
       toast.success(res?.message);
@@ -153,13 +127,17 @@ export default function EditCohort() {
         </CardHeader>
 
         <CardContent className={dash.formCardContent}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 md:space-y-10">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 md:space-y-10"
+          >
             <section className={dash.sectionNeutral}>
-              <div className="mb-6 flex flex-wrap items-start gap-4">
-                <span className={dash.sectionIconWrap}>
-                  <CalendarRange className="h-5 w-5" strokeWidth={2} />
-                </span>
-                <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+              <div className="space-y-3 mb-6">
+                <p className={dash.cohortSectionHeadingBadge}>
+                  <Languages className="h-4 w-4 text-emerald-700 shrink-0" />
+                  {t?.languagesSectionTitle}
+                </p>
+                <p className="text-xs max-w-2xl leading-relaxed text-red-500 font-bold">
                   {t?.titleUpdate}
                 </p>
               </div>
@@ -179,70 +157,102 @@ export default function EditCohort() {
                     {...register("name_ar", { required: true })}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label
-                    className={cn(
-                      "text-sm font-semibold text-slate-800",
-                      labelAlign,
-                    )}
-                  >
-                    {t?.nameEn}
-                  </Label>
-                  <Input
-                    className={cn("h-11", dash.input)}
-                    {...register("name_en", { required: true })}
-                  />
-                </div>
+               
               </div>
 
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+              <div className="space-y-3 my-6">
+                <p className={dash.cohortSectionHeadingBadge}>
+                  <CalendarRange className="h-4 w-4 text-emerald-700 shrink-0" />
+                  {t?.cohortsDates}
+                </p>
+                <p className="text-xs max-w-2xl leading-relaxed text-red-500 font-bold">
+                  {t?.datesSectionHint}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                 <div className="space-y-2">
                   <Label
                     className={cn(
-                      "text-sm font-semibold text-slate-800",
+                      "text-sm font-semibold text-slate-800 flex items-center gap-2",
                       labelAlign,
                     )}
                   >
-                    {t?.startDate}
+                    <Sparkles className="h-4 w-4 shrink-0 text-emerald-700" />
+                    {t?.startYear ?? t?.startDate}
                   </Label>
-                  <Input
-                    type="date"
-                    className={cn("h-11", dash.input)}
-                    {...register("start_date", { required: true })}
+                  <Controller
+                    name="start_date"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CohortYearGridPicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder={t?.pickYearPlaceholder}
+                        ariaLabel={t?.startYear ?? t?.startDate}
+                        hijriYearSuffix={t?.hijriYearSuffix}
+                      />
+                    )}
                   />
-                  <div className="text-xs text-muted-foreground">
-                    {formatGregorianDateAr(watchedStartDate)}{" "}
-                    <span className="mx-1">—</span>{" "}
-                    {formatHijriFromGregorianDateAr(watchedStartDate)}
-                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label
                     className={cn(
-                      "text-sm font-semibold text-slate-800",
+                      "text-sm font-semibold text-slate-800 flex items-center gap-2",
                       labelAlign,
                     )}
                   >
-                    {t?.endDate}
+                    <Sparkles className="h-4 w-4 shrink-0 text-emerald-700" />
+                    {t?.endYear ?? t?.endDate}
                   </Label>
-                  <Input
-                    type="date"
-                    className={cn("h-11", dash.input)}
-                    {...register("end_date", { required: true })}
+                  <Controller
+                    name="end_date"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CohortYearGridPicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder={t?.pickYearPlaceholder}
+                        ariaLabel={t?.endYear ?? t?.endDate}
+                        hijriYearSuffix={t?.hijriYearSuffix}
+                      />
+                    )}
                   />
-                  <div className="text-xs text-muted-foreground">
-                    {formatGregorianDateAr(watchedEndDate)}{" "}
-                    <span className="mx-1">—</span>{" "}
-                    {formatHijriFromGregorianDateAr(watchedEndDate)}
-                  </div>
                 </div>
               </div>
             </section>
 
-            <Separator />
+            <CohortEnrollmentPeriodsSection
+              register={register}
+              watch={watch}
+              labelAlign={labelAlign}
+              labels={{
+                enrollmentSectionTitle: t?.enrollmentSectionTitle ?? "",
+                enrollmentSectionHint: t?.enrollmentSectionHint,
+                enrollmentStart: t?.enrollmentStartDate ?? "",
+                enrollmentEnd: t?.enrollmentEndDate ?? "",
+                academicYearsTitle: t?.academicYearsTitle ?? "",
+                academicYearsHint: t?.academicYearsHint,
+                academicYearFirstTitle: t?.academicYearFirstTitle ?? "",
+                academicYearSecondTitle: t?.academicYearSecondTitle ?? "",
+                secondSessionExamsTitle: t?.secondSessionExamsTitle ?? "",
+                secondSessionExamsHint: t?.secondSessionExamsHint,
+                secondSessionForFirstYearTitle:
+                  t?.secondSessionForFirstYearTitle ?? "",
+                secondSessionForSecondYearTitle:
+                  t?.secondSessionForSecondYearTitle ?? "",
+                periodStart: t?.periodStartDate ?? "",
+                periodEnd: t?.periodEndDate ?? "",
+              }}
+            />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">
+                <Clock3 className="h-5 w-5 text-slate-600 shrink-0" />
                 <Controller
                   name="is_active"
                   control={control}

@@ -32,7 +32,7 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir} className={cairo.variable}>
-      <body className="min-h-screen">
+      <body className="min-h-screen overflow-hidden">
         <Providers>
           <div className="flex flex-col md:flex-row h-screen">
             <div className="block w-14 md:w-60 shrink-0">
@@ -45,12 +45,12 @@ export default async function RootLayout({
             {/* Main Content Area */}
             <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
               {/* Header - Fixed on mobile */}
-              <header className="sticky top-0 z-10 bg-white shadow-sm md:shadow-none">
+              <header className="sticky top-0 z-10 shrink-0 bg-white shadow-sm md:shadow-none">
                 <Navbar />
               </header>
 
               {/* Main Content */}
-              <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 mainBackGroundColor">
+              <main className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain p-3 sm:p-4 md:p-6 mainBackGroundColor">
                 <div className="w-full mx-auto">
                   {children}
                 </div>

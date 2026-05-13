@@ -179,7 +179,7 @@ export default function CreateStudyTerm() {
                     }
                   />
                 </div>
-              </div>
+              </div> 
 
               <div className="mt-5 space-y-2">
                 <Label

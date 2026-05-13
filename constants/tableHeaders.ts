@@ -10,8 +10,11 @@ export const TABLE_HEADERS = {
 
     cohorts: {
       name: "الاسم",
-      startDate: "تاريخ البداية",
-      endDate: "تاريخ النهاية",
+      academicYears: "الأعوام الدراسية",
+      academicYearFirst: "العام الأول",
+      academicYearSecond: "العام الثاني",
+      secondRoundExams: "امتحانات الدور الثاني",
+      enrollmentPeriod: "فترة التسجيل",
       status: "الحالة",
       actions: "الإجراءات",
     },
@@ -93,8 +96,11 @@ export const TABLE_HEADERS = {
 
     cohorts: {
       name: "Name",
-      startDate: "Start date",
-      endDate: "End date",
+      academicYears: "Academic years",
+      academicYearFirst: "Year 1",
+      academicYearSecond: "Year 2",
+      secondRoundExams: "Second-round exams",
+      enrollmentPeriod: "Enrollment period",
       status: "Status",
       actions: "Actions",
     },

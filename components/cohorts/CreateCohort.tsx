@@ -1,18 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
 import "./style.css";
 import { useRouter } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { CalendarRange } from "lucide-react";
+import { CalendarRange, Clock3, Languages, Sparkles } from "lucide-react";
 
 import { useCreateCohortMutation } from "@/store/cohorts/cohortsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
+import type { ICreateCohortPayload } from "@/types/cohort";
+import { defaultCohortFormPayload } from "@/types/cohort";
+import { validateCohortFormDates } from "@/utils/cohortFormValidate";
 
 import CohortFormSkeleton from "@/components/skeleton/CohortFormSkeleton";
+import CohortEnrollmentPeriodsSection from "@/components/cohorts/CohortEnrollmentPeriodsSection";
+import { CohortYearGridPicker } from "@/components/cohorts/CohortYearGridPicker";
 
 import {
   Card,
@@ -25,21 +30,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
-import {
-  formatGregorianDateAr,
-  formatHijriFromGregorianDateAr,
-} from "@/utils/dateFormat";
-
-type FormState = {
-  name_ar: string;
-  name_en: string;
-  start_date: string;
-  end_date: string;
-  is_active: boolean;
-};
 
 export default function CreateCohort() {
   const sessionReady = useSessionReady();
@@ -52,25 +44,19 @@ export default function CreateCohort() {
 
   const [createCohort, { isLoading: isCreating }] = useCreateCohortMutation();
 
-  const [form, setForm] = useState<FormState>({
-    name_ar: "",
-    name_en: "",
-    start_date: "",
-    end_date: "",
-    is_active: true,
-  });
+  const { register, handleSubmit, control, watch } =
+    useForm<ICreateCohortPayload>({
+      defaultValues: defaultCohortFormPayload(),
+    });
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (data: ICreateCohortPayload) => {
+    const msg = validateCohortFormDates(data, lang === "ar" ? "ar" : "en");
+    if (msg) {
+      toast.error(msg);
+      return;
+    }
     try {
-      const res = await createCohort({
-        name_ar: form.name_ar,
-        name_en: form.name_en,
-        start_date: form.start_date,
-        end_date: form.end_date,
-        is_active: form.is_active,
-      }).unwrap();
+      const res = await createCohort(data).unwrap();
 
       toast.success(res?.message);
       router.push(`/${lang}/cohorts`);
@@ -109,18 +95,22 @@ export default function CreateCohort() {
         </CardHeader>
 
         <CardContent className={dash.formCardContent}>
-          <form onSubmit={submit} className="space-y-8 md:space-y-10">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-8 md:space-y-10"
+          >
             <section
               aria-labelledby="cohort-create-main"
               className={dash.sectionNeutral}
             >
-              <div className="mb-6 flex flex-wrap items-start gap-4">
-                <span className={dash.sectionIconWrap}>
-                  <CalendarRange className="h-5 w-5" strokeWidth={2} />
-                </span>
+              <div className="space-y-3 mb-6">
+                <p className={dash.cohortSectionHeadingBadge}>
+                  <Languages className="h-4 w-4 text-emerald-700 shrink-0" />
+                  {t?.languagesSectionTitle}
+                </p>
                 <p
                   id="cohort-create-main"
-                  className="text-sm text-muted-foreground leading-relaxed max-w-2xl"
+                  className="text-xs max-w-2xl leading-relaxed text-red-500 font-bold"
                 >
                   {t?.description}
                 </p>
@@ -138,90 +128,113 @@ export default function CreateCohort() {
                   </Label>
                   <Input
                     className={cn("h-11", dash.input)}
-                    value={form.name_ar}
-                    onChange={(e) =>
-                      setForm({ ...form, name_ar: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    className={cn(
-                      "text-sm font-semibold text-slate-800",
-                      labelAlign,
-                    )}
-                  >
-                    {t?.nameEn}
-                  </Label>
-                  <Input
-                    className={cn("h-11", dash.input)}
-                    value={form.name_en}
-                    onChange={(e) =>
-                      setForm({ ...form, name_en: e.target.value })
-                    }
+                    {...register("name_ar", { required: true })}
                   />
                 </div>
               </div>
 
-              <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+              <div className="space-y-3 my-6">
+                <p className={dash.cohortSectionHeadingBadge}>
+                  <CalendarRange className="h-4 w-4 text-emerald-700 shrink-0" />
+                  {t?.cohortsDates}
+                </p>
+                <p className="text-xs max-w-2xl leading-relaxed text-red-500 font-bold">
+                  {t?.datesSectionHint}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                 <div className="space-y-2">
                   <Label
                     className={cn(
-                      "text-sm font-semibold text-slate-800",
+                      "text-sm font-semibold text-slate-800 flex items-center gap-2",
                       labelAlign,
                     )}
                   >
-                    {t?.startDate}
+                    <Sparkles className="h-4 w-4 shrink-0 text-emerald-700" />
+                    {t?.startYear ?? t?.startDate}
                   </Label>
-                  <Input
-                    type="date"
-                    className={cn("h-11", dash.input)}
-                    value={form.start_date}
-                    onChange={(e) =>
-                      setForm({ ...form, start_date: e.target.value })
-                    }
+                  <Controller
+                    name="start_date"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CohortYearGridPicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder={t?.pickYearPlaceholder}
+                        ariaLabel={t?.startYear ?? t?.startDate}
+                        hijriYearSuffix={t?.hijriYearSuffix}
+                      />
+                    )}
                   />
-                  <div className="text-xs text-muted-foreground">
-                    {formatGregorianDateAr(form.start_date)}{" "}
-                    <span className="mx-1">—</span>{" "}
-                    {formatHijriFromGregorianDateAr(form.start_date)}
-                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label
                     className={cn(
-                      "text-sm font-semibold text-slate-800",
+                      "text-sm font-semibold text-slate-800 flex items-center gap-2",
                       labelAlign,
                     )}
                   >
-                    {t?.endDate}
+                    <Sparkles className="h-4 w-4 shrink-0 text-emerald-700" />
+                    {t?.endYear ?? t?.endDate}
                   </Label>
-                  <Input
-                    type="date"
-                    className={cn("h-11", dash.input)}
-                    value={form.end_date}
-                    onChange={(e) =>
-                      setForm({ ...form, end_date: e.target.value })
-                    }
+                  <Controller
+                    name="end_date"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <CohortYearGridPicker
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        placeholder={t?.pickYearPlaceholder}
+                        ariaLabel={t?.endYear ?? t?.endDate}
+                        hijriYearSuffix={t?.hijriYearSuffix}
+                      />
+                    )}
                   />
-                  <div className="text-xs text-muted-foreground">
-                    {formatGregorianDateAr(form.end_date)}{" "}
-                    <span className="mx-1">—</span>{" "}
-                    {formatHijriFromGregorianDateAr(form.end_date)}
-                  </div>
                 </div>
               </div>
             </section>
 
-            <Separator />
+            <CohortEnrollmentPeriodsSection
+              register={register}
+              watch={watch}
+              labelAlign={labelAlign}
+              labels={{
+                enrollmentSectionTitle: t?.enrollmentSectionTitle ?? "",
+                enrollmentSectionHint: t?.enrollmentSectionHint,
+                enrollmentStart: t?.enrollmentStartDate ?? "",
+                enrollmentEnd: t?.enrollmentEndDate ?? "",
+                academicYearsTitle: t?.academicYearsTitle ?? "",
+                academicYearsHint: t?.academicYearsHint,
+                academicYearFirstTitle: t?.academicYearFirstTitle ?? "",
+                academicYearSecondTitle: t?.academicYearSecondTitle ?? "",
+                secondSessionExamsTitle: t?.secondSessionExamsTitle ?? "",
+                secondSessionExamsHint: t?.secondSessionExamsHint,
+                secondSessionForFirstYearTitle:
+                  t?.secondSessionForFirstYearTitle ?? "",
+                secondSessionForSecondYearTitle:
+                  t?.secondSessionForSecondYearTitle ?? "",
+                periodStart: t?.periodStartDate ?? "",
+                periodEnd: t?.periodEndDate ?? "",
+              }}
+            />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">
-                <Checkbox
-                  checked={form.is_active}
-                  onCheckedChange={(v) =>
-                    setForm({ ...form, is_active: Boolean(v) })
-                  }
+                <Clock3 className="h-5 w-5 text-slate-600 shrink-0" />
+                <Controller
+                  name="is_active"
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  )}
                 />
                 <span className="text-sm font-medium text-slate-800">
                   {t?.isActive}

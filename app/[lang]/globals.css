@@ -96,6 +96,15 @@ svg {
 
 /* Your custom styles */
 
+/* Neutralize browser autofill tint (Chrome blue / yellow) on shadcn inputs */
+input[data-slot="input"]:-webkit-autofill,
+input[data-slot="input"]:-webkit-autofill:hover,
+input[data-slot="input"]:-webkit-autofill:focus,
+input[data-slot="input"]:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  box-shadow: 0 0 0 1000px hsl(var(--background)) inset !important;
+  -webkit-text-fill-color: hsl(var(--foreground)) !important;
+}
 
 .titleStyle {
   background: #3f4e60;

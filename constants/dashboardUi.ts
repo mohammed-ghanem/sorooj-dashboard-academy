@@ -70,7 +70,7 @@ export const dash = {
 
   /** Text inputs & selects on forms */
   input:
-    "rounded-xl border-slate-200 bg-white/90 shadow-sm transition focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-400/60",
+    "rounded-md border-slate-200 bg-white/90 shadow-sm transition focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-400/60",
 
   select:
     "flex h-11 w-full rounded-xl border border-slate-200 bg-white/95 px-3 py-2 text-sm shadow-sm outline-none transition focus-visible:ring-2 focus-visible:ring-emerald-500/30 focus-visible:border-emerald-400/60",
@@ -82,6 +82,10 @@ export const dash = {
   /** Neutral “lesson details” style section */
   sectionNeutral:
     "rounded-2xl border border-slate-200/90 bg-gradient-to-br from-white via-slate-50/30 to-emerald-50/20 p-6 md:p-8 shadow-sm ring-1 ring-slate-900/3",
+
+  /** Section title chip (matches cohort enrollment blocks) */
+  cohortSectionHeadingBadge:
+    "inline-flex items-center gap-2 text-base font-semibold text-slate-800 bg-emerald-500/10 px-3 py-2 rounded-lg",
 
   sectionIconWrap:
     "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-800 shadow-sm ring-1 ring-emerald-100",
