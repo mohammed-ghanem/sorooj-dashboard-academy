@@ -10,13 +10,16 @@ import {
   normalizeExam,
 } from "@/store/utils/examApiUtils";
 import { lessonVideosApi } from "@/store/lessonVideos/lessonVideosApi";
+import type { AppDispatch } from "@/store/store";
+
+type QueryPatchResult = { undo: () => void };
 
 function patchLessonVideoHasExam(
-  dispatch: (action: unknown) => void,
+  dispatch: AppDispatch,
   lessonId: number | undefined,
   videoId: number,
   hasExam: boolean,
-) {
+): QueryPatchResult | undefined {
   if (lessonId == null || lessonId <= 0) return undefined;
   return dispatch(
     lessonVideosApi.util.updateQueryData(
@@ -76,7 +79,7 @@ export const videoExamsApi = createApi({
         try {
           await queryFulfilled;
         } catch {
-          patch?.undo();
+          patch?.undo?.();
         }
       },
       invalidatesTags: (_r, _e, { videoId, lessonId }) => [
@@ -132,7 +135,7 @@ export const videoExamsApi = createApi({
             );
           }
         } catch {
-          patch?.undo();
+          patch?.undo?.();
         }
       },
       invalidatesTags: (_r, _e, { videoId, lessonId }) => [
