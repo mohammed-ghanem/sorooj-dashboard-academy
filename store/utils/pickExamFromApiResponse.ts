@@ -30,6 +30,11 @@ export function pickExamRawFromResponse(response: any): any {
       "subject_exam",
       "SubjectExam",
       "subjectExam",
+      "video_exam",
+      "VideoExam",
+      "videoExam",
+      "lesson_video_exam",
+      "LessonVideoExam",
     ] as const;
     for (const k of keyOrder) {
       const v = node[k];

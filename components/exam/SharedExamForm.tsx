@@ -54,6 +54,8 @@ export type SharedExamFormProps = {
   isSaving: boolean;
   afterSavePath: string;
   backListPath: string;
+  /** Restrict question types in the selector (e.g. video exams: MC + true/false only) */
+  allowedQuestionTypes?: LessonExamQuestionType[];
   onCreate: (payload: {
     title: string;
     max_attempts: number;
@@ -221,11 +223,15 @@ export default function SharedExamForm({
   isSaving,
   afterSavePath,
   backListPath,
+  allowedQuestionTypes,
   onCreate,
   onUpdate,
 }: SharedExamFormProps) {
   const sessionReady = useSessionReady();
   const router = useRouter();
+
+  const defaultQuestionType: LessonExamQuestionType =
+    allowedQuestionTypes?.[0] ?? "multiple_choice";
 
   const editMode = Boolean(exam) && !is404;
 
@@ -234,7 +240,7 @@ export default function SharedExamForm({
   const [passingPct, setPassingPct] = useState(60);
   const [isActive, setIsActive] = useState(true);
   const [questionRows, setQuestionRows] = useState<QuestionRow[]>([
-    blankQuestionRow(),
+    blankQuestionRow(defaultQuestionType),
   ]);
 
   useEffect(() => {
@@ -248,7 +254,7 @@ export default function SharedExamForm({
   }, [exam, is404, isLoading, isFetching]);
 
   const addQuestion = () =>
-    setQuestionRows((prev) => [...prev, blankQuestionRow()]);
+    setQuestionRows((prev) => [...prev, blankQuestionRow(defaultQuestionType)]);
 
   const removeQuestion = (key: string) => {
     setQuestionRows((prev) =>
@@ -438,7 +444,11 @@ export default function SharedExamForm({
       <div className="max-w-4xl mx-auto py-10 px-4 space-y-4 text-center">
         <p className="text-muted-foreground">{ex?.loadError ?? ""}</p>
         <Button type="button" onClick={() => router.push(backListPath)}>
-          {ex?.backList ?? ex?.backLessons ?? ex?.backSubjects ?? ""}
+          {ex?.backList ??
+            ex?.backLessons ??
+            ex?.backSubjects ??
+            ex?.backVideos ??
+            ""}
         </Button>
       </div>
     );
@@ -450,7 +460,21 @@ export default function SharedExamForm({
 
   const entityDescription =
     (editMode ? ex?.editDescription : ex?.createDescription) ??
-    `${ex?.entityIdLabel ?? ex?.lessonIdLabel ?? ex?.subjectIdLabel ?? ""}: ${examId}`;
+    `${ex?.entityIdLabel ?? ex?.lessonIdLabel ?? ex?.subjectIdLabel ?? ex?.videoIdLabel ?? ""}: ${examId}`;
+
+  const allQuestionTypeOptions: {
+    value: LessonExamQuestionType;
+    label?: string;
+  }[] = [
+    { value: "multiple_choice", label: ex?.typeMultipleChoice },
+    { value: "true_false", label: ex?.typeTrueFalse },
+    { value: "article", label: ex?.typeArticle },
+  ];
+  const questionTypeOptions = allowedQuestionTypes
+    ? allQuestionTypeOptions.filter((o) =>
+        allowedQuestionTypes.includes(o.value),
+      )
+    : allQuestionTypeOptions;
 
   return (
     <div className={dash.formPage} dir={pageDir}>
@@ -589,13 +613,11 @@ export default function SharedExamForm({
                             })
                           }
                         >
-                          <option value="multiple_choice">
-                            {ex?.typeMultipleChoice}
-                          </option>
-                          <option value="true_false">
-                            {ex?.typeTrueFalse}
-                          </option>
-                          <option value="article">{ex?.typeArticle}</option>
+                          {questionTypeOptions.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
                       <div className="space-y-2 md:col-span-1">
@@ -825,9 +847,6 @@ export default function SharedExamForm({
               </div>
 
               <div className="flex flex-wrap gap-3 mt-4 md:mt-0 md:justify-end">
-                {/* <Button type="button" variant="outline" onClick={() => router.push(backListPath)}>
-                  {ex?.cancelBtnForm ?? ex?.cancelBtn}
-                </Button> */}
                 <Button
                   type="submit"
                   disabled={isSaving}

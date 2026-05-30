@@ -118,7 +118,8 @@ export default function ViewLesson() {
         <CardContent className="px-4 py-8 md:px-10 md:py-10 space-y-10">
           <section className="rounded-2xl border border-slate-200/90 bg-linear-to-br from-white via-slate-50/30 to-emerald-50/15 p-6 md:p-8 shadow-sm ring-1 ring-slate-900/3">
             <div className="mb-6 flex flex-wrap items-center gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-emerald-800 shadow-sm ring-1 ring-emerald-100">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white
+               text-emerald-800 shadow-sm ring-1 ring-emerald-100">
                 <ClipboardList className="h-5 w-5" strokeWidth={2} />
               </span>
               <span className="text-lg font-bold text-slate-900">

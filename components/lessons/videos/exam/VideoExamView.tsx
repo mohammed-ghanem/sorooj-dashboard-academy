@@ -4,7 +4,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { ClipboardCheck, Eye, Pencil } from "lucide-react";
 
-import { useGetLessonExamQuery } from "@/store/lessonExams/lessonExamsApi";
+import { useGetVideoExamQuery } from "@/store/videoExams/videoExamsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
@@ -12,7 +12,7 @@ import TranslateHook from "@/translate/TranslateHook";
 import {
   Card,
   CardContent,
-  CardHeader,
+  CardHeader, 
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
@@ -22,30 +22,40 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
 
-import "../style.css";
+import "@/components/lessons/style.css";
 
-export default function LessonExamView() {
+export default function VideoExamView() {
   const sessionReady = useSessionReady();
-  const { lessonId: lessonIdParam } = useParams<{ lessonId: string }>();
+  const { lessonId: lessonIdParam, videoId: videoIdParam } = useParams<{
+    lessonId: string;
+    videoId: string;
+  }>();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
-  const ex = translate?.pages.lessons.lessonExam;
+  const ex = translate?.pages.lessons.videoExam;
+  const pg = translate?.pages.lessons;
 
   const lessonId = Number(lessonIdParam);
+  const videoId = Number(videoIdParam);
   const invalidId =
     lessonIdParam == null ||
     lessonIdParam === "" ||
+    videoIdParam == null ||
+    videoIdParam === "" ||
     Number.isNaN(lessonId) ||
-    lessonId <= 0;
+    lessonId <= 0 ||
+    Number.isNaN(videoId) ||
+    videoId <= 0;
 
-  const {
-    data: exam,
-    isLoading,
-    isError,
-    error,
-  } = useGetLessonExamQuery(lessonId, { skip: !sessionReady || invalidId });
+  const videosBase = `/${lang}/lessons/videos/${lessonId}`;
+  const examBase = `${videosBase}/exam/${videoId}`;
+
+  const { data: exam, isLoading, isError, error } = useGetVideoExamQuery(
+    videoId,
+    { skip: !sessionReady || invalidId },
+  );
 
   const is404 =
     isError &&
@@ -59,6 +69,10 @@ export default function LessonExamView() {
   const fieldBox =
     "mt-1 text-sm rounded-xl border border-slate-200/90 bg-white/95 px-3 py-2.5 shadow-sm ring-1 ring-slate-900/4";
 
+  const displayQuestions = (exam?.questions ?? []).filter(
+    (q) => q.type === "multiple_choice" || q.type === "true_false",
+  );
+
   if (!sessionReady) {
     return <LessonFormSkeleton />;
   }
@@ -66,7 +80,7 @@ export default function LessonExamView() {
   if (invalidId) {
     return (
       <div className="max-w-4xl mx-auto py-10 px-4 text-center text-muted-foreground">
-        {ex?.examNotFound}
+        {ex?.examNotFound ?? ex?.lessonNotFound}
       </div>
     );
   }
@@ -79,8 +93,8 @@ export default function LessonExamView() {
     return (
       <div className="max-w-4xl mx-auto py-10 px-4 space-y-4 text-center">
         <p className="text-muted-foreground">{ex?.loadError}</p>
-        <Button type="button" variant="outline" onClick={() => router.back()}>
-          {translate?.pages.lessons.viewLesson.backBtn}
+        <Button type="button" variant="outline" onClick={() => router.push(videosBase)}>
+          {ex?.backVideos ?? pg?.viewLesson?.backBtn}
         </Button>
       </div>
     );
@@ -93,24 +107,17 @@ export default function LessonExamView() {
           <Eye className="h-8 w-8 opacity-70" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-xl font-bold text-slate-900">
-            {ex?.noExamTitle}
-          </h1>
+          <h1 className="text-xl font-bold text-slate-900">{ex?.noExamTitle}</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
             {ex?.noExamDescription}
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button
-            type="button"
-            onClick={() =>
-              router.push(`/${lang}/lessons/exam/${lessonId}/edit`)
-            }
-          >
+          <Button type="button" onClick={() => router.push(`${examBase}/edit`)}>
             {ex?.createExamBtn}
           </Button>
-          <Button type="button" variant="outline" onClick={() => router.back()}>
-            {translate?.pages.lessons.viewLesson.backBtn}
+          <Button type="button" variant="outline" onClick={() => router.push(videosBase)}>
+            {ex?.backVideos ?? pg?.viewLesson?.backBtn}
           </Button>
         </div>
       </div>
@@ -139,7 +146,7 @@ export default function LessonExamView() {
               {exam.is_active ? ex?.activeExam : ex?.inactiveExam}
             </Badge>
             <span className="text-xs text-muted-foreground self-center">
-              {ex?.lessonIdLabel}: #{lessonId}
+              {ex?.videoIdLabel}: #{videoId}
             </span>
           </div>
         </CardHeader>
@@ -163,7 +170,7 @@ export default function LessonExamView() {
                 <Label className="font-semibold text-slate-800">
                   {ex?.questionsCountLabel}
                 </Label>
-                <div className={fieldBox}>{exam.questions?.length ?? 0}</div>
+                <div className={fieldBox}>{displayQuestions.length}</div>
               </div>
             </div>
           </section>
@@ -175,7 +182,7 @@ export default function LessonExamView() {
               {ex?.sectionQuestions}
             </Label>
             <div className="space-y-4">
-              {(exam.questions ?? []).map((q, i) => (
+              {displayQuestions.map((q, i) => (
                 <Card
                   key={q.id ?? i}
                   className="rounded-2xl border-violet-200/70 bg-violet-50/20 shadow-sm"
@@ -186,9 +193,7 @@ export default function LessonExamView() {
                         #{i + 1} ·{" "}
                         {q.type === "multiple_choice"
                           ? ex?.typeMultipleChoice
-                          : q.type === "true_false"
-                            ? ex?.typeTrueFalse
-                            : ex?.typeArticle}
+                          : ex?.typeTrueFalse}
                       </span>
                       <Badge variant="outline">{q.marks}</Badge>
                     </div>
@@ -207,15 +212,11 @@ export default function LessonExamView() {
                             </span>
                             <span
                               className={
-                                o.is_correct
-                                  ? "font-semibold text-white bg-green-700 px-2 py-0.5 rounded-md"
-                                  : ""
+                                o.is_correct ? "font-semibold text-white bg-green-700 px-2 py-0.5 rounded-md" : ""
                               }
                             >
                               {o.option_text}
-                              {o.is_correct
-                                ? ` (${ex?.correctChoiceBadge})`
-                                : ""}
+                              {o.is_correct ? ` (${ex?.correctChoiceBadge})` : ""}
                             </span>
                           </li>
                         ))}
@@ -239,19 +240,13 @@ export default function LessonExamView() {
             <Button
               type="button"
               className="rounded-xl bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"
-              onClick={() =>
-                router.push(`/${lang}/lessons/exam/${lessonId}/edit`)
-              }
+              onClick={() => router.push(`${examBase}/edit`)}
             >
               <Pencil className="w-4 h-4 me-2" />
               {ex?.editExamBtn}
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push(`/${lang}/lessons`)}
-            >
-              {ex?.backLessons ?? translate?.pages.lessons.viewLesson.backBtn}
+            <Button type="button" variant="outline" onClick={() => router.push(videosBase)}>
+              {ex?.backVideos ?? pg?.viewLesson?.backBtn}
             </Button>
           </div>
         </CardContent>

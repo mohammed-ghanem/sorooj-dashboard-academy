@@ -204,7 +204,7 @@ export default function SubjectExamView() {
                             <span
                               className={
                                 o.is_correct
-                                  ? "font-semibold text-emerald-800"
+                                  ? "font-semibold text-white bg-green-700 px-2 py-0.5 rounded-md"
                                   : ""
                               }
                             >
@@ -220,7 +220,7 @@ export default function SubjectExamView() {
                     {q.type === "true_false" ? (
                       <div className={fieldBox}>
                         {ex?.correctAnswer}:{" "}
-                        <strong>
+                        <strong className="text-white bg-green-700 px-2 py-0.5 rounded-md">
                           {q.correct_boolean ? ex?.valueTrue : ex?.valueFalse}
                         </strong>
                       </div>

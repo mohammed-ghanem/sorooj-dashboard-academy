@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
 
-import { Edit3, Eye, Film } from "lucide-react";
+import { Edit3, Eye, Film, PlayCircle } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
 import { TABLE_HEADERS } from "@/constants/tableHeaders";
 import { dash } from "@/constants/dashboardUi";
@@ -166,6 +166,24 @@ export default function Lessons() {
             {getOptimisticStatus(row) ? pg?.active : pg?.inactive}
           </span>
         </div>
+      ),
+    },
+    {
+      key: "videos",
+      header: headers.videoExams,
+      align: "center",
+      render: (_, row) => (
+        <Link href={`/${lang}/lessons/videos/${row.id}`}>
+          <Button
+            type="button"
+            size="sm"
+            className="rounded-xl bg-violet-600 hover:bg-violet-700 text-white h-9 w-9 p-0 shadow-sm"
+            title={pg?.videoExam?.tooltipVideosList ?? ""}
+            aria-label={pg?.videoExam?.tooltipVideosList ?? ""}
+          >
+            <PlayCircle className="h-4 w-4" />
+          </Button>
+        </Link>
       ),
     },
     {

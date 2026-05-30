@@ -44,8 +44,17 @@ export const TABLE_HEADERS = {
       title: "العنوان",
       subject: "المادة الدراسية",
       doctor: "عضو هيئة التدريس",
+      videoExams: "تقييمات الفيديو",
       status: "الحالة",
       actions: "الإجراءات -- الاختبارات",
+    },
+
+    lessonVideos: {
+      title: "عنوان الفيديو",
+      youtubeUrl: "رابط يوتيوب",
+      status: "الحالة",
+      hasExam: "التقييم",
+      examActions: "إجراءات التقييم",
     },
 
     students: {
@@ -130,8 +139,17 @@ export const TABLE_HEADERS = {
       title: "Title",
       subject: "Subject",
       doctor: "Instructor",
+      videoExams: "Video quizzes",
       status: "Status",
       actions: "Actions -- Exams",
+    },
+
+    lessonVideos: {
+      title: "Video title",
+      youtubeUrl: "YouTube URL",
+      status: "Status",
+      hasExam: "Quiz",
+      examActions: "Quiz actions",
     },
 
     students: {
