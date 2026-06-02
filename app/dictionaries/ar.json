@@ -632,6 +632,23 @@
         "editExamBtn": "تعديل التقييم"
       }
     },
+    "examArticleReviews": {
+      "listTitle": "مراجعة الأسئلة المقالية",
+      "listDescription": "عرض إجابات الطلاب المقالية ومراجعتها وتصحيحها.",
+      "searchPlaceholder": "ابحث عن طالب أو سؤال...",
+      "showTitle": "تفاصيل الإجابة المقالية",
+      "studentName": "اسم الطالب",
+      "studentEmail": "البريد الإلكتروني",
+      "questionLabel": "السؤال",
+      "answerLabel": "إجابة الطالب",
+      "pendingReview": "قيد المراجعة",
+      "reviewed": "تم مراجعة الإجابة",
+      "correctBtn": "إجابة صحيحة",
+      "incorrectBtn": "إجابة خاطئة",
+      "answerCorrect": "إجابة صحيحة",
+      "answerIncorrect": "إجابة خاطئة",
+      "loading": "جارٍ التحميل..."
+    },
     "students": {
       "listTitle": "الطلاب المسجلون",
       "listDescription": "عرض ملفات الطلاب وحالة الالتحاق والحساب.",
@@ -783,6 +800,7 @@
     "roles": "الصلاحيات والمهام",
     "admins": "المستخدمين",
     "students": "الطلاب",
+    "examArticleReviews": "مراجعة الأسئلة المقالية",
     "doctors": "اعضاء هيئة التدريس",
     "cohorts": "الدفعات",
     "academicYears": "الأعوام الدراسية",

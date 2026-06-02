@@ -633,6 +633,23 @@
         "editExamBtn": "Edit quiz"
       }
     },
+    "examArticleReviews": {
+      "listTitle": "article question reviews",
+      "listDescription": "View and grade student article answers.",
+      "searchPlaceholder": "Search student or question...",
+      "showTitle": "Article answer details",
+      "studentName": "Student name",
+      "studentEmail": "Email",
+      "questionLabel": "Question",
+      "answerLabel": "Student article answer",
+      "pendingReview": "Under review",
+      "reviewed": "Answer reviewed",
+      "correctBtn": "Correct",
+      "incorrectBtn": "Incorrect",
+      "answerCorrect": "Correct answer",
+      "answerIncorrect": "Incorrect answer",
+      "loading": "Loading..."
+    },
     "students": {
       "listTitle": "Registered students",
       "listDescription": "View student profiles, enrollment, and account status.",
@@ -784,6 +801,7 @@
     "roles": "Roles & Permissions",
     "admins": "Admins",
     "students": "Students",
+    "examArticleReviews": "Article question reviews",
     "doctors": "Teaching staff",
     "cohorts": "Cohorts",
     "academicYears": "Academic years",

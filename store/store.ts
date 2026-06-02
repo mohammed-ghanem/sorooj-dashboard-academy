@@ -21,6 +21,7 @@ import { lessonExamsApi } from "./lessonExams/lessonExamsApi";
 import { subjectExamsApi } from "./subjectExams/subjectExamsApi";
 import { lessonVideosApi } from "./lessonVideos/lessonVideosApi";
 import { videoExamsApi } from "./videoExams/videoExamsApi";
+import { examArticleReviewsApi } from "./examArticleReviews/examArticleReviewsApi";
 
 
 
@@ -47,6 +48,7 @@ export const store = configureStore({
     [subjectExamsApi.reducerPath]: subjectExamsApi.reducer,
     [lessonVideosApi.reducerPath]: lessonVideosApi.reducer,
     [videoExamsApi.reducerPath]: videoExamsApi.reducer,
+    [examArticleReviewsApi.reducerPath]: examArticleReviewsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -71,6 +73,7 @@ export const store = configureStore({
       subjectExamsApi.middleware,
       lessonVideosApi.middleware,
       videoExamsApi.middleware,
+      examArticleReviewsApi.middleware,
       ),
    
 });

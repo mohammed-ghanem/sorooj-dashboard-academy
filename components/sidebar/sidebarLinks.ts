@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   UserCircle,
   Users,
+  FileText,
 } from "lucide-react";
 
 export const mainLinks = (lang: string) => [
@@ -51,6 +52,11 @@ export const mainLinks = (lang: string) => [
     href: `/${lang}/students`,
     icon: UserCircle,
     key: "students",
+  },
+  {
+    href: `/${lang}/exam-article-reviews`,
+    icon: FileText,
+    key: "examArticleReviews",
   },
   {
     href: `/${lang}/admins`,

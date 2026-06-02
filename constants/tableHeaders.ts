@@ -92,6 +92,15 @@ export const TABLE_HEADERS = {
       status: "حالة الرد",
       actions: "الإجراءات",
     },
+
+    examArticleReviews: {
+      student: "اسم الطالب",
+      question: "السؤال",
+      answer: "الإجابة المقالية",
+      submittedAt: "تاريخ الإرسال",
+      status: "حالة المراجعة",
+      actions: "الإجراءات",
+    },
   },
 
   en: {
@@ -185,6 +194,15 @@ export const TABLE_HEADERS = {
       message: "Message",
       date: "Date",
       status: "Status",
+      actions: "Actions",
+    },
+
+    examArticleReviews: {
+      student: "Student",
+      question: "Question",
+      answer: "Essay answer",
+      submittedAt: "Submitted at",
+      status: "Review status",
       actions: "Actions",
     },
   },
