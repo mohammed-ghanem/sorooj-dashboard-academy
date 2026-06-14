@@ -32,6 +32,7 @@ import LangUseParams from "@/translate/LangUseParams";
 type FormState = {
   name_ar: string;
   name_en: string;
+  program_sequence: string;
   is_active: boolean;
 };
 
@@ -50,16 +51,28 @@ export default function CreateAcademicYear() {
   const [form, setForm] = useState<FormState>({
     name_ar: "",
     name_en: "",
+    program_sequence: "",
     is_active: true,
   });
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const programSequence = Number(form.program_sequence);
+    if (
+      !form.program_sequence.trim() ||
+      !Number.isInteger(programSequence) ||
+      programSequence < 1
+    ) {
+      toast.error(t?.programSequenceRequired);
+      return;
+    }
+
     try {
       const res = await createAcademicYear({
         name_ar: form.name_ar,
         name_en: form.name_en,
+        program_sequence: programSequence,
         is_active: form.is_active,
       }).unwrap();
 
@@ -112,6 +125,31 @@ export default function CreateAcademicYear() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2 md:col-span-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.programSequence}
+                  </Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    placeholder={t?.programSequencePlaceholder}
+                    className={cn("h-11 max-w-xs", dash.input)}
+                    value={form.program_sequence}
+                    onChange={(e) =>
+                      setForm({ ...form, program_sequence: e.target.value })
+                    }
+                  />
+                  {t?.programSequenceHint ? (
+                    <p className="text-xs text-muted-foreground">
+                      {t.programSequenceHint}
+                    </p>
+                  ) : null}
+                </div>
                 <div className="space-y-2">
                   <Label
                     className={cn(

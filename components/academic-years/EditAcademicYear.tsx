@@ -36,6 +36,7 @@ import LangUseParams from "@/translate/LangUseParams";
 type EditAcademicYearForm = {
   name_ar: string;
   name_en: string;
+  program_sequence: number;
   is_active: boolean;
 };
 
@@ -66,6 +67,7 @@ export default function EditAcademicYear() {
       defaultValues: {
         name_ar: "",
         name_en: "",
+        program_sequence: 0,
         is_active: true,
       },
     });
@@ -76,6 +78,7 @@ export default function EditAcademicYear() {
     reset({
       name_ar: academicYear.name_ar ?? "",
       name_en: academicYear.name_en ?? "",
+      program_sequence: academicYear.program_sequence,
       is_active: Boolean(academicYear.is_active),
     });
   }, [academicYear, reset]);
@@ -87,6 +90,7 @@ export default function EditAcademicYear() {
         data: {
           name_ar: data.name_ar,
           name_en: data.name_en,
+          program_sequence: data.program_sequence,
           is_active: data.is_active,
         },
       }).unwrap();
@@ -154,6 +158,32 @@ export default function EditAcademicYear() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+                <div className="space-y-2 md:col-span-2">
+                  <Label
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.programSequence}
+                  </Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    placeholder={t?.programSequencePlaceholder}
+                    className={cn("h-11 max-w-xs", dash.input)}
+                    {...register("program_sequence", {
+                      required: true,
+                      valueAsNumber: true,
+                      min: 1,
+                    })}
+                  />
+                  {t?.programSequenceHint ? (
+                    <p className="text-xs text-muted-foreground">
+                      {t.programSequenceHint}
+                    </p>
+                  ) : null}
+                </div>
                 <div className="space-y-2">
                   <Label
                     className={cn(

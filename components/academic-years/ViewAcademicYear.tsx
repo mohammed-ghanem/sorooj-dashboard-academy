@@ -84,6 +84,14 @@ export default function ViewAcademicYear() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <Label className="font-semibold text-slate-800">
+                  {t?.programSequence}
+                </Label>
+                <div className={dash.viewFieldBox}>
+                  {academicYear.program_sequence || "—"}
+                </div>
+              </div>
+              <div>
+                <Label className="font-semibold text-slate-800">
                   {t?.nameAr}
                 </Label>
                 <div className={dash.viewFieldBox}>

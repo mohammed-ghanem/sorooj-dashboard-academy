@@ -248,6 +248,10 @@
       "createAcademicYear": {
         "title": "إضافة عام دراسي",
         "description": "أضف عامًا دراسيًا جديدًا بالعربية والإنجليزية",
+        "programSequence": "ترتيب السنة",
+        "programSequencePlaceholder": "رقم السنه الدراسية",
+        "programSequenceHint": "مثال: 1  - للعام الدراسي الأول",
+        "programSequenceRequired": "حقل ترتيب السنة مطلوب.",
         "nameAr": "الاسم بالعربية",
         "nameEn": "الاسم بالإنجليزية",
         "isActive": "نشط",
@@ -257,6 +261,9 @@
       "editAcademicYear": {
         "title": "تعديل العام الدراسي",
         "titleUpdate": "تحديث بيانات العام الدراسي",
+        "programSequence": "ترتيب السنة",
+        "programSequencePlaceholder": "رقم السنه الدراسية",
+        "programSequenceHint": "مثال: 1  - للعام الدراسي الأول",
         "nameAr": "الاسم بالعربية",
         "nameEn": "الاسم بالإنجليزية",
         "isActive": "نشط",
@@ -266,6 +273,7 @@
       "viewAcademicYear": {
         "title": "تفاصيل العام الدراسي",
         "description": "عرض بيانات العام الدراسي",
+        "programSequence": "ترتيب السنة",
         "nameAr": "الاسم بالعربية",
         "nameEn": "الاسم بالإنجليزية",
         "status": "الحالة",

@@ -20,7 +20,8 @@ export const TABLE_HEADERS = {
     },
 
     academicYears: {
-      name: "الاسم",
+      programSequence: "ترتيب السنة",
+      academicYear: "العام الدراسي",
       status: "الحالة",
       actions: "الإجراءات",
     },
@@ -124,7 +125,8 @@ export const TABLE_HEADERS = {
     },
 
     academicYears: {
-      name: "Name",
+      programSequence: "Year order",
+      academicYear: "Academic year",
       status: "Status",
       actions: "Actions",
     },

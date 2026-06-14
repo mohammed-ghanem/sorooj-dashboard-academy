@@ -16,6 +16,7 @@ function normalizeAcademicYear(item: any): IAcademicYear {
     name: localized.name,
     name_ar: localized.name_ar,
     name_en: localized.name_en,
+    program_sequence: Math.max(0, Number(item?.program_sequence ?? 0) || 0),
     is_active: Boolean(
       item?.is_active === true || Number(item?.is_active ?? 0) === 1
     ),
@@ -31,6 +32,7 @@ function buildAcademicYearFormData(
   const fd = new FormData();
   fd.append("name[ar]", data.name_ar);
   fd.append("name[en]", data.name_en);
+  fd.append("program_sequence", String(data.program_sequence));
   fd.append("is_active", data.is_active ? "1" : "0");
   return fd;
 }

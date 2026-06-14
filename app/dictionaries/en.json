@@ -249,6 +249,10 @@
       "createAcademicYear": {
         "title": "Create academic year",
         "description": "Add a new academic year with Arabic and English names",
+        "programSequence": "Year order",
+        "programSequencePlaceholder": "Example: 1",
+        "programSequenceHint": "Example: 1 - for the first academic year",
+        "programSequenceRequired": "Year order is required.",
         "nameAr": "Academic year name",
         "nameEn": "Name (English)",
         "isActive": "Active",
@@ -258,6 +262,9 @@
       "editAcademicYear": {
         "title": "Edit academic year",
         "titleUpdate": "Update academic year details",
+        "programSequence": "Year order",
+        "programSequencePlaceholder": "Example: 1",
+        "programSequenceHint": "Example: 1 - for the first academic year",
         "nameAr": "Name (Arabic)",
         "nameEn": "Name (English)",
         "isActive": "Active",
@@ -267,6 +274,7 @@
       "viewAcademicYear": {
         "title": "Academic year details",
         "description": "Read-only information for this academic year",
+        "programSequence": "Year order",
         "nameAr": "Name (Arabic)",
         "nameEn": "Name (English)",
         "status": "Status",

@@ -76,8 +76,16 @@ export default function AcademicYears() {
 
   const columns: Column<IAcademicYear>[] = [
     {
+      key: "program_sequence",
+      header: headers.programSequence,
+      align: "center",
+      render: (_, c) => (
+        <span className="font-semibold text-slate-800">{c.program_sequence}</span>
+      ),
+    },
+    {
       key: "name_ar",
-      header: headers.name,
+      header: headers.academicYear,
       render: (_, c) => (
         <span className="font-medium">{displayName(c)}</span>
       ),
@@ -92,7 +100,7 @@ export default function AcademicYears() {
             className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
             disabled={isPending(row)}
-            onCheckedChange={(checked) => {
+            onCheckedChange={(checked) => { 
               toggle(row, checked).catch(() => {
                 toast.error(
                   lang === "ar"
