@@ -11,6 +11,8 @@ export interface ILessonAttachment {
   name?: string;
 }
 
+export type LessonTrackType = "study_term" | "category";
+
 export interface ILesson {
   id: number;
   lesson_number: string;
@@ -55,6 +57,7 @@ export interface ICreateLessonPayload {
   is_active: boolean;
   videos: ILessonVideoPayload[];
   attachments: File[];
+  type: LessonTrackType;
 }
 
 export interface IUpdateLessonPayload {
@@ -67,4 +70,5 @@ export interface IUpdateLessonPayload {
   is_active: boolean;
   videos: ILessonVideoPayload[];
   attachments: File[];
+  type: LessonTrackType;
 }

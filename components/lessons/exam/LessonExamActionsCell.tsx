@@ -5,12 +5,18 @@ import { useSessionReady } from "@/hooks/useSessionReady";
 import ExamActionsCell, {
   type ExamActionsUi,
 } from "@/components/exam/ExamActionsCell";
+import {
+  ACADEMIC_LESSONS_BASE_PATH,
+  lessonExamHref,
+} from "@/utils/lessonsPaths";
 
 type Props = {
   lessonId: number;
   lang: string;
   examUi: ExamActionsUi | undefined;
   onDeleteExam: () => void | Promise<void>;
+  /** Lessons index path: `academic-study/lessons` or `singleLearnPath/lessons` */
+  lessonsBasePath?: string;
 };
 
 export default function LessonExamActionsCell({
@@ -18,6 +24,7 @@ export default function LessonExamActionsCell({
   lang,
   examUi,
   onDeleteExam,
+  lessonsBasePath = ACADEMIC_LESSONS_BASE_PATH,
 }: Props) {
   const sessionReady = useSessionReady();
 
@@ -40,8 +47,8 @@ export default function LessonExamActionsCell({
     <ExamActionsCell
       examUi={examUi}
       groupLabel="Lesson exam"
-      viewHref={`/${lang}/lessons/exam/${lessonId}`}
-      editHref={`/${lang}/lessons/exam/${lessonId}/edit`}
+      viewHref={lessonExamHref(lang, lessonId, lessonsBasePath)}
+      editHref={lessonExamHref(lang, lessonId, lessonsBasePath, "/edit")}
       hasExam={hasExam}
       loadFailed={loadFailed}
       isLoading={!sessionReady || isLoading || isFetching}

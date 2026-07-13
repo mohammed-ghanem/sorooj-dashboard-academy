@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import SharedExamForm from "@/components/exam/SharedExamForm";
@@ -11,15 +11,28 @@ import {
   useUpdateLessonExamMutation,
 } from "@/store/lessonExams/lessonExamsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import {
+  LESSONS_LIST_QUERY_KEY,
+  lessonExamHref,
+  resolveLessonsBaseFromPathname,
+} from "@/utils/lessonsPaths";
 
 import type { ILessonExamSavePayload } from "@/types/lessonExam";
 
 export default function LessonExamForm() {
   const sessionReady = useSessionReady();
   const { lessonId: lessonIdParam } = useParams<{ lessonId: string }>();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const lang = LangUseParams() ?? "ar";
   const translate = TranslateHook();
   const pageDir = lang === "ar" ? "rtl" : "ltr";
+
+  const lessonsBasePath = resolveLessonsBaseFromPathname(
+    pathname,
+    lang,
+    searchParams.get(LESSONS_LIST_QUERY_KEY),
+  );
 
   const ex = translate?.pages.lessons.lessonExam as Record<
     string,
@@ -58,8 +71,6 @@ export default function LessonExamForm() {
   const [updateExam, { isLoading: updating }] =
     useUpdateLessonExamMutation();
 
-  const langPrefix = `/${lang}`;
-
   return (
     <SharedExamForm
       examId={lessonId}
@@ -73,8 +84,8 @@ export default function LessonExamForm() {
       is404={is404}
       otherError={otherError}
       isSaving={creating || updating}
-      afterSavePath={`${langPrefix}/lessons/exam/${lessonId}`}
-      backListPath={`${langPrefix}/lessons`}
+      afterSavePath={lessonExamHref(lang, lessonId, lessonsBasePath)}
+      backListPath={`/${lang}/${lessonsBasePath}`}
       onCreate={(payload) =>
         createExam({
           lessonId,

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
+import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { useGetLessonByIdQuery } from "@/store/lessons/lessonsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
 import LangUseParams from "@/translate/LangUseParams";
@@ -30,12 +31,17 @@ import { Button } from "@/components/ui/button";
 import TranslateHook from "@/translate/TranslateHook";
 import ViewLessonSkeleton from "@/components/skeleton/ViewLessonSkeleton";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import type { LessonTrackType } from "@/types/lesson";
 
 import "ckeditor5/ckeditor5.css";
 import "@/components/ckEditor/style.css";
 import "./style.css";
 
-export default function ViewLesson() {
+export default function ViewLesson({
+  track = "study_term",
+}: {
+  track?: LessonTrackType;
+}) {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const sessionReady = useSessionReady();
@@ -43,10 +49,15 @@ export default function ViewLesson() {
   const translate = TranslateHook();
 
   const lessonId = Number(id);
+  const isCategory = track === "category";
 
-  const { data: subjects = [] } = useGetSubjectsQuery(undefined, {
-    skip: !sessionReady,
+  const { data: academicSubjects = [] } = useGetSubjectsQuery(undefined, {
+    skip: !sessionReady || isCategory,
   });
+  const { data: trackSubjects = [] } = useGetScientificTrackSubjectsQuery(
+    undefined,
+    { skip: !sessionReady || !isCategory },
+  );
 
   const { data: lesson, isLoading, isError } = useGetLessonByIdQuery(
     lessonId,
@@ -59,18 +70,23 @@ export default function ViewLesson() {
     if (!lesson) return "—";
     const nested = lesson.subject;
     if (nested) {
+      if (isCategory && nested.name) return nested.name;
       const loc = parseLocalizedNameFromModel(nested);
       return lang === "ar"
         ? loc.name_ar || loc.name || loc.name_en || "—"
         : loc.name_en || loc.name || loc.name_ar || "—";
     }
-    const row = subjects.find((s) => s.id === lesson.subject_id);
+    if (isCategory) {
+      const row = trackSubjects.find((s) => s.id === lesson.subject_id);
+      return row?.name || (lesson.subject_id ? `#${lesson.subject_id}` : "—");
+    }
+    const row = academicSubjects.find((s) => s.id === lesson.subject_id);
     if (row) {
       const loc = parseLocalizedNameFromModel(row);
       return lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
     }
     return lesson.subject_id ? `#${lesson.subject_id}` : "—";
-  }, [lesson, subjects, lang]);
+  }, [lesson, academicSubjects, trackSubjects, lang, isCategory]);
 
   const displayDoctor = useMemo(() => {
     if (!lesson) return "—";

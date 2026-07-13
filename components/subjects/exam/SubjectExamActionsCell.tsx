@@ -40,8 +40,8 @@ export default function SubjectExamActionsCell({
     <ExamActionsCell
       examUi={examUi}
       groupLabel="Subject exam"
-      viewHref={`/${lang}/subjects/exam/${subjectId}`}
-      editHref={`/${lang}/subjects/exam/${subjectId}/edit`}
+      viewHref={`/${lang}/academic-study/subjects/exam/${subjectId}`}
+      editHref={`/${lang}/academic-study/subjects/exam/${subjectId}/edit`}
       hasExam={hasExam}
       loadFailed={loadFailed}
       isLoading={!sessionReady || isLoading || isFetching}

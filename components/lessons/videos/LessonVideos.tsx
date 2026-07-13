@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { ArrowLeft, PlayCircle } from "lucide-react";
 
 import LangUseParams from "@/translate/LangUseParams";
@@ -20,15 +20,28 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import VideoExamActionsCell from "@/components/lessons/videos/exam/VideoExamActionsCell";
+import {
+  LESSONS_LIST_QUERY_KEY,
+  resolveLessonsBaseFromPathname,
+} from "@/utils/lessonsPaths";
 
 import type { ILessonVideoListItem } from "@/types/lessonVideo";
 
 export default function LessonVideos() {
   const sessionReady = useSessionReady();
   const { lessonId: lessonIdParam } = useParams<{ lessonId: string }>();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const lang = LangUseParams() ?? "ar";
   const translate = TranslateHook();
   const pageDir = lang === "ar" ? "rtl" : "ltr";
+
+  const lessonsBasePath = resolveLessonsBaseFromPathname(
+    pathname,
+    lang,
+    searchParams.get(LESSONS_LIST_QUERY_KEY),
+  );
+  const lessonsListHref = `/${lang}/${lessonsBasePath}`;
 
   const pg = translate?.pages.lessons;
   const vx = pg?.videoExam;
@@ -95,16 +108,6 @@ export default function LessonVideos() {
           "—"
         ),
     },
-    // {
-    //   key: "is_active",
-    //   header: headers.status,
-    //   align: "center",
-    //   render: (_, row) => (
-    //     <Badge variant={row.is_active ? "default" : "secondary"}>
-    //       {row.is_active ? pg?.active : pg?.inactive}
-    //     </Badge>
-    //   ),
-    // },
     {
       key: "has_exam",
       header: headers.hasExam,
@@ -130,6 +133,7 @@ export default function LessonVideos() {
           lessonId={lessonId}
           lang={lang}
           examUi={vx}
+          lessonsBasePath={lessonsBasePath}
           onDeleteExam={() => handleDeleteExam(row.id)}
         />
       ),
@@ -155,7 +159,7 @@ export default function LessonVideos() {
       icon={PlayCircle}
       title={listTitle}
       description={vx?.listDescription}
-      createHref={`/${lang}/lessons`}
+      createHref={lessonsListHref}
       createLabel=""
       showCreate={false}
       showSkeleton={showSkeleton}
@@ -163,7 +167,7 @@ export default function LessonVideos() {
     >
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <Button asChild className={dash.primaryCta}>
-          <Link href={`/${lang}/lessons`}>
+          <Link href={lessonsListHref}>
             <ArrowLeft className="w-5 h-5 me-2 opacity-95 rtl:rotate-180" />
             {vx?.backLessons ?? pg?.viewLesson?.backBtn}
           </Link>

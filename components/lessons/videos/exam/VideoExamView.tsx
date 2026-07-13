@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ClipboardCheck, Eye, Pencil } from "lucide-react";
 
 import { useGetVideoExamQuery } from "@/store/videoExams/videoExamsApi";
@@ -21,6 +21,12 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
+import {
+  LESSONS_LIST_QUERY_KEY,
+  lessonVideoExamHref,
+  lessonVideosHref,
+  resolveLessonsBaseFromPathname,
+} from "@/utils/lessonsPaths";
 
 import "@/components/lessons/style.css";
 
@@ -30,9 +36,17 @@ export default function VideoExamView() {
     lessonId: string;
     videoId: string;
   }>();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+
+  const lessonsBasePath = resolveLessonsBaseFromPathname(
+    pathname,
+    lang ?? "ar",
+    searchParams.get(LESSONS_LIST_QUERY_KEY),
+  );
 
   const ex = translate?.pages.lessons.videoExam;
   const pg = translate?.pages.lessons;
@@ -49,8 +63,14 @@ export default function VideoExamView() {
     Number.isNaN(videoId) ||
     videoId <= 0;
 
-  const videosBase = `/${lang}/lessons/videos/${lessonId}`;
-  const examBase = `${videosBase}/exam/${videoId}`;
+  const videosBase = lessonVideosHref(lang ?? "ar", lessonId, lessonsBasePath);
+  const editHref = lessonVideoExamHref(
+    lang ?? "ar",
+    lessonId,
+    videoId,
+    lessonsBasePath,
+    "/edit",
+  );
 
   const { data: exam, isLoading, isError, error } = useGetVideoExamQuery(
     videoId,
@@ -113,7 +133,7 @@ export default function VideoExamView() {
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button type="button" onClick={() => router.push(`${examBase}/edit`)}>
+          <Button type="button" onClick={() => router.push(editHref)}>
             {ex?.createExamBtn}
           </Button>
           <Button type="button" variant="outline" onClick={() => router.push(videosBase)}>
@@ -240,7 +260,7 @@ export default function VideoExamView() {
             <Button
               type="button"
               className="rounded-xl bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"
-              onClick={() => router.push(`${examBase}/edit`)}
+              onClick={() => router.push(editHref)}
             >
               <Pencil className="w-4 h-4 me-2" />
               {ex?.editExamBtn}

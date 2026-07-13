@@ -97,7 +97,7 @@ export default function CreateStudyTerm() {
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/study-terms`);
+      router.push(`/${lang}/academic-study/study-terms`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {

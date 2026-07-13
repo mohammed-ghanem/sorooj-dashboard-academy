@@ -97,7 +97,7 @@ export default function CreateSubject() {
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/subjects`);
+      router.push(`/${lang}/academic-study/subjects`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {

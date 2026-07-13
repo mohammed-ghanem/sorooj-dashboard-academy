@@ -5,6 +5,10 @@ import { useSessionReady } from "@/hooks/useSessionReady";
 import ExamActionsCell, {
   type ExamActionsUi,
 } from "@/components/exam/ExamActionsCell";
+import {
+  ACADEMIC_LESSONS_BASE_PATH,
+  lessonVideoExamHref,
+} from "@/utils/lessonsPaths";
 
 type Props = {
   videoId: number;
@@ -12,6 +16,7 @@ type Props = {
   lang: string;
   examUi: ExamActionsUi | undefined;
   onDeleteExam: () => void | Promise<void>;
+  lessonsBasePath?: string;
 };
 
 export default function VideoExamActionsCell({
@@ -20,9 +25,9 @@ export default function VideoExamActionsCell({
   lang,
   examUi,
   onDeleteExam,
+  lessonsBasePath = ACADEMIC_LESSONS_BASE_PATH,
 }: Props) {
   const sessionReady = useSessionReady();
-  const base = `/${lang}/lessons/videos/${lessonId}/exam/${videoId}`;
 
   const { data, isError, error, isLoading, isFetching } =
     useGetVideoExamQuery(videoId, {
@@ -43,8 +48,14 @@ export default function VideoExamActionsCell({
     <ExamActionsCell
       examUi={examUi}
       groupLabel="Video exam"
-      viewHref={base}
-      editHref={`${base}/edit`}
+      viewHref={lessonVideoExamHref(lang, lessonId, videoId, lessonsBasePath)}
+      editHref={lessonVideoExamHref(
+        lang,
+        lessonId,
+        videoId,
+        lessonsBasePath,
+        "/edit",
+      )}
       hasExam={hasExam}
       loadFailed={loadFailed}
       isLoading={!sessionReady || isLoading || isFetching}

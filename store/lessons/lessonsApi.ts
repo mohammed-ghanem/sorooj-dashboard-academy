@@ -8,6 +8,7 @@ import type {
   ICreateLessonPayload,
   IUpdateLessonPayload,
   ILessonVideoPayload,
+  LessonTrackType,
 } from "@/types/lesson";
 import type { IApiMessageResponse } from "@/types/subject";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
@@ -115,6 +116,7 @@ function appendLessonFields(
   fd.append("subject_id", String(data.subject_id));
   fd.append("doctor_id", String(data.doctor_id));
   fd.append("is_active", data.is_active ? "1" : "0");
+  fd.append("type", data.type);
   appendVideos(fd, data.videos);
   data.attachments.forEach((file) => {
     fd.append("attachments[]", file);
@@ -139,11 +141,11 @@ export const lessonsApi = createApi({
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Lessons", "Lesson"],
   endpoints: (builder) => ({
-    getLessons: builder.query<ILesson[], void>({
-      query: () => ({
+    getLessons: builder.query<ILesson[], { type: LessonTrackType }>({
+      query: ({ type }) => ({
         url: "/lessons",
         method: "get",
-        params: { page: 0, limit: 0 },
+        params: { page: 0, limit: 0, type },
       }),
       transformResponse: (response: any) => {
         const d = response?.data ?? response;
@@ -218,16 +220,19 @@ export const lessonsApi = createApi({
       ],
     }),
 
-    toggleLessonStatus: builder.mutation<{ message: string }, number>({
-      query: (id) => ({
+    toggleLessonStatus: builder.mutation<
+      { message: string },
+      { id: number; type: LessonTrackType }
+    >({
+      query: ({ id }) => ({
         url: `/lessons/status/${id}`,
         method: "post",
       }),
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+      async onQueryStarted({ id, type }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           lessonsApi.util.updateQueryData(
             "getLessons",
-            undefined,
+            { type },
             (draft: ILesson[]) => {
               const row = draft.find((l) => l.id === id);
               if (row) row.is_active = !row.is_active;

@@ -34,21 +34,6 @@ export const mainLinks = (lang: string) => [
     key: "academicYears",
   },
   {
-    href: `/${lang}/study-terms`,
-    icon: BookOpenCheck,
-    key: "studyTerms",
-  },
-  {
-    href: `/${lang}/subjects`,
-    icon: BookOpenText,
-    key: "subjects",
-  },
-  {
-    href: `/${lang}/lessons`,
-    icon: Film,
-    key: "lessons",
-  },
-  {
     href: `/${lang}/students`,
     icon: UserCircle,
     key: "students",
@@ -67,6 +52,42 @@ export const mainLinks = (lang: string) => [
     href: `/${lang}/roles`,
     icon: ShieldCheck,
     key: "roles",
+  },
+];
+
+export const academicStudyLinks = (lang: string) => [
+  {
+    href: `/${lang}/academic-study/study-terms`,
+    icon: BookOpenCheck,
+    key: "studyTerms",
+  },
+  {
+    href: `/${lang}/academic-study/subjects`,
+    icon: BookOpenText,
+    key: "subjects",
+  },
+  {
+    href: `/${lang}/academic-study/lessons`,
+    icon: Film,
+    key: "lessons",
+  },
+];
+
+export const independentTracksLinks = (lang: string) => [
+  {
+    href: `/${lang}/singleLearnPath/categories`,
+    icon: BookOpenCheck,
+    key: "categories",
+  },
+  {
+    href: `/${lang}/singleLearnPath/subjects`,
+    icon: BookOpenText,
+    key: "categorySubjects",
+  },
+  {
+    href: `/${lang}/singleLearnPath/lessons`,
+    icon: Film,
+    key: "categoryLessons",
   },
 ];
 

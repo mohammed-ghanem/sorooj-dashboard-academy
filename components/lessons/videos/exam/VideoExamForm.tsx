@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import SharedExamForm from "@/components/exam/SharedExamForm";
@@ -13,6 +13,12 @@ import {
 import { useSessionReady } from "@/hooks/useSessionReady";
 import type { IVideoExamSavePayload } from "@/types/videoExam";
 import type { ILessonExamQuestion } from "@/types/lessonExam";
+import {
+  LESSONS_LIST_QUERY_KEY,
+  lessonVideoExamHref,
+  lessonVideosHref,
+  resolveLessonsBaseFromPathname,
+} from "@/utils/lessonsPaths";
 
 function filterVideoQuestions(
   questions: ILessonExamQuestion[] | undefined,
@@ -28,9 +34,17 @@ export default function VideoExamForm() {
     lessonId: string;
     videoId: string;
   }>();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const lang = LangUseParams() ?? "ar";
   const translate = TranslateHook();
   const pageDir = lang === "ar" ? "rtl" : "ltr";
+
+  const lessonsBasePath = resolveLessonsBaseFromPathname(
+    pathname,
+    lang,
+    searchParams.get(LESSONS_LIST_QUERY_KEY),
+  );
 
   const ex = translate?.pages.lessons.videoExam as Record<
     string,
@@ -72,8 +86,7 @@ export default function VideoExamForm() {
   const [createExam, { isLoading: creating }] = useCreateVideoExamMutation();
   const [updateExam, { isLoading: updating }] = useUpdateVideoExamMutation();
 
-  const langPrefix = `/${lang}`;
-  const videosBase = `${langPrefix}/lessons/videos/${lessonId}`;
+  const videosBase = lessonVideosHref(lang, lessonId, lessonsBasePath);
 
   const examModel = exam
     ? {
@@ -98,7 +111,12 @@ export default function VideoExamForm() {
       is404={is404}
       otherError={otherError}
       isSaving={creating || updating}
-      afterSavePath={`${videosBase}/exam/${videoId}`}
+      afterSavePath={lessonVideoExamHref(
+        lang,
+        lessonId,
+        videoId,
+        lessonsBasePath,
+      )}
       backListPath={videosBase}
       allowedQuestionTypes={["multiple_choice", "true_false"]}
       onCreate={(payload) =>

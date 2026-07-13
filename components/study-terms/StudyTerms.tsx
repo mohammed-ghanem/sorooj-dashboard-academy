@@ -30,6 +30,7 @@ import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 import type { IStudyTerm } from "@/types/studyTerm";
 import type { IAcademicYear } from "@/types/academicYear";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import { ACADEMIC_STUDY_TERMS_PATH } from "@/utils/lessonsPaths";
 
 export default function StudyTerms() {
   const sessionReady = useSessionReady();
@@ -154,12 +155,12 @@ export default function StudyTerms() {
       align: "center",
       render: (_, row) => (
         <div className="flex justify-center gap-2 flex-wrap">
-          <Link href={`/${lang}/study-terms/view/${row.id}`}>
+          <Link href={`/${lang}/${ACADEMIC_STUDY_TERMS_PATH}/view/${row.id}`}>
             <Button type="button" size="sm" className={dash.tableView}>
               <Eye className="w-5 h-5" />
             </Button>
           </Link>
-          <Link href={`/${lang}/study-terms/edit/${row.id}`}>
+          <Link href={`/${lang}/${ACADEMIC_STUDY_TERMS_PATH}/edit/${row.id}`}>
             <Button type="button" size="sm" className={dash.tableEdit}>
               <Edit3 className="h-4 w-4" />
             </Button>
@@ -184,7 +185,7 @@ export default function StudyTerms() {
       icon={Layers}
       title={pg?.listTitle ?? ""}
       description={pg?.listDescription}
-      createHref={`/${lang}/study-terms/create`}
+      createHref={`/${lang}/${ACADEMIC_STUDY_TERMS_PATH}/create`}
       createLabel={pg?.createStudyTerm?.title ?? ""}
       showSkeleton={showSkeleton}
       dir={pageDir}

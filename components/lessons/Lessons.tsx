@@ -27,10 +27,22 @@ import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
 import LessonExamActionsCell from "@/components/lessons/exam/LessonExamActionsCell";
 
-import type { ILesson } from "@/types/lesson";
+import type { ILesson, LessonTrackType } from "@/types/lesson";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import {
+  ACADEMIC_LESSONS_BASE_PATH,
+  lessonVideosHref,
+} from "@/utils/lessonsPaths";
 
-export default function Lessons() {
+type LessonsProps = {
+  track?: LessonTrackType;
+  basePath?: string;
+};
+
+export default function Lessons({
+  track = "study_term",
+  basePath = ACADEMIC_LESSONS_BASE_PATH,
+}: LessonsProps) {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
   const translate = TranslateHook();
@@ -39,9 +51,10 @@ export default function Lessons() {
   const headers = TABLE_HEADERS[lang as "ar" | "en"].lessons;
   const pg = translate?.pages.lessons;
 
-  const { data: lessons = [], isLoading } = useGetLessonsQuery(undefined, {
-    skip: !sessionReady,
-  });
+  const { data: lessons = [], isLoading } = useGetLessonsQuery(
+    { type: track },
+    { skip: !sessionReady },
+  );
   const [deleteLesson] = useDeleteLessonMutation();
   const [deleteLessonExam] = useDeleteLessonExamMutation();
   const [toggleStatus] = useToggleLessonStatusMutation();
@@ -51,13 +64,14 @@ export default function Lessons() {
       getId: (row) => row.id,
       getStatus: (row) => row.is_active,
       onToggle: async (row) => {
-        await toggleStatus(row.id);
+        await toggleStatus({ id: row.id, type: track });
       },
     });
 
   const displaySubject = (lesson: ILesson) => {
     const nested = lesson.subject;
     if (nested) {
+      if (track === "category" && nested.name) return nested.name;
       const loc = parseLocalizedNameFromModel(nested);
       return lang === "ar"
         ? loc.name_ar || loc.name || loc.name_en || "—"
@@ -173,7 +187,7 @@ export default function Lessons() {
       header: headers.videoExams,
       align: "center",
       render: (_, row) => (
-        <Link href={`/${lang}/lessons/videos/${row.id}`}>
+        <Link href={lessonVideosHref(lang ?? "ar", row.id, basePath)}>
           <Button
             type="button"
             size="sm"
@@ -193,7 +207,7 @@ export default function Lessons() {
       render: (_, row) => (
         <div className="flex flex-col items-center gap-2 min-w-[200px]">
           <div className="flex justify-center gap-2 flex-wrap">
-            <Link href={`/${lang}/lessons/view/${row.id}`}>
+            <Link href={`/${lang}/${basePath}/view/${row.id}`}>
               <Button
                 type="button"
                 size="sm"
@@ -203,7 +217,7 @@ export default function Lessons() {
                 <Eye className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href={`/${lang}/lessons/edit/${row.id}`}>
+            <Link href={`/${lang}/${basePath}/edit/${row.id}`}>
               <Button
                 type="button"
                 size="sm"
@@ -227,6 +241,7 @@ export default function Lessons() {
             lessonId={row.id}
             lang={lang ?? "ar"}
             examUi={pg?.lessonExam}
+            lessonsBasePath={basePath}
             onDeleteExam={() => handleDeleteExam(row.id)}
           />
         </div>
@@ -241,7 +256,7 @@ export default function Lessons() {
       icon={Film}
       title={pg?.listTitle ?? ""}
       description={pg?.listDescription}
-      createHref={`/${lang}/lessons/create`}
+      createHref={`/${lang}/${basePath}/create`}
       createLabel={pg?.createLesson?.title ?? ""}
       showSkeleton={showSkeleton}
       dir={pageDir}

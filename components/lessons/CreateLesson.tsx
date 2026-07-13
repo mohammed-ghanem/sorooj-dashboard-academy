@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
+import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
 import { useCreateLessonMutation } from "@/store/lessons/lessonsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
@@ -43,7 +44,8 @@ import { parseLocalizedNameFromModel } from "@/utils/localizedName";
 import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
 
-import type { ILessonVideoPayload } from "@/types/lesson";
+import type { ILessonVideoPayload, LessonTrackType } from "@/types/lesson";
+import { ACADEMIC_LESSONS_BASE_PATH } from "@/utils/lessonsPaths";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
@@ -75,16 +77,29 @@ function rowsToVideos(rows: VideoRow[]): ILessonVideoPayload[] {
     }));
 }
 
-export default function CreateLesson() {
+export default function CreateLesson({
+  track = "study_term",
+  basePath = ACADEMIC_LESSONS_BASE_PATH,
+}: {
+  track?: LessonTrackType;
+  basePath?: string;
+}) {
   const sessionReady = useSessionReady();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
 
   const pageDir = lang === "ar" ? "rtl" : "ltr";
+  const isCategory = track === "category";
 
-  const { data: subjects = [], isLoading: loadingSubjects } =
-    useGetSubjectsQuery(undefined, { skip: !sessionReady });
+  const { data: academicSubjects = [], isLoading: loadingAcademicSubjects } =
+    useGetSubjectsQuery(undefined, {
+      skip: !sessionReady || isCategory,
+    });
+  const { data: trackSubjects = [], isLoading: loadingTrackSubjects } =
+    useGetScientificTrackSubjectsQuery(undefined, {
+      skip: !sessionReady || !isCategory,
+    });
   const { data: doctors = [], isLoading: loadingDoctors } = useGetDoctorsQuery(
     undefined,
     {
@@ -111,10 +126,20 @@ export default function CreateLesson() {
 
   const cl = translate?.pages.lessons.createLesson;
 
-  const subjectLabel = (row: any) => {
-    const loc = parseLocalizedNameFromModel(row);
-    return lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
-  };
+  const subjectOptions = isCategory
+    ? trackSubjects.map((s) => ({ id: s.id, label: s.name }))
+    : academicSubjects.map((row) => {
+        const loc = parseLocalizedNameFromModel(row);
+        return {
+          id: row.id,
+          label:
+            lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name,
+        };
+      });
+
+  const loadingSubjects = isCategory
+    ? loadingTrackSubjects
+    : loadingAcademicSubjects;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,10 +177,11 @@ export default function CreateLesson() {
         is_active: isActive,
         videos,
         attachments,
+        type: track,
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/lessons`);
+      router.push(`/${lang}/${basePath}`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -282,9 +308,9 @@ export default function CreateLesson() {
                     }
                   >
                     <option value="">{cl?.selectSubject}</option>
-                    {subjects.map((s) => (
+                    {subjectOptions.map((s) => (
                       <option key={s.id} value={s.id}>
-                        {subjectLabel(s)}
+                        {s.label}
                       </option>
                     ))}
                   </select>
@@ -555,7 +581,7 @@ export default function CreateLesson() {
 
               <Button
                 type="submit"
-                disabled={isCreating || !subjects.length || !doctors.length}
+                disabled={isCreating || !subjectOptions.length || !doctors.length}
                 className={dash.formSubmit}
               >
                 {isCreating ? `${cl?.processing}...` : `${cl?.createBtn}`}

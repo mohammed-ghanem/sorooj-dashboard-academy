@@ -26,6 +26,20 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    scientificTrackCategories: {
+      name: "الاسم",
+      about: "نبذة عن القسم",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
+    scientificTrackSubjects: {
+      name: "الاسم",
+      category: "القسم",
+      status: "الحالة",
+      actions: "الإجراءات -- الاختبارات",
+    },
+
     studyTerms: {
       name: "الاسم",
       academicYear: "العام الدراسي",
@@ -129,6 +143,20 @@ export const TABLE_HEADERS = {
       academicYear: "Academic year",
       status: "Status",
       actions: "Actions",
+    },
+
+    scientificTrackCategories: {
+      name: "Name",
+      about: "About category",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    scientificTrackSubjects: {
+      name: "Name",
+      category: "Category",
+      status: "Status",
+      actions: "Actions -- Exams",
     },
 
     studyTerms: {

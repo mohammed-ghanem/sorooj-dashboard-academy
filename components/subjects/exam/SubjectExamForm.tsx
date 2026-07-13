@@ -14,6 +14,7 @@ import { useSessionReady } from "@/hooks/useSessionReady";
 
 import type { ISubjectExamSavePayload } from "@/types/subjectExam";
 import type { ILessonExamQuestion } from "@/types/lessonExam";
+import { ACADEMIC_STUDY_SUBJECTS_PATH } from "@/utils/lessonsPaths";
 
 export default function SubjectExamForm() {
   const sessionReady = useSessionReady();
@@ -84,8 +85,8 @@ export default function SubjectExamForm() {
       is404={is404}
       otherError={otherError}
       isSaving={creating || updating}
-      afterSavePath={`${langPrefix}/subjects/exam/${subjectId}`}
-      backListPath={`${langPrefix}/subjects`}
+      afterSavePath={`${langPrefix}/${ACADEMIC_STUDY_SUBJECTS_PATH}/exam/${subjectId}`}
+      backListPath={`${langPrefix}/${ACADEMIC_STUDY_SUBJECTS_PATH}`}
       onCreate={(payload) =>
         createExam({
           subjectId,

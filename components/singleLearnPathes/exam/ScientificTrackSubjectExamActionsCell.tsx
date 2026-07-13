@@ -1,0 +1,52 @@
+"use client";
+
+import { useGetScientificTrackSubjectExamQuery } from "@/store/scientificTrackSubjectExams/scientificTrackSubjectExamsApi";
+import { useSessionReady } from "@/hooks/useSessionReady";
+import ExamActionsCell, {
+  type ExamActionsUi,
+} from "@/components/exam/ExamActionsCell";
+
+type Props = {
+  subjectId: number;
+  lang: string;
+  examUi: ExamActionsUi | undefined;
+  onDeleteExam: () => void | Promise<void>;
+};
+
+/** Same pattern as `components/subjects/exam/SubjectExamActionsCell` */
+export default function ScientificTrackSubjectExamActionsCell({
+  subjectId,
+  lang,
+  examUi,
+  onDeleteExam,
+}: Props) {
+  const sessionReady = useSessionReady();
+
+  const { data, isError, error, isLoading, isFetching } =
+    useGetScientificTrackSubjectExamQuery(subjectId, {
+      skip: !sessionReady,
+    });
+
+  const is404 =
+    isError &&
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    (error as { status: unknown }).status === 404;
+
+  const hasExam = Boolean(data) && !is404;
+  const loadFailed = isError && !is404;
+
+  return (
+    <ExamActionsCell
+      examUi={examUi}
+      groupLabel="Subject exam"
+      viewHref={`/${lang}/singleLearnPath/subjects/exam/${subjectId}`}
+      editHref={`/${lang}/singleLearnPath/subjects/exam/${subjectId}/edit`}
+      hasExam={hasExam}
+      loadFailed={loadFailed}
+      isLoading={!sessionReady || isLoading || isFetching}
+      onDeleteExam={onDeleteExam}
+    />
+  );
+}

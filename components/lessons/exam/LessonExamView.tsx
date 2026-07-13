@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ClipboardCheck, Eye, Pencil } from "lucide-react";
 
 import { useGetLessonExamQuery } from "@/store/lessonExams/lessonExamsApi";
@@ -21,15 +21,28 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
+import {
+  LESSONS_LIST_QUERY_KEY,
+  lessonExamHref,
+  resolveLessonsBaseFromPathname,
+} from "@/utils/lessonsPaths";
 
 import "../style.css";
 
 export default function LessonExamView() {
   const sessionReady = useSessionReady();
   const { lessonId: lessonIdParam } = useParams<{ lessonId: string }>();
+  const pathname = usePathname() ?? "";
+  const searchParams = useSearchParams();
   const router = useRouter();
   const lang = LangUseParams();
   const translate = TranslateHook();
+
+  const lessonsBasePath = resolveLessonsBaseFromPathname(
+    pathname,
+    lang ?? "ar",
+    searchParams.get(LESSONS_LIST_QUERY_KEY),
+  );
 
   const ex = translate?.pages.lessons.lessonExam;
 
@@ -59,6 +72,9 @@ export default function LessonExamView() {
   const fieldBox =
     "mt-1 text-sm rounded-xl border border-slate-200/90 bg-white/95 px-3 py-2.5 shadow-sm ring-1 ring-slate-900/4";
 
+  const editHref = lessonExamHref(lang ?? "ar", lessonId, lessonsBasePath, "/edit");
+  const lessonsListHref = `/${lang}/${lessonsBasePath}`;
+
   if (!sessionReady) {
     return <LessonFormSkeleton />;
   }
@@ -79,7 +95,11 @@ export default function LessonExamView() {
     return (
       <div className="max-w-4xl mx-auto py-10 px-4 space-y-4 text-center">
         <p className="text-muted-foreground">{ex?.loadError}</p>
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push(lessonsListHref)}
+        >
           {translate?.pages.lessons.viewLesson.backBtn}
         </Button>
       </div>
@@ -101,15 +121,14 @@ export default function LessonExamView() {
           </p>
         </div>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button
-            type="button"
-            onClick={() =>
-              router.push(`/${lang}/lessons/exam/${lessonId}/edit`)
-            }
-          >
+          <Button type="button" onClick={() => router.push(editHref)}>
             {ex?.createExamBtn}
           </Button>
-          <Button type="button" variant="outline" onClick={() => router.back()}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push(lessonsListHref)}
+          >
             {translate?.pages.lessons.viewLesson.backBtn}
           </Button>
         </div>
@@ -239,9 +258,7 @@ export default function LessonExamView() {
             <Button
               type="button"
               className="rounded-xl bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"
-              onClick={() =>
-                router.push(`/${lang}/lessons/exam/${lessonId}/edit`)
-              }
+              onClick={() => router.push(editHref)}
             >
               <Pencil className="w-4 h-4 me-2" />
               {ex?.editExamBtn}
@@ -249,7 +266,7 @@ export default function LessonExamView() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push(`/${lang}/lessons`)}
+              onClick={() => router.push(lessonsListHref)}
             >
               {ex?.backLessons ?? translate?.pages.lessons.viewLesson.backBtn}
             </Button>

@@ -100,7 +100,7 @@ export default function SubjectExamView() {
           <Button
             type="button"
             onClick={() =>
-              router.push(`/${lang}/subjects/exam/${subjectId}/edit`)
+              router.push(`/${lang}/academic-study/subjects/exam/${subjectId}/edit`)
             }
           >
             {ex?.createExamBtn}
@@ -236,7 +236,7 @@ export default function SubjectExamView() {
               type="button"
               className="rounded-xl bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500"
               onClick={() =>
-                router.push(`/${lang}/subjects/exam/${subjectId}/edit`)
+                router.push(`/${lang}/academic-study/subjects/exam/${subjectId}/edit`)
               }
             >
               <Pencil className="w-4 h-4 me-2" />
@@ -245,7 +245,7 @@ export default function SubjectExamView() {
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push(`/${lang}/subjects`)}
+              onClick={() => router.push(`/${lang}/academic-study/subjects`)}
             >
               {ex?.backSubjects ?? translate?.pages.subjects.viewSubject.backBtn}
             </Button>

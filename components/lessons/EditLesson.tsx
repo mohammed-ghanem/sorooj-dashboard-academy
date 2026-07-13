@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
+import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
 import {
   useGetLessonByIdQuery,
@@ -48,7 +49,12 @@ import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
 
-import type { ILessonVideo, ILessonVideoPayload } from "@/types/lesson";
+import type {
+  ILessonVideo,
+  ILessonVideoPayload,
+  LessonTrackType,
+} from "@/types/lesson";
+import { ACADEMIC_LESSONS_BASE_PATH } from "@/utils/lessonsPaths";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
@@ -95,7 +101,13 @@ function rowsToVideos(rows: VideoRow[]): ILessonVideoPayload[] {
     }));
 }
 
-export default function EditLesson() {
+export default function EditLesson({
+  track = "study_term",
+  basePath = ACADEMIC_LESSONS_BASE_PATH,
+}: {
+  track?: LessonTrackType;
+  basePath?: string;
+}) {
   const sessionReady = useSessionReady();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -104,12 +116,19 @@ export default function EditLesson() {
 
   const pageDir = lang === "ar" ? "rtl" : "ltr";
   const lessonId = Number(id);
+  const isCategory = track === "category";
 
   const el = translate?.pages.lessons.editLesson;
   const cs = translate?.pages.lessons.createLesson;
 
-  const { data: subjects = [], isLoading: loadingSubjects } =
-    useGetSubjectsQuery(undefined, { skip: !sessionReady });
+  const { data: academicSubjects = [], isLoading: loadingAcademicSubjects } =
+    useGetSubjectsQuery(undefined, {
+      skip: !sessionReady || isCategory,
+    });
+  const { data: trackSubjects = [], isLoading: loadingTrackSubjects } =
+    useGetScientificTrackSubjectsQuery(undefined, {
+      skip: !sessionReady || !isCategory,
+    });
   const { data: doctors = [], isLoading: loadingDoctors } =
     useGetDoctorsQuery(undefined, { skip: !sessionReady });
 
@@ -150,10 +169,20 @@ export default function EditLesson() {
     setPdfRows([{ key: newKey(), file: null }]);
   }, [lesson]);
 
-  const subjectLabel = (row: any) => {
-    const loc = parseLocalizedNameFromModel(row);
-    return lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
-  };
+  const subjectOptions = isCategory
+    ? trackSubjects.map((s) => ({ id: s.id, label: s.name }))
+    : academicSubjects.map((row) => {
+        const loc = parseLocalizedNameFromModel(row);
+        return {
+          id: row.id,
+          label:
+            lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name,
+        };
+      });
+
+  const loadingSubjects = isCategory
+    ? loadingTrackSubjects
+    : loadingAcademicSubjects;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,11 +222,12 @@ export default function EditLesson() {
           is_active: isActive,
           videos,
           attachments,
+          type: track,
         },
       }).unwrap();
 
       toast.success(res?.message);
-      router.push(`/${lang}/lessons`);
+      router.push(`/${lang}/${basePath}`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
       if (errorData?.errors) {
@@ -343,9 +373,9 @@ export default function EditLesson() {
                     }
                   >
                     <option value="">{el?.selectSubject}</option>
-                    {subjects.map((s) => (
+                    {subjectOptions.map((s) => (
                       <option key={s.id} value={s.id}>
-                        {subjectLabel(s)}
+                        {s.label}
                       </option>
                     ))}
                   </select>
@@ -649,7 +679,7 @@ export default function EditLesson() {
 
               <Button
                 type="submit"
-                disabled={isUpdating || !subjects.length || !doctors.length}
+                disabled={isUpdating || !subjectOptions.length || !doctors.length}
                 className={dash.formSubmit}
               >
                 {isUpdating

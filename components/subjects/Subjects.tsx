@@ -31,6 +31,7 @@ import SubjectExamActionsCell from "@/components/subjects/exam/SubjectExamAction
 
 import type { ISubject } from "@/types/subject";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import { ACADEMIC_STUDY_SUBJECTS_PATH } from "@/utils/lessonsPaths";
 
 export default function Subjects() {
   const sessionReady = useSessionReady();
@@ -175,7 +176,7 @@ export default function Subjects() {
       render: (_, row) => (
         <div className="flex flex-col items-center gap-2 min-w-[200px]">
           <div className="flex justify-center gap-2 flex-wrap">
-            <Link href={`/${lang}/subjects/view/${row.id}`}>
+            <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/view/${row.id}`}>
               <Button
                 type="button"
                 size="sm"
@@ -185,7 +186,7 @@ export default function Subjects() {
                 <Eye className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href={`/${lang}/subjects/edit/${row.id}`}>
+            <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/edit/${row.id}`}>
               <Button
                 type="button"
                 size="sm"
@@ -223,7 +224,7 @@ export default function Subjects() {
       icon={BookOpenText}
       title={pg?.listTitle ?? ""}
       description={pg?.listDescription}
-      createHref={`/${lang}/subjects/create`}
+      createHref={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/create`}
       createLabel={pg?.createSubject?.title ?? ""}
       showSkeleton={showSkeleton}
       dir={pageDir}
