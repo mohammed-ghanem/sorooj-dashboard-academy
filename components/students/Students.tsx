@@ -24,6 +24,7 @@ import { dash } from "@/constants/dashboardUi";
 import IndexListPage from "@/components/shared/IndexListPage";
 import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "../shared/DeleteConfirmDialog";
+import StudentEnrollmentCell from "./StudentEnrollmentCell";
 import type { IStudent } from "@/types/student";
 
 export default function Students() {
@@ -69,8 +70,16 @@ export default function Students() {
       },
     });
 
-  const enrollmentLabel = (s: IStudent) =>
-    s.enrollmentStatusLabel || s.enrollmentStatus || "—";
+  const enrollmentLabels = {
+    enrolled: pg?.enrolled ?? "",
+    notEnrolled: pg?.notEnrolled ?? "",
+    enrollBtn: pg?.enrollBtn ?? "",
+    enrollConfirmTitle: pg?.enrollConfirmTitle ?? "",
+    enrollConfirmMessage: pg?.enrollConfirmMessage ?? "",
+    cancelBtn: pg?.cancelBtn ?? "",
+    confirmBtn: pg?.enrollConfirmBtn ?? "",
+    enrollFailed: pg?.enrollFailed ?? "",
+  };
 
   const columns: Column<IStudent>[] = [
     {
@@ -84,7 +93,7 @@ export default function Students() {
       key: "email",
       header: headers.email,
       render: (v) => (
-        <span className="truncate max-w-[200px] block">{v}</span>
+        <span className="truncate max-w-50 block">{v}</span>
       ),
     },
     {
@@ -101,10 +110,9 @@ export default function Students() {
     {
       key: "enrollmentStatus",
       header: headers.enrollment,
+      align: "center",
       render: (_, row) => (
-        <span className="text-sm text-muted-foreground">
-          {enrollmentLabel(row)}
-        </span>
+        <StudentEnrollmentCell student={row} labels={enrollmentLabels} />
       ),
     },
     {

@@ -93,34 +93,14 @@ export default function EditScientificTrackSubject() {
     }
 
     try {
-      let coverFile: File | null = selectedCover;
-
-      if (!coverFile && subject?.cover) {
-        try {
-          const res = await fetch(subject.cover);
-          const blob = await res.blob();
-          const ext = blob.type?.split("/")[1] || "jpg";
-          coverFile = new File([blob], `cover.${ext}`, {
-            type: blob.type || "image/jpeg",
-          });
-        } catch {
-          toast.error(
-            lang === "ar"
-              ? "تعذر استخدام صورة الغلاف الحالية، يرجى إعادة رفع صورة."
-              : "Couldn't reuse current cover image, please upload one.",
-          );
-          return;
-        }
-      }
-
       const res = await updateSubject({
         id: Number(id),
         data: {
           name: data.name,
           about_subject: data.about_subject,
-          category_id: data.category_id,
+          category_id: Number(data.category_id),
           is_active: data.is_active,
-          cover: coverFile,
+          cover: selectedCover,
         },
       }).unwrap();
 
@@ -208,20 +188,28 @@ export default function EditScientificTrackSubject() {
                   >
                     {t?.category}
                   </Label>
-                  <select
-                    className={dash.select}
-                    {...register("category_id", {
-                      required: true,
-                      valueAsNumber: true,
-                    })}
-                  >
-                    <option value={0}>{t?.selectCategory}</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
-                    ))}
-                  </select>
+                  <Controller
+                    name="category_id"
+                    control={control}
+                    rules={{ validate: (v) => Number(v) > 0 }}
+                    render={({ field }) => (
+                      <select
+                        className={dash.select}
+                        value={field.value > 0 ? String(field.value) : ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          field.onChange(v === "" ? 0 : Number(v));
+                        }}
+                      >
+                        <option value="">{t?.selectCategory}</option>
+                        {categories.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -234,7 +222,7 @@ export default function EditScientificTrackSubject() {
                     {t?.aboutSubject}
                   </Label>
                   <Textarea
-                    className={cn("min-h-[120px]", dash.input)}
+                    className={cn("min-h-30", dash.input)}
                     {...register("about_subject", { required: true })}
                   />
                 </div>

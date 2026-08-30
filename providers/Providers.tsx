@@ -9,12 +9,13 @@ import { useEffect } from "react";
 import Cookies from "js-cookie";
 import api from "@/services/api";
 import { setSessionReady } from "@/store/app/appSlice";
+import { ACCESS_TOKEN_COOKIE } from "@/lib/authCookies";
 
 
 export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // read cookie on client and seed redux synchronously
-    const token = Cookies.get("access_token") ?? null;
+    const token = Cookies.get(ACCESS_TOKEN_COOKIE) ?? null;
     const userJson = Cookies.get("user") ?? null;
     let user = null;
     try {

@@ -133,6 +133,52 @@ export const studentsApi = createApi({
       }),
       invalidatesTags: ["Students"],
     }),
+
+    changeStudentEnrollment: builder.mutation<
+      { message: string; student: IStudent },
+      number
+    >({
+      query: (id) => ({
+        url: `/students/enrollment/${id}`,
+        method: "post",
+      }),
+      transformResponse: (response: any) => {
+        const raw = pickStudentFromResponse(response);
+        const message =
+          response?.message ??
+          response?.data?.message ??
+          "Enrollment updated successfully";
+        return {
+          message: String(message),
+          student: raw ? normalizeStudent(raw) : ({} as IStudent),
+        };
+      },
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (!data.student?.id) {
+            dispatch(studentsApi.util.invalidateTags(["Students", { type: "Student", id }]));
+            return;
+          }
+
+          dispatch(
+            studentsApi.util.updateQueryData(
+              "getStudents",
+              undefined,
+              (draft: IStudent[]) => {
+                const index = draft.findIndex((s) => s.id === id);
+                if (index !== -1) {
+                  draft[index] = data.student;
+                }
+              },
+            ),
+          );
+        } catch {
+          // Error toast handled in UI.
+        }
+      },
+      invalidatesTags: (_r, _e, id) => ["Students", { type: "Student", id }],
+    }),
   }),
 });
 
@@ -141,4 +187,5 @@ export const {
   useGetStudentByIdQuery,
   useToggleStudentStatusMutation,
   useDeleteStudentMutation,
+  useChangeStudentEnrollmentMutation,
 } = studentsApi;

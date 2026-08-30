@@ -7,12 +7,14 @@ import type {
   IUpdateScientificTrackCategoryPayload,
 } from "@/types/scientificTrackCategory";
 import type { IApiMessageResponse } from "@/types/academicYear";
+import { readOrderField, sortByOrderField } from "@/lib/sortByOrderField";
 
 function normalizeCategory(item: any): IScientificTrackCategory {
   return {
     id: Number(item?.id) || 0,
     name: String(item?.name ?? ""),
     about_category: String(item?.about_category ?? ""),
+    sort_order: readOrderField(item),
     is_active: Boolean(
       item?.is_active === true || Number(item?.is_active ?? 0) === 1,
     ),
@@ -45,6 +47,23 @@ function pickCategoryFromPayload(response: any): any {
   );
 }
 
+function pickScientificTrackCategoriesList(response: any): any[] {
+  const body = response?.data ?? response;
+
+  if (Array.isArray(body)) {
+    return body;
+  }
+
+  const raw =
+    (Array.isArray(body?.data) ? body.data : null) ??
+    body?.ScientificTrackCategories ??
+    body?.scientific_track_categories ??
+    body?.data ??
+    [];
+
+  return Array.isArray(raw) ? raw : [];
+}
+
 export const scientificTrackCategoriesApi = createApi({
   reducerPath: "scientificTrackCategoriesApi",
   baseQuery: axiosBaseQuery(),
@@ -57,19 +76,11 @@ export const scientificTrackCategoriesApi = createApi({
       query: () => ({
         url: "/scientific-track-categories",
         method: "get",
-        params: { page: 0, limit: 0 },
       }),
-      transformResponse: (response: any) => {
-        const d = response?.data ?? response;
-        const raw =
-          (Array.isArray(d?.data) ? d.data : null) ??
-          d?.ScientificTrackCategories ??
-          d?.scientific_track_categories ??
-          d?.data ??
-          d ??
-          [];
-        return (Array.isArray(raw) ? raw : []).map(normalizeCategory);
-      },
+      transformResponse: (response: any) =>
+        sortByOrderField(
+          pickScientificTrackCategoriesList(response).map(normalizeCategory),
+        ),
       providesTags: ["ScientificTrackCategories"],
     }),
 

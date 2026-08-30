@@ -159,8 +159,8 @@ export default function EditCategory() {
                     {t?.aboutCategory}
                   </Label>
                   <Textarea
-                    className={cn("min-h-[120px]", dash.input)}
-                    {...register("about_category", { required: true })}
+                    className={cn("min-h-30", dash.input)}
+                    {...register("about_category")}
                   />
                 </div>
               </div>

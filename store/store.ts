@@ -25,6 +25,9 @@ import { examArticleReviewsApi } from "./examArticleReviews/examArticleReviewsAp
 import { scientificTrackCategoriesApi } from "./scientificTrackCategories/scientificTrackCategoriesApi";
 import { scientificTrackSubjectsApi } from "./scientificTrackSubjects/scientificTrackSubjectsApi";
 import { scientificTrackSubjectExamsApi } from "./scientificTrackSubjectExams/scientificTrackSubjectExamsApi";
+import { bookCategoriesApi } from "./bookCategories/bookCategoriesApi";
+import { booksApi } from "./books/booksApi";
+import { swapOrderApi } from "./swapOrder/swapOrderApi";
 
 
 
@@ -58,6 +61,9 @@ export const store = configureStore({
       scientificTrackSubjectsApi.reducer,
     [scientificTrackSubjectExamsApi.reducerPath]:
       scientificTrackSubjectExamsApi.reducer,
+    [bookCategoriesApi.reducerPath]: bookCategoriesApi.reducer,
+    [booksApi.reducerPath]: booksApi.reducer,
+    [swapOrderApi.reducerPath]: swapOrderApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -86,6 +92,9 @@ export const store = configureStore({
       scientificTrackCategoriesApi.middleware,
       scientificTrackSubjectsApi.middleware,
       scientificTrackSubjectExamsApi.middleware,
+      bookCategoriesApi.middleware,
+      booksApi.middleware,
+      swapOrderApi.middleware,
       ),
    
 });

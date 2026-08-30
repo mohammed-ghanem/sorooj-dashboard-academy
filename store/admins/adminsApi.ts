@@ -192,6 +192,15 @@ export const adminsApi = createApi({
         "Admins",
         { type: "Admin", id },
       ],
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const { authApi } = await import("@/store/auth/authApi");
+          dispatch(authApi.util.invalidateTags(["Profile"]));
+        } catch {
+          // Keep the admin update error on the form.
+        }
+      },
     }),
 
     /* =======================

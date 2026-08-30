@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/header/Navbar";
 import { Providers } from "../../providers/Providers";
+import AuthSessionGuard from "@/components/auth/AuthSessionGuard";
+import PermissionRouteGuard from "@/components/auth/PermissionRouteGuard";
 import SideBar from "@/components/sidebar/SideBar";
 import { ReactNode } from "react";
 import { Cairo } from "next/font/google";
@@ -34,6 +36,8 @@ export default async function RootLayout({
     <html lang={lang} dir={dir} className={cairo.variable}>
       <body className="min-h-screen overflow-hidden">
         <Providers>
+          <AuthSessionGuard lang={lang}>
+          <PermissionRouteGuard lang={lang}>
           <div className="flex flex-col md:flex-row h-screen">
             <div className="block w-14 md:w-60 shrink-0">
               <SideBar />
@@ -60,6 +64,8 @@ export default async function RootLayout({
               <Footer />
             </div>
           </div>
+          </PermissionRouteGuard>
+          </AuthSessionGuard>
         </Providers>
       </body>
     </html>

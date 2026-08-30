@@ -2,6 +2,7 @@ export interface IScientificTrackCategory {
   id: number;
   name: string;
   about_category: string;
+  sort_order?: number;
   is_active: boolean;
   created_at?: string;
   updated_at?: string;

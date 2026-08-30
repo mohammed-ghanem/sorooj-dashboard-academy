@@ -33,6 +33,21 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    bookCategories: {
+      name: "الاسم",
+      about: "نبذة عن القسم",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
+    books: {
+      title: "العنوان",
+      category: "القسم",
+      doctor: "عضو هيئة التدريس",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
+
     scientificTrackSubjects: {
       name: "الاسم",
       category: "القسم",
@@ -148,6 +163,21 @@ export const TABLE_HEADERS = {
     scientificTrackCategories: {
       name: "Name",
       about: "About category",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    bookCategories: {
+      name: "Name",
+      about: "About category",
+      status: "Status",
+      actions: "Actions",
+    },
+
+    books: {
+      title: "Title",
+      category: "Category",
+      doctor: "Instructor",
       status: "Status",
       actions: "Actions",
     },

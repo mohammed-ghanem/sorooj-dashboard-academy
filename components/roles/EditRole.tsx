@@ -41,6 +41,7 @@ import { toast } from "sonner";
 import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
+import { formatPermissionLabel } from "@/lib/permissionLabels";
 
 export default function EditRole() {
   const router = useRouter();
@@ -129,9 +130,10 @@ export default function EditRole() {
     return permissions
       .map((group: any) => ({
         ...group,
-        controls: group.controls.filter((c: any) =>
-          c.name.toLowerCase().includes(search.toLowerCase()),
-        ),
+        controls: group.controls.filter((c: any) => {
+          const label = formatPermissionLabel(c.name, lang as string);
+          return label.toLowerCase().includes(search.toLowerCase());
+        }),
       }))
       .filter((g: any) => g.controls.length > 0);
   }, [permissions, search]);
@@ -289,7 +291,7 @@ export default function EditRole() {
                       <div className="flex items-center gap-2 rounded-lg bg-emerald-50/80 px-2 py-1 ring-1 ring-emerald-100">
                         <FolderCheck className="h-4 w-4 text-emerald-800" />
                         <CardTitle className="text-sm capitalize font-semibold">
-                          {group.name}
+                          {formatPermissionLabel(group.name, lang as string)}
                         </CardTitle>
                       </div>
 
@@ -322,7 +324,10 @@ export default function EditRole() {
                             )}
                           >
                             <span className="text-sm font-medium">
-                              {control.name}
+                              {formatPermissionLabel(
+                                control.name,
+                                lang as string,
+                              )}
                             </span>
                             <Checkbox
                               checked={active}

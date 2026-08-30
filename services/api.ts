@@ -11,6 +11,10 @@ const api = axios.create({
   withCredentials: true,
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
+  // Large PDF/image uploads can take well over 10 minutes on slow links.
+  timeout: 30 * 60 * 1000,
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
   headers: {
     "Accept": "application/json",
     "Content-Type": "application/json",

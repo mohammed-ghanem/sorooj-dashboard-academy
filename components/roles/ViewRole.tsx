@@ -22,6 +22,7 @@ import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
+import { formatPermissionLabel } from "@/lib/permissionLabels";
 import ViewRoleSkeleton from "@/components/skeleton/ViewRoleSkeleton";
 
 export default function ViewRole() {
@@ -127,9 +128,12 @@ export default function ViewRole() {
                     key={perm.id}
                     className={cn(dash.viewFieldBox, "text-sm")}
                   >
-                    {lang === "ar"
-                      ? perm.name_ar ?? perm.name
-                      : perm.name_en ?? perm.name}
+                    {formatPermissionLabel(
+                      lang === "ar"
+                        ? perm.name_ar ?? perm.name
+                        : perm.name_en ?? perm.name,
+                      lang as string,
+                    )}
                   </div>
                 ))}
               </div>

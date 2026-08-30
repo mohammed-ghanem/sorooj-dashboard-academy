@@ -5,15 +5,11 @@ import { useGetProfileQuery } from "@/store/auth/authApi";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  UserCircle,
-  ChevronDown,
-  UserIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { ChevronDown, UserIcon, SettingsIcon } from "lucide-react";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import LogoutButton from "../auth/logout/LogoutButton";
+import { getAvatarSrc } from "@/lib/avatar";
 
 interface UserDropdownProps {
   showUserName?: boolean;
@@ -69,16 +65,13 @@ export default function UserDropdown({
         className="flex items-center gap-2 rounded-lg p-1 hover:bg-gray-100"
       >
         <div className="w-10 h-10 rounded-full overflow-hidden border">
-          {user?.avatar ? (
-            <Image
-              src={user?.avatar}
-              alt={user?.name || "user"}
-              width={40}
-              height={40}
-            />
-          ) : (
-            <UserCircle className="w-full h-full text-blue-600" />
-          )}
+          <Image
+            src={getAvatarSrc(user?.avatar)}
+            alt={user?.name || "user"}
+            width={40}
+            height={40}
+            className="w-full h-full object-cover"
+          />
         </div>
 
         {showUserName && (

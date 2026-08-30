@@ -7,6 +7,7 @@ import type {
   IUpdateScientificTrackSubjectPayload,
 } from "@/types/scientificTrackSubject";
 import type { IApiMessageResponse } from "@/types/academicYear";
+import { readOrderField, sortByOrderField } from "@/lib/sortByOrderField";
 
 function pickCategoryId(item: any): number {
   const candidates = [
@@ -46,6 +47,7 @@ function normalizeSubject(item: any): IScientificTrackSubject {
     category_id: pickCategoryId(item),
     category,
     cover: item?.cover ?? item?.cover_url ?? undefined,
+    sort_order: readOrderField(item),
     is_active: Boolean(
       item?.is_active === true || Number(item?.is_active ?? 0) === 1,
     ),
@@ -91,7 +93,6 @@ export const scientificTrackSubjectsApi = createApi({
       query: () => ({
         url: "/scientific-track-subjects",
         method: "get",
-        params: { page: 0, limit: 0 },
       }),
       transformResponse: (response: any) => {
         const d = response?.data ?? response;
@@ -102,7 +103,9 @@ export const scientificTrackSubjectsApi = createApi({
           d?.data ??
           d ??
           [];
-        return (Array.isArray(raw) ? raw : []).map(normalizeSubject);
+        return sortByOrderField(
+          (Array.isArray(raw) ? raw : []).map(normalizeSubject),
+        );
       },
       providesTags: ["ScientificTrackSubjects"],
     }),
@@ -147,6 +150,40 @@ export const scientificTrackSubjectsApi = createApi({
           method: "post",
           data: fd,
         };
+      },
+      async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {
+        const listPatch = dispatch(
+          scientificTrackSubjectsApi.util.updateQueryData(
+            "getScientificTrackSubjects",
+            undefined,
+            (draft: IScientificTrackSubject[]) => {
+              const row = draft.find((s) => s.id === id);
+              if (!row) return;
+              row.name = data.name;
+              row.about_subject = data.about_subject;
+              row.category_id = data.category_id;
+              row.is_active = data.is_active;
+            },
+          ),
+        );
+        const detailPatch = dispatch(
+          scientificTrackSubjectsApi.util.updateQueryData(
+            "getScientificTrackSubjectById",
+            id,
+            (draft: IScientificTrackSubject) => {
+              draft.name = data.name;
+              draft.about_subject = data.about_subject;
+              draft.category_id = data.category_id;
+              draft.is_active = data.is_active;
+            },
+          ),
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          listPatch.undo();
+          detailPatch.undo();
+        }
       },
       invalidatesTags: (_r, _e, { id }) => [
         "ScientificTrackSubjects",

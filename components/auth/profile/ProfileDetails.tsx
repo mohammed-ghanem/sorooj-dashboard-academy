@@ -2,7 +2,7 @@
 
 import { useGetProfileQuery } from "@/store/auth/authApi";
 import Link from "next/link";
-import { SquarePen, User, Mail, Phone, Eye } from "lucide-react";
+import { SquarePen, Mail, Phone, Eye } from "lucide-react";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import { dash } from "@/constants/dashboardUi";
@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
+import { getAvatarSrc } from "@/lib/avatar";
 
 function ProfileDetails() {
   const lang = LangUseParams();
@@ -57,17 +58,13 @@ function ProfileDetails() {
           <div className="flex flex-col items-center gap-4 pb-2 md:flex-row md:items-start md:gap-8">
             <div className="relative shrink-0">
               <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-slate-200/90 bg-linear-to-br from-emerald-50 to-teal-50 shadow-inner ring-2 ring-white">
-                {user.avatar ? (
-                  <Image
-                    src={user.avatar}
-                    alt={user.name}
-                    width={96}
-                    height={96}
-                    className="h-24 w-24 object-cover"
-                  />
-                ) : (
-                  <User className="h-10 w-10 text-emerald-800" />
-                )}
+                <Image
+                  src={getAvatarSrc(user.avatar)}
+                  alt={user.name}
+                  width={96}
+                  height={96}
+                  className="h-24 w-24 object-cover"
+                />
               </div>
             </div>
             <div className="min-w-0 flex-1 space-y-2 text-center md:text-start">

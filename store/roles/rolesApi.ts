@@ -104,7 +104,15 @@ export const rolesApi = createApi({
         "Roles",
         { type: "Role", id: arg.id },
       ],
-      
+      async onQueryStarted(_, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled;
+          const { authApi } = await import("@/store/auth/authApi");
+          dispatch(authApi.util.invalidateTags(["Profile"]));
+        } catch {
+          // Keep the role update error on the form.
+        }
+      },
     }),
 
     /* ===================== DELETE ROLE ===================== */

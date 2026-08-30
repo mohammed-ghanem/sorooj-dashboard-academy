@@ -2,10 +2,10 @@
 
 import { useLogoutMutation } from "@/store/auth/authApi";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import ConfirmLogoutDialog from "@/components/shared/ConfirmLogoutDialog";
-import LangUseParams from "@/translate/LangUseParams";
+import { clearAuthSession } from "@/lib/authCookies";
+import { markVoluntaryLogout } from "@/lib/handleSessionExpired";
 
 interface LogoutButtonProps {
   redirectTo?: string;
@@ -15,7 +15,6 @@ interface LogoutButtonProps {
 }
 
 export default function LogoutButton({
-
   redirectTo = "/login",
   onSuccess,
   onDialogOpen,
@@ -23,29 +22,25 @@ export default function LogoutButton({
 }: LogoutButtonProps) {
   const [logout, { isLoading }] = useLogoutMutation();
   const router = useRouter();
-  const lang = LangUseParams();
 
   const handleLogout = async () => {
+    markVoluntaryLogout();
+
     try {
       const result = await logout().unwrap();
 
-      Cookies.remove("access_token", { path: "/" });
-      Cookies.remove("reset_token", { path: "/" });
-      localStorage.removeItem("auth_state");
+      clearAuthSession();
 
       toast.success(result?.message);
       onSuccess?.();
 
       router.push(redirectTo);
       router.refresh();
-
     } catch (err: any) {
-      toast.error(
-        err?.data?.message
-      );
+      toast.error(err?.data?.message);
 
-      Cookies.remove("access_token", { path: "/" });
-      router.push(`${lang}/login`);
+      clearAuthSession();
+      router.push(redirectTo);
     }
   };
 
