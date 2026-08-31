@@ -1,32 +1,98 @@
-export type ModuleColor =
-  | "emerald"
-  | "teal"
-  | "cyan"
-  | "sky"
-  | "amber"
-  | "lime";
+export type DashboardPeriod = "month" | "year" | "all";
 
-export type DashboardModuleStat = {
-  key: string;
-  count: number;
-  active: number;
-  inactive: number;
-  color: ModuleColor;
+export type DashboardFilters = {
+  cohortId: string;
+  yearId: string;
+  period: DashboardPeriod;
 };
 
-export type DashboardStats = {
-  isLoading: boolean;
-  totals: {
-    students: number;
-    doctors: number;
-    lessons: number;
-    cohorts: number;
-    totalLearningItems: number;
+export type DashboardFilterOption = {
+  id: string;
+  label: string;
+};
+
+export type StageKey =
+  | "studying"
+  | "makeup_pending"
+  | "makeup"
+  | "year_failed"
+  | "program_completed";
+
+export type DashboardKpi = {
+  value: number;
+  changePercentage: number | null;
+};
+
+export type DashboardNamedCount = {
+  id?: number;
+  name: string;
+  count: number;
+};
+
+export type DashboardPhase = {
+  key: StageKey;
+  value: number;
+  percentage: number;
+};
+
+export type DashboardStatsPayload = {
+  kpis: {
+    studentsTotal: DashboardKpi;
+    studentsEnrolled: DashboardKpi;
+    studentsNotEnrolled: DashboardKpi;
+    doctorsActive: DashboardKpi;
+    countries: DashboardKpi;
+    actionRequired: DashboardKpi;
   };
-  modules: DashboardModuleStat[];
-  publishing: {
-    active: number;
-    inactive: number;
-    publishedThisWeek: number;
+  path: {
+    registered: number;
+    enrolled: number;
+    studying: number;
+    completed: number;
+  };
+  phases: DashboardPhase[];
+  program: {
+    terms: number;
+    subjects: number;
+    lessons: number;
+    videos: number;
+    watchRate: number;
+  };
+  tracks: {
+    categories: number;
+    subjects: number;
+    lessons: number;
+    examAttempts: number;
+    passRate: number;
+    topCategory: DashboardNamedCount | null;
+  };
+  library: {
+    categories: number;
+    activeBooks: number;
+    inactiveBooks: number;
+    sheikhs: number;
+    topCategories: DashboardNamedCount[];
+  };
+  attention: {
+    essayReviews: number;
+    unrepliedMessages: number;
+    makeupPending: number;
+    makeup: number;
+    yearFailures: number;
+    subjectsWithoutExam: number;
+    total: number;
+  };
+  exams: {
+    program: { subject: number; lesson: number; video: number };
+    tracks: { subject: number; lesson: number; video: number };
+  };
+};
+
+export type DashboardStats = DashboardStatsPayload & {
+  isLoading: boolean;
+  isFetching: boolean;
+  filters: {
+    cohorts: DashboardFilterOption[];
+    years: DashboardFilterOption[];
   };
 };
