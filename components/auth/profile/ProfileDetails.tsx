@@ -2,7 +2,7 @@
 
 import { useGetProfileQuery } from "@/store/auth/authApi";
 import Link from "next/link";
-import { SquarePen, Mail, Phone, Eye } from "lucide-react";
+import { SquarePen, Mail, Phone, Eye, User } from "lucide-react";
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import { dash } from "@/constants/dashboardUi";
