@@ -32,6 +32,7 @@ import {
   emptyAppContacts,
 } from "@/types/appContacts";
 import AppContactsSkeleton from "@/components/skeleton/AppContactsSkeleton";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 export default function AppContacts() {
   const sessionReady = useSessionReady();
@@ -268,6 +269,8 @@ export default function AppContacts() {
                 </div>
               </div>
             </section>
+
+            <FormSubmitProgress isSubmitting={isSaving} />
 
             <div className={dash.formFooterBar}>
               <Button

@@ -31,6 +31,7 @@ import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 
 import type { IAcademicYear } from "@/types/academicYear";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type FormState = {
   name_ar: string;
@@ -236,6 +237,8 @@ export default function CreateStudyTerm() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isCreating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

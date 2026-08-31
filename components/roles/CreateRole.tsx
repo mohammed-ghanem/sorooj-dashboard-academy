@@ -39,6 +39,7 @@ import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
 import { formatPermissionLabel } from "@/lib/permissionLabels";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 export default function CreateRole() {
   const router = useRouter();
@@ -287,6 +288,8 @@ export default function CreateRole() {
                 ))}
               </div>
             </ScrollArea>
+
+            <FormSubmitProgress isSubmitting={isCreating} />
 
             <div className={dash.formFooterBar}>
               <Button

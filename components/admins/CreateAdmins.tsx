@@ -32,6 +32,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import PasswordInputWithToggle from "@/components/shared/PasswordInputWithToggle";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type FormState = {
   name: string;
@@ -276,6 +277,8 @@ export default function CreateAdmin() {
                 ))}
               </div>
             </section>
+
+            <FormSubmitProgress isSubmitting={isCreating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

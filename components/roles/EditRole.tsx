@@ -42,6 +42,7 @@ import RoleFormSkeleton from "@/components/skeleton/RoleFormSkeleton";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
 import { formatPermissionLabel } from "@/lib/permissionLabels";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 export default function EditRole() {
   const router = useRouter();
@@ -343,6 +344,8 @@ export default function EditRole() {
                 ))}
               </div>
             </ScrollArea>
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <Button

@@ -1,11 +1,15 @@
-/** Postman: subjects | scientific_track_subjects | lessons | scientific_track_categories | book_categories | books */
+/** Postman: subjects | scientific_track_subjects | lessons | scientific_track_categories | book_categories | books | home_features | home_goals | home_methodologies | home_study_levels */
 export type SwapOrderType =
   | "subjects"
   | "lessons"
   | "scientific_track_categories"
   | "scientific_track_subjects"
   | "book_categories"
-  | "books";
+  | "books"
+  | "home_features"
+  | "home_goals"
+  | "home_methodologies"
+  | "home_study_levels";
 
 export type SwapOrderPayload = {
   type: SwapOrderType;

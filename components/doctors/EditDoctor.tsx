@@ -42,6 +42,7 @@ import { Button } from "@/components/ui/button";
 import ImageDropzone from "@/components/shared/ImageDropzone";
 import PasswordInputWithToggle from "@/components/shared/PasswordInputWithToggle";
 import DoctorFormSkeleton from "@/components/skeleton/DoctorFormSkeleton";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type FormState = {
   name: string;
@@ -370,6 +371,8 @@ export default function EditDoctor() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

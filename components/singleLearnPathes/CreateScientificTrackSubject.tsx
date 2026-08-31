@@ -27,6 +27,7 @@ import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type FormState = {
   name: string;
@@ -218,6 +219,8 @@ export default function CreateScientificTrackSubject() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isCreating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

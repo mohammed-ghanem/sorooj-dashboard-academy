@@ -30,6 +30,7 @@ import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
 import { getAvatarSrc } from "@/lib/avatar";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 function UpdateProfile() {
   const lang = LangUseParams();
@@ -367,6 +368,8 @@ function UpdateProfile() {
                 </div>
               </div>
             </section>
+
+            <FormSubmitProgress isSubmitting={isUpdating || isUploading} />
 
             <div className={dash.formFooterBar}>
               <Button

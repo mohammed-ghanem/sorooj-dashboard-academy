@@ -36,6 +36,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 export default function EditCohort() {
   const sessionReady = useSessionReady();
@@ -249,6 +250,8 @@ export default function EditCohort() {
                 periodEnd: t?.periodEndDate ?? "",
               }}
             />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

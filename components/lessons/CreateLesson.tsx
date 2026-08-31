@@ -46,6 +46,7 @@ import { dash } from "@/constants/dashboardUi";
 
 import type { ILessonVideoPayload, LessonTrackType } from "@/types/lesson";
 import { ACADEMIC_LESSONS_BASE_PATH } from "@/utils/lessonsPaths";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
@@ -568,6 +569,8 @@ export default function CreateLesson({
             </section>
 
             {/* Publish + submit */}
+            <FormSubmitProgress isSubmitting={isCreating} />
+
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">
                 <Checkbox

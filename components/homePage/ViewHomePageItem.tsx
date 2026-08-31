@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { Eye } from "lucide-react";
 import { useSessionReady } from "@/hooks/useSessionReady";
@@ -37,9 +36,11 @@ export default function ViewHomePageItem({ sectionKey }: Props) {
   const shared = translate?.pages?.homePageSections;
   const pg = shared?.[section.dictKey];
   const itemId = Number(id);
+  const Icon = section.icon;
 
   const { data: item, isLoading, isError } = hooks.useGetItemByIdQuery(itemId, {
     skip: !sessionReady || !id || Number.isNaN(itemId),
+    refetchOnMountOrArgChange: true,
   });
 
   if (!sessionReady || isLoading) return <ViewAcademicYearSkeleton />;
@@ -73,52 +74,97 @@ export default function ViewHomePageItem({ sectionKey }: Props) {
         </CardHeader>
 
         <CardContent className="space-y-8 px-4 py-8 md:px-10 md:py-10">
-          <div className="flex flex-wrap gap-4">
-            {item.icon ? (
-              <Image
-                src={item.icon}
-                alt=""
-                width={72}
-                height={72}
-                className="h-18 w-18 rounded-xl object-contain ring-1 ring-slate-200"
-              />
-            ) : null}
-            {item.image ? (
-              <Image
-                src={item.image}
-                alt=""
-                width={220}
-                height={140}
-                className="h-35 w-55 rounded-xl object-cover ring-1 ring-slate-200"
-              />
-            ) : null}
-          </div>
+          <section className={dash.sectionNeutral}>
+            <div className="mb-6 flex flex-wrap items-start gap-4">
+              <span className={dash.sectionIconWrap}>
+                <Icon className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                {pg?.formDescription}
+              </p>
+            </div>
 
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-slate-800">
-              {shared?.title}
-            </Label>
-            <div className={dash.viewFieldBox}>{item.title || "—"}</div>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-slate-800">
-              {shared?.description}
-            </Label>
-            <div className={dash.viewFieldBox}>{item.description || "—"}</div>
-          </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-semibold text-slate-800">
+            {section.hasIcon || section.hasImage ? (
+              <div className="mb-6 flex flex-wrap gap-6">
+                {section.hasIcon ? (
+                  <div className="space-y-2">
+                    <Label className="font-semibold text-slate-800">
+                      {shared?.icon}
+                    </Label>
+                    {item.icon ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.icon}
+                        alt=""
+                        className="h-20 w-20 rounded-2xl border border-slate-200/90 object-contain bg-white p-2 shadow-sm ring-1 ring-slate-900/5"
+                      />
+                    ) : (
+                      <div className={dash.viewFieldBox}>—</div>
+                    )}
+                  </div>
+                ) : null}
+                {section.hasImage ? (
+                  <div className="space-y-2">
+                    <Label className="font-semibold text-slate-800">
+                      {shared?.image}
+                    </Label>
+                    {item.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={item.image}
+                        alt=""
+                        className="h-36 w-56 rounded-2xl border border-slate-200/90 object-cover shadow-sm ring-1 ring-slate-900/5"
+                      />
+                    ) : (
+                      <div className={dash.viewFieldBox}>—</div>
+                    )}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            <div className="grid grid-cols-1 gap-6">
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {shared?.title}
+                </Label>
+                <div className={dash.viewFieldBox}>{item.title || "—"}</div>
+              </div>
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {shared?.description}
+                </Label>
+                <div
+                  className={cn(
+                    dash.viewFieldBox,
+                    "min-h-12 whitespace-pre-wrap",
+                  )}
+                >
+                  {item.description || "—"}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-slate-200 bg-slate-50/60 px-5 py-4">
+            <Label className="font-semibold text-slate-800">
               {shared?.status}
             </Label>
-            <Badge className="rounded-full bg-emerald-50 px-3 py-1 font-semibold text-emerald-900 ring-1 ring-emerald-200/70">
-              {item.is_active ? shared?.active : shared?.inactive}
-            </Badge>
+            {item.is_active ? (
+              <Badge className="bg-emerald-600 px-3 py-1 font-semibold hover:bg-emerald-600">
+                {shared?.active}
+              </Badge>
+            ) : (
+              <Badge variant="destructive" className="px-3 py-1 font-semibold">
+                {shared?.inactive}
+              </Badge>
+            )}
           </div>
 
           <Button
             type="button"
             className={dash.viewBackButton}
-            onClick={() => router.back()}
+            onClick={() => router.push(`/${lang}/${section.basePath}`)}
           >
             {shared?.backBtn}
           </Button>

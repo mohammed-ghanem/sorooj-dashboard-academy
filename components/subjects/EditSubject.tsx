@@ -36,6 +36,7 @@ import ImageDropzone from "@/components/shared/ImageDropzone";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type EditSubjectForm = {
   name: string;
@@ -279,6 +280,8 @@ export default function EditSubject() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

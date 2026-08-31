@@ -11,6 +11,7 @@ export interface IHomePageItem {
   icon?: string;
   image?: string;
   is_active: boolean;
+  sort_order?: number | null;
   created_at?: string;
   updated_at?: string;
   message?: string;

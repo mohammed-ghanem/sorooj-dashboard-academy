@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { Edit3, Eye } from "lucide-react";
 import { toast } from "sonner";
 
@@ -76,11 +75,10 @@ export default function HomePageSectionList({ sectionKey }: Props) {
       render: (_, row) => (
         <div className="flex items-center gap-3">
           {row.icon ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={row.icon}
               alt=""
-              width={36}
-              height={36}
               className="h-9 w-9 rounded-lg object-contain ring-1 ring-slate-200"
             />
           ) : null}

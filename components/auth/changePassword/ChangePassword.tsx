@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import ChangePasswordSkeleton from "@/components/skeleton/ChangePasswordSkeleton";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 
 const ChangePassword = () => {
@@ -195,6 +196,8 @@ const ChangePassword = () => {
                 </button>
               </div>
             </div>
+
+            <FormSubmitProgress isSubmitting={isLoading} className="mb-2" />
 
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end justify-center! items-center! space-x-3 my-2">
               <Button

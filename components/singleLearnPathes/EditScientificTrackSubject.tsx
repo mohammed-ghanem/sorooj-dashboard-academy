@@ -31,6 +31,7 @@ import { Separator } from "@/components/ui/separator";
 import ImageDropzone from "@/components/shared/ImageDropzone";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type EditForm = {
   name: string;
@@ -246,6 +247,8 @@ export default function EditScientificTrackSubject() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

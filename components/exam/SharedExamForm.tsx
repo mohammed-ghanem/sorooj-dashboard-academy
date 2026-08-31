@@ -25,6 +25,7 @@ import { dash } from "@/constants/dashboardUi";
 
 import "@/components/lessons/style.css";
 
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 import type {
   ILessonExamQuestion,
   LessonExamQuestionType,
@@ -834,6 +835,8 @@ export default function SharedExamForm({
                 {ex?.addQuestion}
               </Button>
             </section>
+
+            <FormSubmitProgress isSubmitting={isSaving} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

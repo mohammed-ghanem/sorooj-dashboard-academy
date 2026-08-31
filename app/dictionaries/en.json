@@ -6,6 +6,10 @@
     "title": "Loading"
   },
   "pages": {
+    "formSubmit": {
+      "uploading": "Uploading files...",
+      "saving": "Saving..."
+    },
     "dashboard": {
       "academyStatsTitle": "Academy statistics",
       "filterCohort": "Cohort",
@@ -537,6 +541,10 @@
       "lessonsHint": "Change the order lessons appear within their subject.",
       "categoriesHint": "Change the order categories appear in the list.",
       "booksHint": "Change the order books appear in the scientific library.",
+      "homeFeaturesHint": "Change the order of exceptional experience items on the home page.",
+      "homeGoalsHint": "Change the order of our goals on the home page.",
+      "homeMethodologiesHint": "Change the order of study methodology items on the home page.",
+      "homeStudyLevelsHint": "Change the order of study system items on the home page.",
       "position": "#",
       "itemTitle": "Title",
       "actions": "Order",

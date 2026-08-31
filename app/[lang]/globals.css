@@ -232,3 +232,16 @@ input[data-slot="input"]:-webkit-autofill:active {
   background: #fff;
   color : #3f4e5c;
 }
+
+@keyframes form-submit-progress-indet {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+.form-submit-progress-indet {
+  animation: form-submit-progress-indet 1.15s ease-in-out infinite;
+}

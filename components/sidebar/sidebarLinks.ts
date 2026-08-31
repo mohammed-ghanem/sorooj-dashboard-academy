@@ -347,6 +347,12 @@ export const homePageSettingsLinks = (lang: string): SidebarLinkItem[] => [
     key: "homeStudyLevels",
     module: "home_page",
   },
+  {
+    href: `/${lang}/settings/home-page/reorder`,
+    icon: ArrowUpDown,
+    key: "changeOrder",
+    module: "home_page",
+  },
 ];
 
 export const settingsLinks = (lang: string): SettingsLinkItem[] => [

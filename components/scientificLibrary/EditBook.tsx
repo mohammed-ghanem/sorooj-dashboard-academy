@@ -45,6 +45,7 @@ import { cn } from "@/lib/utils";
 import { dash } from "@/constants/dashboardUi";
 import { LIBRARY_BOOKS_BASE_PATH } from "@/constants/categoryModules";
 import "@/components/lessons/style.css";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
@@ -393,20 +394,10 @@ export default function EditBook() {
 
             <Separator />
 
-            {isUpdating && uploadProgress > 0 ? (
-              <div className="space-y-2 rounded-xl border border-amber-200/70 bg-amber-50/40 px-3 py-3">
-                <div className="flex items-center justify-between text-xs text-amber-950">
-                  <span>{uploadingLabel}</span>
-                  <span>{uploadProgress}%</span>
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-amber-100">
-                  <div
-                    className="h-full rounded-full bg-amber-500 transition-all duration-150"
-                    style={{ width: `${uploadProgress}%` }}
-                  />
-                </div>
-              </div>
-            ) : null}
+            <FormSubmitProgress
+              isSubmitting={isUpdating}
+              progress={uploadProgress}
+            />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

@@ -30,6 +30,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type EditForm = {
   name: string;
@@ -169,6 +170,8 @@ export default function EditLibraryCategory() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

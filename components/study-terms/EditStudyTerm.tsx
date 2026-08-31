@@ -35,6 +35,7 @@ import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 
 import type { IAcademicYear } from "@/types/academicYear";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type EditStudyTermForm = {
   name_ar: string;
@@ -262,6 +263,8 @@ export default function EditStudyTerm() {
             </section>
 
             <Separator />
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

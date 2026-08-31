@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 const CkEditor = dynamic(() => import("@/components/ckEditor/CKEditor"), {
   ssr: false,
@@ -134,6 +135,8 @@ export default function TermsAndConditions() {
                   config={{ language: "en", direction: "ltr" }}
                 />
               </section>
+
+              <FormSubmitProgress isSubmitting={isSaving} />
 
               <div className={dash.formFooterBar}>
                 <Button

@@ -21,7 +21,11 @@ export type ReorderHintKeys =
   | "subjectsHint"
   | "lessonsHint"
   | "categoriesHint"
-  | "booksHint";
+  | "booksHint"
+  | "homeFeaturesHint"
+  | "homeGoalsHint"
+  | "homeMethodologiesHint"
+  | "homeStudyLevelsHint";
 
 export type ModuleReorderConfig = {
   tabs: ReorderTabConfig[];

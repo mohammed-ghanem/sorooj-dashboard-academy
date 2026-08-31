@@ -36,6 +36,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import AdminFormSkeleton from "@/components/skeleton/AdminFormSkeleton";
+import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
 
 type EditAdminForm = {
   name: string;
@@ -300,6 +301,8 @@ export default function EditAdmin() {
                 ))}
               </div>
             </section>
+
+            <FormSubmitProgress isSubmitting={isUpdating} />
 
             <div className={dash.formFooterBar}>
               <div className="flex flex-wrap items-center gap-3">

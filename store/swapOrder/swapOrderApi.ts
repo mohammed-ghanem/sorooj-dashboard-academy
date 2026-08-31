@@ -7,9 +7,13 @@ import { scientificTrackCategoriesApi } from "@/store/scientificTrackCategories/
 import { scientificTrackSubjectsApi } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { bookCategoriesApi } from "@/store/bookCategories/bookCategoriesApi";
 import { booksApi } from "@/store/books/booksApi";
+import {
+  homeFeaturesApi,
+  homeGoalsApi,
+  homeMethodologiesApi,
+  homeStudyLevelsApi,
+} from "@/store/homePage/homePageApis";
 import type { SwapOrderPayload, SwapOrderType } from "@/types/swapOrder";
-
-import { readOrderField, sortByOrderField } from "@/lib/sortByOrderField";
 
 type Orderable = {
   sort_order?: number | null;
@@ -133,6 +137,42 @@ function patchSwapInCaches(
         dispatch,
         booksApi,
         "getBooks",
+        undefined,
+        first_id,
+        second_id,
+      );
+    case "home_features":
+      return patchListCache(
+        dispatch,
+        homeFeaturesApi,
+        "getItems",
+        undefined,
+        first_id,
+        second_id,
+      );
+    case "home_goals":
+      return patchListCache(
+        dispatch,
+        homeGoalsApi,
+        "getItems",
+        undefined,
+        first_id,
+        second_id,
+      );
+    case "home_methodologies":
+      return patchListCache(
+        dispatch,
+        homeMethodologiesApi,
+        "getItems",
+        undefined,
+        first_id,
+        second_id,
+      );
+    case "home_study_levels":
+      return patchListCache(
+        dispatch,
+        homeStudyLevelsApi,
+        "getItems",
         undefined,
         first_id,
         second_id,
