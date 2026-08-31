@@ -28,6 +28,12 @@ import {
 
   ArrowUpDown,
 
+  Sparkles,
+
+  Target,
+
+  Layers,
+
   type LucideIcon,
 
 } from "lucide-react";
@@ -315,6 +321,33 @@ export const scientificLibraryLinks = (lang: string): SidebarLinkItem[] => [
 ];
 
 
+
+export const homePageSettingsLinks = (lang: string): SidebarLinkItem[] => [
+  {
+    href: `/${lang}/settings/home-page/features`,
+    icon: Sparkles,
+    key: "homeFeatures",
+    module: "home_page",
+  },
+  {
+    href: `/${lang}/settings/home-page/goals`,
+    icon: Target,
+    key: "homeGoals",
+    module: "home_page",
+  },
+  {
+    href: `/${lang}/settings/home-page/methodologies`,
+    icon: BookOpenCheck,
+    key: "homeMethodologies",
+    module: "home_page",
+  },
+  {
+    href: `/${lang}/settings/home-page/study-levels`,
+    icon: Layers,
+    key: "homeStudyLevels",
+    module: "home_page",
+  },
+];
 
 export const settingsLinks = (lang: string): SettingsLinkItem[] => [
 

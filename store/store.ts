@@ -28,6 +28,12 @@ import { scientificTrackSubjectExamsApi } from "./scientificTrackSubjectExams/sc
 import { bookCategoriesApi } from "./bookCategories/bookCategoriesApi";
 import { booksApi } from "./books/booksApi";
 import { swapOrderApi } from "./swapOrder/swapOrderApi";
+import {
+  homeFeaturesApi,
+  homeGoalsApi,
+  homeMethodologiesApi,
+  homeStudyLevelsApi,
+} from "./homePage/homePageApis";
 
 
 
@@ -64,6 +70,10 @@ export const store = configureStore({
     [bookCategoriesApi.reducerPath]: bookCategoriesApi.reducer,
     [booksApi.reducerPath]: booksApi.reducer,
     [swapOrderApi.reducerPath]: swapOrderApi.reducer,
+    [homeFeaturesApi.reducerPath]: homeFeaturesApi.reducer,
+    [homeGoalsApi.reducerPath]: homeGoalsApi.reducer,
+    [homeMethodologiesApi.reducerPath]: homeMethodologiesApi.reducer,
+    [homeStudyLevelsApi.reducerPath]: homeStudyLevelsApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
@@ -95,6 +105,10 @@ export const store = configureStore({
       bookCategoriesApi.middleware,
       booksApi.middleware,
       swapOrderApi.middleware,
+      homeFeaturesApi.middleware,
+      homeGoalsApi.middleware,
+      homeMethodologiesApi.middleware,
+      homeStudyLevelsApi.middleware,
       ),
    
 });

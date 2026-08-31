@@ -39,6 +39,61 @@
       "quickCohort": "دفعة جديدة",
       "noPermission": "ليس لديك صلاحية الدخول إلى هذه الصفحة."
     },
+    "homePageSections": {
+      "title": "العنوان",
+      "description": "الوصف",
+      "icon": "الأيقونة",
+      "image": "الصورة",
+      "isActive": "نشط",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "status": "الحالة",
+      "searchPlaceholder": "ابحث...",
+      "createTitle": "إضافة عنصر",
+      "createBtn": "إنشاء",
+      "saveBtn": "حفظ التغييرات",
+      "processingCreate": "جارى الإنشاء",
+      "processingSave": "جارى الحفظ",
+      "uploadingFiles": "جاري رفع الملفات...",
+      "deleteTitle": "تأكيد الحذف",
+      "deleteMessage": "هل أنت متأكد أنك تريد حذف هذا العنصر؟ لا يمكن التراجع عن هذا الإجراء.",
+      "deleteBtn": "حذف",
+      "cancelBtn": "إلغاء",
+      "backBtn": "رجوع",
+      "notFound": "لم يتم العثور على العنصر",
+      "features": {
+        "listTitle": "التجربة الاستثنائية",
+        "listDescription": "إدارة عناصر قسم التجربة الاستثنائية في الصفحة الرئيسية.",
+        "createTitle": "إضافة عنصر للتجربة الاستثنائية",
+        "editTitle": "تعديل عنصر التجربة الاستثنائية",
+        "viewTitle": "تفاصيل عنصر التجربة الاستثنائية",
+        "formDescription": "أضف عنواناً ووصفاً وأيقونة كما تظهر في الصفحة الرئيسية."
+      },
+      "goals": {
+        "listTitle": "أهدافنا",
+        "listDescription": "إدارة أهداف الأكاديمية كما تظهر في الصفحة الرئيسية.",
+        "createTitle": "إضافة هدف",
+        "editTitle": "تعديل الهدف",
+        "viewTitle": "تفاصيل الهدف",
+        "formDescription": "أضف عنوان الهدف ووصفه مع الأيقونة والصورة."
+      },
+      "methodologies": {
+        "listTitle": "منهجية الدراسة",
+        "listDescription": "إدارة عناصر منهجية الدراسة في الصفحة الرئيسية.",
+        "createTitle": "إضافة عنصر لمنهجية الدراسة",
+        "editTitle": "تعديل منهجية الدراسة",
+        "viewTitle": "تفاصيل منهجية الدراسة",
+        "formDescription": "أضف عنواناً ووصفاً وأيقونة لمنهجية الدراسة."
+      },
+      "studyLevels": {
+        "listTitle": "نظام الدراسة",
+        "listDescription": "إدارة مستويات نظام الدراسة في الصفحة الرئيسية.",
+        "createTitle": "إضافة مستوى دراسي",
+        "editTitle": "تعديل المستوى الدراسي",
+        "viewTitle": "تفاصيل المستوى الدراسي",
+        "formDescription": "أضف عنوان المستوى ووصفه مع الصورة."
+      }
+    },
     "login": {
       "loginTitle": "لوحة تحكم الادارة ",
       "email": "البريد الالكترونى",
@@ -1147,6 +1202,11 @@
     "categoryLessons": "الدروس",
     "changeOrder": "تغيير الترتيب",
     "settings": "الإعدادات",
+    "homePageSettings": "إعدادات الصفحة الرئيسية",
+    "homeFeatures": "التجربة الاستثنائية",
+    "homeGoals": "أهدافنا",
+    "homeMethodologies": "منهجية الدراسة",
+    "homeStudyLevels": "نظام الدراسة",
     "privacyPolicy": "سياسة الخصوصية",
     "appContacts": "بيانات التواصل",
     "termsAndConditions": "الشروط والأحكام",

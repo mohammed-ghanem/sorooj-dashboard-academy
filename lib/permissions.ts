@@ -47,6 +47,7 @@ const MODULE_ROUTE_ALIASES: Record<string, string[]> = {
   "app-contacts": ["app_contacts", "settings"],
   "contact-us": ["contact_us", "settings"],
   "delete-account": ["delete_account", "settings"],
+  settings: ["settings", "home_page"],
 };
 
 function addPermissionKey(out: Set<string>, value: string) {
@@ -128,6 +129,23 @@ const MODULE_LABEL_HINTS: Record<string, string[]> = {
   contact_us: ["contact_us", "contact-us", "تواصل"],
   delete_account: ["delete_account", "delete-account", "حذف الحساب"],
   settings: ["settings", "إعدادات"],
+  home_page: [
+    "home_page",
+    "home-page",
+    "home_features",
+    "home-features",
+    "home_goals",
+    "home-goals",
+    "home_methodologies",
+    "home-methodologies",
+    "home_study_levels",
+    "home-study-levels",
+    "الصفحة الرئيسية",
+    "التجربة",
+    "أهدافنا",
+    "منهجية الدراسة",
+    "نظام الدراسة",
+  ],
 };
 
 function inferModuleKeysFromText(value: string, keys: Set<string>) {
@@ -763,6 +781,19 @@ const MODULE_KEY_ALIASES: Record<string, string[]> = {
   contact_us: ["contact_us", "contact-us", "contacts", "settings"],
   delete_account: ["delete_account", "delete-account", "settings"],
   settings: ["settings"],
+  home_page: [
+    "home_page",
+    "home-page",
+    "home_features",
+    "home-features",
+    "home_goals",
+    "home-goals",
+    "home_methodologies",
+    "home-methodologies",
+    "home_study_levels",
+    "home-study-levels",
+    "settings",
+  ],
 };
 
 export function permissionMatchesModule(
@@ -811,6 +842,7 @@ const MODULE_FAMILIES: Record<string, string[]> = {
     "scientific_track_categories",
     "scientific_track_subjects",
   ],
+  home_page: ["home_page", "settings"],
 };
 
 export function hasModuleAccess(
@@ -912,6 +944,11 @@ export function canAccessPath(
       "scientific_track_subjects",
       "lessons",
     ]);
+  }
+
+  if (first === "settings") {
+    if (second === "home-page") return hasModuleAccess(keys, "home_page");
+    return hasAnyModuleAccess(keys, ["settings", "home_page"]);
   }
 
   if (first === "scientific-library") {

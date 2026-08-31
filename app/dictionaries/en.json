@@ -42,6 +42,61 @@
       "quickCohort": "New cohort",
       "noPermission": "You do not have permission to access this page."
     },
+    "homePageSections": {
+      "title": "Title",
+      "description": "Description",
+      "icon": "Icon",
+      "image": "Image",
+      "isActive": "Active",
+      "active": "Active",
+      "inactive": "Inactive",
+      "status": "Status",
+      "searchPlaceholder": "Search...",
+      "createTitle": "Add item",
+      "createBtn": "Create",
+      "saveBtn": "Save changes",
+      "processingCreate": "Creating...",
+      "processingSave": "Saving...",
+      "uploadingFiles": "Uploading files...",
+      "deleteTitle": "Confirm delete",
+      "deleteMessage": "Are you sure you want to delete this item? This action cannot be undone.",
+      "deleteBtn": "Delete",
+      "cancelBtn": "Cancel",
+      "backBtn": "Back",
+      "notFound": "Item not found",
+      "features": {
+        "listTitle": "Exceptional experience",
+        "listDescription": "Manage the exceptional experience items on the home page.",
+        "createTitle": "Add exceptional experience item",
+        "editTitle": "Edit exceptional experience item",
+        "viewTitle": "Exceptional experience details",
+        "formDescription": "Add a title, description, and icon as they appear on the home page."
+      },
+      "goals": {
+        "listTitle": "Our goals",
+        "listDescription": "Manage academy goals as they appear on the home page.",
+        "createTitle": "Add a goal",
+        "editTitle": "Edit goal",
+        "viewTitle": "Goal details",
+        "formDescription": "Add the goal title and description with an icon and image."
+      },
+      "methodologies": {
+        "listTitle": "Study methodology",
+        "listDescription": "Manage study methodology items on the home page.",
+        "createTitle": "Add methodology item",
+        "editTitle": "Edit methodology",
+        "viewTitle": "Methodology details",
+        "formDescription": "Add a title, description, and icon for the study methodology."
+      },
+      "studyLevels": {
+        "listTitle": "Study system",
+        "listDescription": "Manage study system levels on the home page.",
+        "createTitle": "Add study level",
+        "editTitle": "Edit study level",
+        "viewTitle": "Study level details",
+        "formDescription": "Add the level title and description with an image."
+      }
+    },
     "login": {
       "loginTitle": "Admins Dashboard",
       "email": "Email Address",
@@ -1148,6 +1203,11 @@
     "categoryLessons": "Lessons",
     "changeOrder": "Change order",
     "settings": "Settings",
+    "homePageSettings": "Home page settings",
+    "homeFeatures": "Exceptional experience",
+    "homeGoals": "Our goals",
+    "homeMethodologies": "Study methodology",
+    "homeStudyLevels": "Study system",
     "privacyPolicy": "Privacy Policy",
     "appContacts": "App contacts",
     "termsAndConditions": "Terms and Conditions",

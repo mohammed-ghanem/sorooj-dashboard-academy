@@ -9,6 +9,7 @@ import {
   BookMarked,
   Route,
   Library,
+  LayoutDashboard,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -21,6 +22,7 @@ import {
   academicStudyLinks,
   independentTracksLinks,
   scientificLibraryLinks,
+  homePageSettingsLinks,
   settingsLinks,
   isNavHrefActive,
   isLinkGroupActive,
@@ -39,6 +41,7 @@ const SideBar = () => {
   const [openIndependentTracks, setOpenIndependentTracks] = useState(false);
   const [openScientificLibrary, setOpenScientificLibrary] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
+  const [openHomePageSettings, setOpenHomePageSettings] = useState(false);
 
   const { hasModuleAccess, canAccessHref, isReady } = useUserPermissions();
 
@@ -62,6 +65,9 @@ const SideBar = () => {
   const visibleScientificLibraryLinks = scientificLibraryLinks(lang).filter(
     (item) => canShowLink(item),
   );
+  const visibleHomePageSettingsLinks = homePageSettingsLinks(lang).filter(
+    (item) => canShowLink(item),
+  );
   const visibleSettingsLinks = settingsLinks(lang).filter((link) =>
     canShowLink(link),
   );
@@ -74,14 +80,18 @@ const SideBar = () => {
     isLinkGroupActive(pathname, independentTracksLinks(lang), lang);
   const isScientificLibraryActive = () =>
     isLinkGroupActive(pathname, scientificLibraryLinks(lang), lang);
+  const isHomePageSettingsActive = () =>
+    isLinkGroupActive(pathname, homePageSettingsLinks(lang), lang);
   const isSettingsActive = () =>
-    isLinkGroupActive(pathname, settingsLinks(lang), lang);
+    isLinkGroupActive(pathname, settingsLinks(lang), lang) ||
+    isHomePageSettingsActive();
 
   useEffect(() => {
     if (isAcademicStudyActive()) setOpenAcademicStudy(true);
     if (isIndependentTracksActive()) setOpenIndependentTracks(true);
     if (isScientificLibraryActive()) setOpenScientificLibrary(true);
     if (isSettingsActive()) setOpenSettings(true);
+    if (isHomePageSettingsActive()) setOpenHomePageSettings(true);
   }, [pathname, lang]);
 
   const linkClass = (active: boolean) =>
@@ -223,18 +233,91 @@ const SideBar = () => {
             Icon: Library,
             links: visibleScientificLibraryLinks,
           })}
-          {renderDropdown({
-            open: openSettings,
-            setOpen: setOpenSettings,
-            active: isSettingsActive(),
-            title: translate.sidebar.settings,
-            Icon: Settings,
-            links: visibleSettingsLinks.map((link) => ({
-              href: link.href,
-              icon: ShieldCheck,
-              key: link.key,
-            })),
-          })}
+          {visibleSettingsLinks.length || visibleHomePageSettingsLinks.length ? (
+            <li>
+              <button
+                type="button"
+                onClick={() => setOpenSettings(!openSettings)}
+                className={groupButtonClass(isSettingsActive())}
+              >
+                <span className="flex items-center gap-2">
+                  <Settings size={18} />
+                  <span className="hidden md:inline">
+                    {translate.sidebar.settings}
+                  </span>
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`hidden md:inline transition-transform ${
+                    openSettings ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <div
+                className={`md:ms-6 mt-1 ms-3 space-y-1 overflow-hidden transition-all duration-300 
+                ${openSettings ? "opacity-100" : "max-h-0 opacity-0"}`}
+              >
+                {visibleHomePageSettingsLinks.length ? (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenHomePageSettings(!openHomePageSettings)
+                      }
+                      className={groupButtonClass(isHomePageSettingsActive())}
+                    >
+                      <span className="flex items-center gap-2">
+                        <LayoutDashboard size={16} />
+                        <span className="hidden md:inline text-start">
+                          {translate.sidebar.homePageSettings}
+                        </span>
+                      </span>
+                      <ChevronDown
+                        size={16}
+                        className={`hidden md:inline transition-transform ${
+                          openHomePageSettings ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    <div
+                      className={`md:ms-4 mt-1 space-y-1 overflow-hidden transition-all duration-300 
+                      ${openHomePageSettings ? "opacity-100" : "max-h-0 opacity-0"}`}
+                    >
+                      {visibleHomePageSettingsLinks.map((item) => {
+                        const ItemIcon = item.icon;
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`${linkClass(isActive(item.href))} text-[15px]`}
+                          >
+                            <ItemIcon size={16} />
+                            <span className="hidden md:inline">
+                              {translate.sidebar[item.key]}
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : null}
+
+                {visibleSettingsLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`${linkClass(isActive(link.href))} text-[16px]`}
+                  >
+                    <ShieldCheck size={16} />
+                    <span className="hidden md:inline">
+                      {translate.sidebar[link.key]}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </li>
+          ) : null}
         </ul>
       </nav>
     </aside>

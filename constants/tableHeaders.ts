@@ -131,6 +131,13 @@ export const TABLE_HEADERS = {
       status: "حالة المراجعة",
       actions: "الإجراءات",
     },
+
+    homePageItems: {
+      title: "العنوان",
+      description: "الوصف",
+      status: "الحالة",
+      actions: "الإجراءات",
+    },
   },
 
   en: {
@@ -263,6 +270,13 @@ export const TABLE_HEADERS = {
       answer: "Essay answer",
       submittedAt: "Submitted at",
       status: "Review status",
+      actions: "Actions",
+    },
+
+    homePageItems: {
+      title: "Title",
+      description: "Description",
+      status: "Status",
       actions: "Actions",
     },
   },
