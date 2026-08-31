@@ -52,8 +52,8 @@ function pickItem(response: any): any {
   );
 }
 
-export function createHomePageSectionApi(options: {
-  reducerPath: string;
+export function createHomePageSectionApi<TReducerPath extends string>(options: {
+  reducerPath: TReducerPath;
   endpoint: string;
   listTag: string;
   itemTag: string;
@@ -123,7 +123,7 @@ export function createHomePageSectionApi(options: {
         }),
         async onQueryStarted(id, { dispatch, queryFulfilled }) {
           const patchResult = dispatch(
-            api.util.updateQueryData(
+            (api.util.updateQueryData as any)(
               "getItems",
               undefined,
               (draft: IHomePageItem[]) => {
