@@ -11,6 +11,7 @@ import { ReactNode } from "react";
 import { Cairo } from "next/font/google";
 import Footer from "@/components/footer/Footer";
 
+
 const cairo = Cairo({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -19,7 +20,7 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: "Sorooj Academy Dashboard",
-  description: "Admin dashboard for Sorooj Academy",
+  description: "dashboard for Sorooj Academy",
 };
 
 export default async function RootLayout({
