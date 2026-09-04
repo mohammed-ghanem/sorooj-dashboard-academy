@@ -428,7 +428,7 @@ function UpdateProfile() {
                       name="about_doctor"
                       value={form.about_doctor}
                       onChange={handleChange}
-                      className={cn("min-h-[100px] resize-y", dash.input)}
+                      className={cn("min-h-25 resize-y", dash.input)}
                     />
                   </div>
                 </>

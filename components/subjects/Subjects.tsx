@@ -177,7 +177,7 @@ export default function Subjects() {
       header: headers.actions,
       align: "center",
       render: (_, row) => (
-        <div className="flex flex-col items-center gap-2 min-w-[200px]">
+        <div className="flex flex-col items-center gap-2 min-w-50">
           <div className="flex justify-center gap-2 flex-wrap">
             <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/view/${row.id}`}>
               <Button

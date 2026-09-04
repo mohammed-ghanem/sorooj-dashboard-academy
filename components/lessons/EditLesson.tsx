@@ -426,7 +426,7 @@ export default function EditLesson({
                   {el?.briefContent}
                 </Label>
                 <Textarea
-                  className={cn("min-h-[100px] resize-y", dash.input)}
+                  className={cn("min-h-25 resize-y", dash.input)}
                   value={briefContent}
                   onChange={(e) => setBriefContent(e.target.value)}
                 />
@@ -611,7 +611,7 @@ export default function EditLesson({
                           href={att.file_url || "#"}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-emerald-800 underline truncate max-w-[240px] font-medium"
+                          className="text-emerald-800 underline truncate max-w-60 font-medium"
                         >
                           {att.name || att.file_url || `#${att.id}`}
                         </a>

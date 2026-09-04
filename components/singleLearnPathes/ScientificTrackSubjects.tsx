@@ -152,7 +152,7 @@ export default function ScientificTrackSubjects() {
       header: headers.actions,
       align: "center",
       render: (_, row) => (
-        <div className="flex flex-col items-center gap-2 min-w-[200px]">
+        <div className="flex flex-col items-center gap-2 min-w-50">
           <div className="flex flex-wrap justify-center gap-2">
             <Link href={`/${lang}/${basePath}/view/${row.id}`}>
               <Button type="button" size="sm" className={dash.tableView}>

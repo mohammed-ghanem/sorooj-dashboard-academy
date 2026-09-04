@@ -359,7 +359,7 @@ export default function CreateLesson({
                   {cl?.briefContent}
                 </Label>
                 <Textarea
-                  className={cn("min-h-[100px] resize-y", dash.input)}
+                  className={cn("min-h-25 resize-y", dash.input)}
                   value={briefContent}
                   onChange={(e) => setBriefContent(e.target.value)}
                 />
