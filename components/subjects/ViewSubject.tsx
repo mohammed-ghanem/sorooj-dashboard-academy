@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import TranslateHook from "@/translate/TranslateHook";
 import ViewSubjectSkeleton from "@/components/skeleton/ViewSubjectSkeleton";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
+import { isDoctorPortal } from "@/lib/portal";
 
 export default function ViewSubject() {
   const { id } = useParams<{ id: string }>();
@@ -37,7 +38,7 @@ export default function ViewSubject() {
   const t = translate?.pages.subjects.viewSubject;
 
   const { data: studyTerms = [] } = useGetStudyTermsQuery(undefined, {
-    skip: !sessionReady,
+    skip: !sessionReady || isDoctorPortal(),
   });
 
   const { data: subject, isLoading, isError } = useGetSubjectByIdQuery(

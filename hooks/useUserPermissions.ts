@@ -6,6 +6,13 @@ import { useGetPermissionsQuery } from "@/store/permissions/permissionsApi";
 import { useGetRoleByIdQuery } from "@/store/roles/rolesApi";
 import LangUseParams from "@/translate/LangUseParams";
 import {
+  canDoctorAccessPath,
+  doctorHasModule,
+} from "@/lib/doctorAccess";
+import { isDoctorPortal } from "@/lib/portal";
+import { extractProfileUser } from "@/lib/profileUser";
+import { pathWithoutLang } from "@/components/sidebar/sidebarLinks";
+import {
   buildPermissionContext,
   extractPermissionIds,
   extractRoleIds,
@@ -58,8 +65,30 @@ function mergeProfileWithRole(profile: unknown, roleData: unknown) {
   };
 }
 
+function buildDoctorPermissionContext(profile: unknown, ready: boolean) {
+  const user = extractProfileUser(profile);
+  const canAccessPathForUser = (path: string) => {
+    if (!ready) return true;
+    return canDoctorAccessPath(path);
+  };
+
+  return {
+    user,
+    keys: new Set<string>(),
+    enforce: ready,
+    fullAccess: false,
+    restricted: true,
+    canAccessPath: canAccessPathForUser,
+    canAccessHref: (href: string, lang: string) => {
+      return canAccessPathForUser(pathWithoutLang(href, lang));
+    },
+    hasModuleAccess: (module: string) => doctorHasModule(module),
+  };
+}
+
 export function useUserPermissions() {
   const lang = LangUseParams() ?? "ar";
+  const doctorPortal = isDoctorPortal();
   const {
     data: profile,
     isLoading: profileLoading,
@@ -75,7 +104,7 @@ export function useUserPermissions() {
 
   const { data: roleData } = useGetRoleByIdQuery(
     { id: primaryRoleId, lang },
-    { skip: !restricted || !primaryRoleId },
+    { skip: doctorPortal || !restricted || !primaryRoleId },
   );
 
   const mergedProfile = useMemo(
@@ -84,14 +113,15 @@ export function useUserPermissions() {
   );
 
   const needsCatalog = useMemo(() => {
+    if (doctorPortal) return false;
     if (!restricted || !mergedProfile) return false;
     if (extractUserPermissionKeys(mergedProfile).size > 0) return false;
     return extractPermissionIds(mergedProfile).size > 0;
-  }, [restricted, mergedProfile]);
+  }, [doctorPortal, restricted, mergedProfile]);
 
   const { data: catalog, isLoading: catalogLoading } = useGetPermissionsQuery(
     undefined,
-    { skip: !profile || !needsCatalog },
+    { skip: doctorPortal || !profile || !needsCatalog },
   );
 
   const isReady = useMemo(() => {
@@ -101,10 +131,12 @@ export function useUserPermissions() {
     return true;
   }, [profile, profileLoading, needsCatalog, catalogLoading]);
 
-  const context = useMemo(
-    () => buildPermissionContext(mergedProfile, catalog, { ready: isReady }),
-    [mergedProfile, catalog, isReady],
-  );
+  const context = useMemo(() => {
+    if (doctorPortal) {
+      return buildDoctorPermissionContext(profile, isReady);
+    }
+    return buildPermissionContext(mergedProfile, catalog, { ready: isReady });
+  }, [doctorPortal, profile, mergedProfile, catalog, isReady]);
 
   return {
     ...context,

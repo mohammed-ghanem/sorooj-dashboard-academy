@@ -25,6 +25,8 @@ import TranslateHook from "@/translate/TranslateHook";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import ScientificTrackSubjectExamActionsCell from "@/components/singleLearnPathes/exam/ScientificTrackSubjectExamActionsCell";
 import type { IScientificTrackSubject } from "@/types/scientificTrackSubject";
+import { canDoctorMutateSubjects } from "@/lib/doctorAccess";
+import { isDoctorPortal } from "@/lib/portal";
 
 const basePath = "singleLearnPath/subjects";
 
@@ -38,7 +40,7 @@ export default function ScientificTrackSubjects() {
 
   const { data: categories = [] } = useGetScientificTrackCategoriesQuery(
     undefined,
-    { skip: !sessionReady },
+    { skip: !sessionReady || isDoctorPortal() },
   );
 
   const categoryLabelMap = useMemo(() => {
@@ -127,8 +129,9 @@ export default function ScientificTrackSubjects() {
           <Switch
             className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
-            disabled={isPending(row)}
+            disabled={isPending(row) || isDoctorPortal()}
             onCheckedChange={(checked) => {
+              if (isDoctorPortal()) return;
               toggle(row, checked).catch(() => {
                 toast.error(
                   lang === "ar"
@@ -156,18 +159,22 @@ export default function ScientificTrackSubjects() {
                 <Eye className="h-5 w-5" />
               </Button>
             </Link>
-            <Link href={`/${lang}/${basePath}/edit/${row.id}`}>
-              <Button type="button" size="sm" className={dash.tableEdit}>
-                <Edit3 className="h-4 w-4" />
-              </Button>
-            </Link>
-            <DeleteConfirmDialog
-              title={pg?.deleteTitle ?? ""}
-              description={pg?.deleteMessage ?? ""}
-              confirmText={pg?.deleteBtn ?? ""}
-              cancelText={pg?.cancelBtn ?? ""}
-              onConfirm={() => handleDelete(row.id)}
-            />
+            {canDoctorMutateSubjects() ? (
+              <>
+                <Link href={`/${lang}/${basePath}/edit/${row.id}`}>
+                  <Button type="button" size="sm" className={dash.tableEdit}>
+                    <Edit3 className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <DeleteConfirmDialog
+                  title={pg?.deleteTitle ?? ""}
+                  description={pg?.deleteMessage ?? ""}
+                  confirmText={pg?.deleteBtn ?? ""}
+                  cancelText={pg?.cancelBtn ?? ""}
+                  onConfirm={() => handleDelete(row.id)}
+                />
+              </>
+            ) : null}
           </div>
 
           <ScientificTrackSubjectExamActionsCell
@@ -190,6 +197,7 @@ export default function ScientificTrackSubjects() {
       description={pg?.listDescription}
       createHref={`/${lang}/${basePath}/create`}
       createLabel={pg?.createSubject?.title ?? ""}
+      showCreate={canDoctorMutateSubjects()}
       showSkeleton={showSkeleton}
       dir={pageDir}
     >

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../base/axiosBaseQuery";
+import { isDoctorPortal } from "@/lib/portal";
 import type { IExamArticleReview } from "@/types/examArticleReview";
 import {
   pickExamArticleReviewFromResponse,
@@ -117,7 +118,7 @@ export const examArticleReviewsApi = createApi({
         fd.append("is_correct", String(is_correct));
         return {
           url: `exam-article-reviews/${id}/review`,
-          method: "post",
+          method: isDoctorPortal() ? "put" : "post",
           data: fd,
         };
       },

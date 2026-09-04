@@ -14,6 +14,7 @@ import { useResendOtpMutation, useVerifyCodeMutation } from "@/store/auth/authAp
 import LangUseParams from "@/translate/LangUseParams";
 import TranslateHook from "@/translate/TranslateHook";
 import VerifyCodeSkeleton from "@/components/skeleton/VerifyCodeSkeleton";
+import { OTP_LOGIN_COOKIE, setAccessToken } from "@/lib/authCookies";
 
 const CODE_LENGTH = 4;
 
@@ -101,6 +102,16 @@ const VerifyCode = () => {
     try {
       const res = await verifyCode({ code: finalCode }).unwrap();
       toast.success(res?.message);
+
+      const isLoginOtp = Cookies.get(OTP_LOGIN_COOKIE) === "1";
+      const token =
+        res?.data?.access_token ?? res?.access_token ?? res?.data?.data?.access_token;
+      if (isLoginOtp) {
+        if (token) setAccessToken(token);
+        Cookies.remove(OTP_LOGIN_COOKIE, { path: "/" });
+        router.replace(`/${lang}`);
+        return;
+      }
 
       router.push(
         `/${lang}/reset-password?email=${encodeURIComponent(

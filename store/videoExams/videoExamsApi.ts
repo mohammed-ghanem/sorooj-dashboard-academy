@@ -9,6 +9,7 @@ import {
   buildUpdateExamFormData,
   normalizeExam,
 } from "@/store/utils/examApiUtils";
+import { asResourceUpdate } from "@/lib/portal";
 import { lessonVideosApi } from "@/store/lessonVideos/lessonVideosApi";
 import type { AppDispatch } from "@/store/store";
 
@@ -96,8 +97,7 @@ export const videoExamsApi = createApi({
     >({
       query: ({ videoId, payload }) => ({
         url: `/lesson-videos/${videoId}/exam`,
-        method: "post",
-        data: buildUpdateExamFormData(payload),
+        ...asResourceUpdate(buildUpdateExamFormData(payload)),
       }),
       invalidatesTags: (_r, _e, { videoId, lessonId }) => [
         { type: "VideoExam", id: videoId },

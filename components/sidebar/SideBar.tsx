@@ -26,12 +26,15 @@ import {
   settingsLinks,
   isNavHrefActive,
   isLinkGroupActive,
+  pathWithoutLang,
   type SidebarLinkItem,
 } from "./sidebarLinks";
 import Image from "next/image";
 import logo from "@/public/assets/images/logo.png";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isDoctorPortal } from "@/lib/portal";
+import { canDoctorAccessPath } from "@/lib/doctorAccess";
 
 type ToneKey =
   | "emerald"
@@ -143,6 +146,9 @@ const SideBar = () => {
     module?: string;
     href: string;
   }) => {
+    if (isDoctorPortal() && !canDoctorAccessPath(pathWithoutLang(item.href, lang))) {
+      return false;
+    }
     if (item.always) return true;
     if (item.module) return hasModuleAccess(item.module);
     return canAccessHref(item.href, lang);

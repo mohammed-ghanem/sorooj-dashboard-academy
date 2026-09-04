@@ -7,6 +7,8 @@ import type {
   DashboardNamedCount,
   DashboardPhase,
   DashboardStatsPayload,
+  DoctorExamGroup,
+  DoctorStatsPayload,
   StageKey,
 } from "@/components/dashboard/types";
 
@@ -120,8 +122,84 @@ export function emptyStatistics(): DashboardStatsPayload {
   };
 }
 
+function examGroup(group: any): DoctorExamGroup {
+  return {
+    attempts: num(group?.attempts),
+    passRate: num(group?.pass_rate),
+    avgScore: num(group?.avg_score),
+  };
+}
+
+function isDoctorStatistics(raw: any): boolean {
+  const kpis = raw?.kpis ?? {};
+  return Boolean(kpis.subjects_taught || kpis.students_reached);
+}
+
+function normalizeDoctorStatistics(raw: any): DoctorStatsPayload {
+  const kpis = raw?.kpis ?? {};
+  const content = raw?.content ?? {};
+  const program = content.program ?? raw?.program ?? {};
+  const tracks = content.scientific_tracks ?? raw?.scientific_tracks ?? {};
+  const library = content.library ?? raw?.library ?? {};
+  const exams = raw?.exams ?? {};
+  const attentionRaw = Array.isArray(raw?.attention) ? raw.attention : [];
+  const filters = raw?.filters ?? {};
+
+  return {
+    filters: {
+      period: String(filters.period ?? "month"),
+      from: String(filters.from ?? ""),
+      to: String(filters.to ?? ""),
+    },
+    kpis: {
+      subjectsTaught: kpi(kpis, "subjects_taught"),
+      lessons: kpi(kpis, "lessons"),
+      videos: kpi(kpis, "videos"),
+      books: kpi(kpis, "books"),
+      studentsReached: kpi(kpis, "students_reached"),
+      pendingArticleReviews: kpi(kpis, "pending_article_reviews"),
+      examAttempts: kpi(kpis, "exam_attempts"),
+      actionRequired: kpi(kpis, "action_required"),
+    },
+    content: {
+      program: {
+        subjects: num(program.subjects),
+        lessons: num(program.lessons),
+        videos: num(program.videos),
+      },
+      scientificTracks: {
+        subjects: num(tracks.subjects),
+        lessons: num(tracks.lessons),
+        videos: num(tracks.videos),
+      },
+      library: {
+        booksActive: num(library.books_active),
+        booksInactive: num(library.books_inactive),
+      },
+    },
+    exams: {
+      video: examGroup(exams.video),
+      lesson: examGroup(exams.lesson),
+      subject: examGroup(exams.subject),
+    },
+    attention: {
+      pendingArticleReviews: listCount(attentionRaw, "pending_article_reviews"),
+      lessonsWithoutExam: listCount(attentionRaw, "lessons_without_exam"),
+      videosWithoutExam: listCount(attentionRaw, "videos_without_exam"),
+      subjectsWithoutExam: listCount(attentionRaw, "subjects_without_exam"),
+    },
+  };
+}
+
 export function normalizeStatistics(response: any): DashboardStatsPayload {
   const raw = pickStatistics(response) ?? {};
+
+  if (isDoctorStatistics(raw)) {
+    return {
+      ...emptyStatistics(),
+      doctor: normalizeDoctorStatistics(raw),
+    };
+  }
   const kpis = raw?.kpis ?? {};
   const journey = Array.isArray(raw?.student_journey) ? raw.student_journey : [];
   const phasesRaw = Array.isArray(raw?.progress_phases) ? raw.progress_phases : [];

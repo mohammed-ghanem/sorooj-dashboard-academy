@@ -3,6 +3,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import Cookies from "js-cookie";
 import { axiosBaseQuery } from "@/store/base/axiosBaseQuery";
 import { setAccessToken } from "@/lib/authCookies";
+import { isDoctorPortal } from "@/lib/portal";
 
 
 export const authApi = createApi({
@@ -13,12 +14,25 @@ export const authApi = createApi({
 
         // ---------------- LOGIN ----------------
         login: builder.mutation<any, { email: string; password: string }>({
-            query: (body) => ({
-                url: "/auth/login",
-                method: "POST",
-                data: body,
-                withCsrf: true,
-            }),
+            query: (body) => {
+                if (isDoctorPortal()) {
+                    const fd = new FormData();
+                    fd.append("email", body.email);
+                    fd.append("password", body.password);
+                    return {
+                        url: "/auth/login",
+                        method: "POST",
+                        data: fd,
+                        withCsrf: true,
+                    };
+                }
+                return {
+                    url: "/auth/login",
+                    method: "POST",
+                    data: body,
+                    withCsrf: true,
+                };
+            },
             async onQueryStarted(_, { queryFulfilled }) {
                 try {
                     const { data }: any = await queryFulfilled;
@@ -226,13 +240,12 @@ export const authApi = createApi({
         >({
             query: (body) => ({
                 url: "/auth/update-profile",
-                method: "POST",
+                method: isDoctorPortal() ? "PUT" : "POST",
                 data: body,
-                auth: true, // سيضيف Authorization header تلقائياً
-                withCsrf: true, // لإضافة CSRF token
+                auth: true,
+                withCsrf: true,
                 headers: {
-                    "Content-Type": "multipart/form-data", // تأكد من أن نوع المحتوى هو multipart/form-data
-                    
+                    "Content-Type": "multipart/form-data",
                 },
             }),
             invalidatesTags: ["Profile"], // يلغي cache البروفايل بعد التحديث

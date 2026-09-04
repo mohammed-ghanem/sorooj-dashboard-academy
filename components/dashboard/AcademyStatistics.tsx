@@ -352,7 +352,7 @@ export default function AcademyStatistics({
   const { hasModuleAccess, isReady } = useUserPermissions();
   const can = (module: string) => isReady && hasModuleAccess(module);
 
-  const allLabel = t?.filterAll ?? (lang === "ar" ? "الكل" : "All");
+  const allLabel = t?.filterAll;
   const cohortOptions = [
     { id: "", label: allLabel },
     ...stats.filters.cohorts,

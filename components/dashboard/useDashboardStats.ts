@@ -9,6 +9,7 @@ import {
   emptyStatistics,
   useGetStatisticsQuery,
 } from "@/store/statistics/statisticsApi";
+import { isDoctorPortal } from "@/lib/portal";
 import type {
   DashboardFilters,
   DashboardStats,
@@ -21,9 +22,11 @@ export function useDashboardStats(
   const sessionReady = useSessionReady();
   const { hasModuleAccess, isReady } = useUserPermissions();
   const permReady = sessionReady && isReady;
+  const doctorPortal = isDoctorPortal();
 
-  const skipCohorts = !permReady || !hasModuleAccess("cohorts");
-  const skipYears = !permReady || !hasModuleAccess("academic_years");
+  const skipCohorts = doctorPortal || !permReady || !hasModuleAccess("cohorts");
+  const skipYears =
+    doctorPortal || !permReady || !hasModuleAccess("academic_years");
 
   const statsQuery = useGetStatisticsQuery(filters, {
     skip: !permReady,

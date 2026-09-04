@@ -75,7 +75,18 @@
       "quickTrackLesson": "درس مسار علمي",
       "quickDoctor": "عضو هيئة تدريس",
       "quickCohort": "دفعة جديدة",
-      "noPermission": "ليس لديك صلاحية الدخول إلى هذه الصفحة."
+      "noPermission": "ليس لديك صلاحية الدخول إلى هذه الصفحة.",
+      "doctorStatsTitle": "إحصائيات الدكتور",
+      "periodToday": "اليوم",
+      "periodThisWeek": "هذا الأسبوع",
+      "doctorKpiSubjects": "المواد",
+      "doctorKpiLessons": "الدروس",
+      "doctorKpiVideos": "الفيديوهات",
+      "doctorKpiStudents": "الطلاب المستفيدون",
+      "doctorKpiAttempts": "محاولات الاختبار",
+      "doctorExamAttempts": "محاولات",
+      "doctorLessonsWithoutExam": "دروس بدون اختبار",
+      "doctorVideosWithoutExam": "فيديوهات بدون اختبار"
     },
     "homePageSections": {
       "title": "العنوان",
@@ -134,6 +145,7 @@
     },
     "login": {
       "loginTitle": "لوحة تحكم الادارة ",
+      "loginTitleDoctor": "لوحة تحكم الدكتور",
       "email": "البريد الالكترونى",
       "passwordName": "كلمة المرور",
       "forgetPassword": "هل نسيت كلمة المرور ؟",
@@ -201,6 +213,9 @@
       "email": "البريد الالكترونى",
       "emailNote": "لا يمكن تغيير البريد من هنا.",
       "phone": "رقم الجوال",
+      "position": "المنصب",
+      "aboutDoctor": "نبذة عن الدكتور",
+      "specialization": "التخصص",
       "processing": "جارى تحديث الملف الشخصى",
       "confirmBtn": "تاكيد"
     },
@@ -216,7 +231,10 @@
       "memberSince": "عضو منذ",
       "personalDetails": "بيانات شخصية ",
       "editProfile": "تحديث الملف الشخصى",
-      "member": "عضو"
+      "member": "عضو",
+      "position": "المنصب",
+      "aboutDoctor": "نبذة عن الدكتور",
+      "specialization": "التخصص"
     },
     "userDropDown": {
       "profile": "الملف الشخصى",

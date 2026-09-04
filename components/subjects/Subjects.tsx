@@ -32,6 +32,8 @@ import SubjectExamActionsCell from "@/components/subjects/exam/SubjectExamAction
 import type { ISubject } from "@/types/subject";
 import { parseLocalizedNameFromModel } from "@/utils/localizedName";
 import { ACADEMIC_STUDY_SUBJECTS_PATH } from "@/utils/lessonsPaths";
+import { canDoctorMutateSubjects } from "@/lib/doctorAccess";
+import { isDoctorPortal } from "@/lib/portal";
 
 export default function Subjects() {
   const sessionReady = useSessionReady();
@@ -43,7 +45,7 @@ export default function Subjects() {
   const pg = translate?.pages.subjects;
 
   const { data: studyTerms = [] } = useGetStudyTermsQuery(undefined, {
-    skip: !sessionReady,
+    skip: !sessionReady || isDoctorPortal(),
   });
 
   const studyTermLabelMap = useMemo(() => {
@@ -152,8 +154,9 @@ export default function Subjects() {
           <Switch
             className={dash.statusSwitch}
             checked={getOptimisticStatus(row)}
-            disabled={isPending(row)}
+            disabled={isPending(row) || isDoctorPortal()}
             onCheckedChange={(checked) => {
+              if (isDoctorPortal()) return;
               toggle(row, checked).catch(() => {
                 toast.error(
                   lang === "ar"
@@ -186,24 +189,28 @@ export default function Subjects() {
                 <Eye className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/edit/${row.id}`}>
-              <Button
-                type="button"
-                size="sm"
-                className={dash.tableEdit}
-                title={translate?.pages.subjects.editSubject?.title}
-              >
-                <Edit3 className="h-4 w-4" />
-              </Button>
-            </Link>
+            {canDoctorMutateSubjects() ? (
+              <>
+                <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/edit/${row.id}`}>
+                  <Button
+                    type="button"
+                    size="sm"
+                    className={dash.tableEdit}
+                    title={translate?.pages.subjects.editSubject?.title}
+                  >
+                    <Edit3 className="h-4 w-4" />
+                  </Button>
+                </Link>
 
-            <DeleteConfirmDialog
-              title={pg?.deleteTitle ?? ""}
-              description={pg?.deleteMessage ?? ""}
-              confirmText={pg?.deleteBtn ?? ""}
-              cancelText={pg?.cancelBtn ?? ""}
-              onConfirm={() => handleDelete(row.id)}
-            />
+                <DeleteConfirmDialog
+                  title={pg?.deleteTitle ?? ""}
+                  description={pg?.deleteMessage ?? ""}
+                  confirmText={pg?.deleteBtn ?? ""}
+                  cancelText={pg?.cancelBtn ?? ""}
+                  onConfirm={() => handleDelete(row.id)}
+                />
+              </>
+            ) : null}
           </div>
 
           <SubjectExamActionsCell
@@ -226,6 +233,7 @@ export default function Subjects() {
       description={pg?.listDescription}
       createHref={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/create`}
       createLabel={pg?.createSubject?.title ?? ""}
+      showCreate={canDoctorMutateSubjects()}
       showSkeleton={showSkeleton}
       dir={pageDir}
     >

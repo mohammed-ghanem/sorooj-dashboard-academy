@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.css";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -20,7 +20,10 @@ import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
 import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
 import { useCreateLessonMutation } from "@/store/lessons/lessonsApi";
+import { useGetProfileQuery } from "@/store/auth/authApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { isDoctorPortal } from "@/lib/portal";
+import { extractProfileUser } from "@/lib/profileUser";
 
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
 import { LessonCkEditorSkeleton } from "@/components/skeleton/LessonCkEditorSkeleton";
@@ -104,9 +107,13 @@ export default function CreateLesson({
   const { data: doctors = [], isLoading: loadingDoctors } = useGetDoctorsQuery(
     undefined,
     {
-      skip: !sessionReady,
+      skip: !sessionReady || isDoctorPortal(),
     },
   );
+  const { data: profile } = useGetProfileQuery(undefined, {
+    skip: !sessionReady || !isDoctorPortal(),
+  });
+  const selfDoctorId = Number(extractProfileUser(profile)?.id) || 0;
 
   const [createLesson, { isLoading: isCreating }] = useCreateLessonMutation();
 
@@ -124,6 +131,12 @@ export default function CreateLesson({
   const [pdfRows, setPdfRows] = useState<PdfRow[]>([
     { key: newKey(), file: null },
   ]);
+
+  useEffect(() => {
+    if (isDoctorPortal() && selfDoctorId > 0) {
+      setDoctorId(selfDoctorId);
+    }
+  }, [selfDoctorId]);
 
   const cl = translate?.pages.lessons.createLesson;
 
@@ -316,6 +329,7 @@ export default function CreateLesson({
                     ))}
                   </select>
                 </div>
+                {isDoctorPortal() ? null : (
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold text-slate-800">
                     {cl?.doctor}
@@ -337,6 +351,7 @@ export default function CreateLesson({
                     ))}
                   </select>
                 </div>
+                )}
               </div>
 
               <div className="mt-5 space-y-2">
@@ -584,7 +599,11 @@ export default function CreateLesson({
 
               <Button
                 type="submit"
-                disabled={isCreating || !subjectOptions.length || !doctors.length}
+                disabled={
+                  isCreating ||
+                  !subjectOptions.length ||
+                  (isDoctorPortal() ? selfDoctorId <= 0 : !doctors.length)
+                }
                 className={dash.formSubmit}
               >
                 {isCreating ? `${cl?.processing}...` : `${cl?.createBtn}`}

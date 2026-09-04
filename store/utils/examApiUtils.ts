@@ -143,7 +143,5 @@ export function buildExamFormData(payload: ILessonExamSavePayload) {
 }
 
 export function buildUpdateExamFormData(payload: ILessonExamSavePayload) {
-  const fd = buildExamFormData(payload);
-  fd.append("_method", "PUT");
-  return fd;
+  return buildExamFormData(payload);
 }

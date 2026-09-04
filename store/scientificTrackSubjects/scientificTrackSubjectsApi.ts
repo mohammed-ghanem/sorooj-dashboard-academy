@@ -8,6 +8,7 @@ import type {
 } from "@/types/scientificTrackSubject";
 import type { IApiMessageResponse } from "@/types/academicYear";
 import { readOrderField, sortByOrderField } from "@/lib/sortByOrderField";
+import { asResourceUpdate } from "@/lib/portal";
 
 function pickCategoryId(item: any): number {
   const candidates = [
@@ -144,11 +145,9 @@ export const scientificTrackSubjectsApi = createApi({
     >({
       query: ({ id, data }) => {
         const fd = buildSubjectFormData(data);
-        fd.append("_method", "PUT");
         return {
           url: `/scientific-track-subjects/${id}`,
-          method: "post",
-          data: fd,
+          ...asResourceUpdate(fd),
         };
       },
       async onQueryStarted({ id, data }, { dispatch, queryFulfilled }) {

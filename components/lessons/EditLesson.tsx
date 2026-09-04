@@ -19,6 +19,9 @@ import {
 import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
 import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
+import { useGetProfileQuery } from "@/store/auth/authApi";
+import { isDoctorPortal } from "@/lib/portal";
+import { extractProfileUser } from "@/lib/profileUser";
 import {
   useGetLessonByIdQuery,
   useUpdateLessonMutation,
@@ -131,7 +134,13 @@ export default function EditLesson({
       skip: !sessionReady || !isCategory,
     });
   const { data: doctors = [], isLoading: loadingDoctors } =
-    useGetDoctorsQuery(undefined, { skip: !sessionReady });
+    useGetDoctorsQuery(undefined, {
+      skip: !sessionReady || isDoctorPortal(),
+    });
+  const { data: profile } = useGetProfileQuery(undefined, {
+    skip: !sessionReady || !isDoctorPortal(),
+  });
+  const selfDoctorId = Number(extractProfileUser(profile)?.id) || 0;
 
   const { data: lesson, isLoading: loadingLesson, isError: lessonError } =
     useGetLessonByIdQuery(lessonId, {
@@ -169,6 +178,12 @@ export default function EditLesson({
     setVideoRows(lessonVideosToRows(lesson.videos));
     setPdfRows([{ key: newKey(), file: null }]);
   }, [lesson]);
+
+  useEffect(() => {
+    if (isDoctorPortal() && selfDoctorId > 0) {
+      setDoctorId(selfDoctorId);
+    }
+  }, [selfDoctorId]);
 
   const subjectOptions = isCategory
     ? trackSubjects.map((s) => ({ id: s.id, label: s.name }))
@@ -381,6 +396,7 @@ export default function EditLesson({
                     ))}
                   </select>
                 </div>
+                {isDoctorPortal() ? null : (
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold text-slate-800">
                     {el?.doctor}
@@ -402,6 +418,7 @@ export default function EditLesson({
                     ))}
                   </select>
                 </div>
+                )}
               </div>
 
               <div className="mt-5 space-y-2">
@@ -682,7 +699,11 @@ export default function EditLesson({
 
               <Button
                 type="submit"
-                disabled={isUpdating || !subjectOptions.length || !doctors.length}
+                disabled={
+                  isUpdating ||
+                  !subjectOptions.length ||
+                  (isDoctorPortal() ? selfDoctorId <= 0 && !doctorId : !doctors.length)
+                }
                 className={dash.formSubmit}
               >
                 {isUpdating

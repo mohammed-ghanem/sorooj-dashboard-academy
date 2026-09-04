@@ -6,6 +6,8 @@
     "dev": "next dev -p 3001 --turbopack",
     "build": "next build",
     "start": "next start -p 3001",
+    "dev:doctor": "cross-env NEXT_PUBLIC_PORTAL=doctor NEXT_PUBLIC_API_PREFIX=/doctor-api/v1 next dev -p 3010 --turbopack",
+    "start:doctor": "cross-env NEXT_PUBLIC_PORTAL=doctor NEXT_PUBLIC_API_PREFIX=/doctor-api/v1 next start -p 3010",
     "lint": "next lint"
   },
   "dependencies": {
@@ -50,6 +52,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.22",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4",

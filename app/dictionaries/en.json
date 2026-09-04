@@ -78,7 +78,18 @@
       "quickTrackLesson": "New track lesson",
       "quickDoctor": "New teaching staff",
       "quickCohort": "New cohort",
-      "noPermission": "You do not have permission to access this page."
+      "noPermission": "You do not have permission to access this page.",
+      "doctorStatsTitle": "Doctor statistics",
+      "periodToday": "Today",
+      "periodThisWeek": "This week",
+      "doctorKpiSubjects": "Subjects",
+      "doctorKpiLessons": "Lessons",
+      "doctorKpiVideos": "Videos",
+      "doctorKpiStudents": "Students reached",
+      "doctorKpiAttempts": "Exam attempts",
+      "doctorExamAttempts": "Attempts",
+      "doctorLessonsWithoutExam": "Lessons without exam",
+      "doctorVideosWithoutExam": "Videos without exam"
     },
     "homePageSections": {
       "title": "Title",
@@ -137,6 +148,7 @@
     },
     "login": {
       "loginTitle": "Admins Dashboard",
+      "loginTitleDoctor": "Doctor Dashboard",
       "email": "Email Address",
       "passwordName": "Password",
       "forgetPassword": "Forget Password ?",
@@ -203,6 +215,9 @@
       "email": "Email",
       "emailNote": "Email cannot be changed from here.",
       "phone": "Phone number",
+      "position": "Position",
+      "aboutDoctor": "About the doctor",
+      "specialization": "Specialization",
       "processing": "Processing Update Profile",
       "confirmBtn": "Confirm"
     },
@@ -218,7 +233,10 @@
       "memberSince": " Member Since",
       "personalDetails": " Profile Details",
       "editProfile": " Edit Profile",
-      "member": "Member"
+      "member": "Member",
+      "position": "Position",
+      "aboutDoctor": "About the doctor",
+      "specialization": "Specialization"
     },
     "userDropDown": {
       "profile": "Profile",

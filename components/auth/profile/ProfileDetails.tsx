@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 import { getAvatarSrc } from "@/lib/avatar";
+import { isDoctorPortal } from "@/lib/portal";
 
 function ProfileDetails() {
   const lang = LangUseParams();
@@ -113,6 +114,39 @@ function ProfileDetails() {
                   >
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
                     <span>{user.mobile}</span>
+                  </div>
+                </div>
+              ) : null}
+
+              {isDoctorPortal() && user.position ? (
+                <div>
+                  <Label className="font-semibold text-slate-800">
+                    {t?.position}
+                  </Label>
+                  <div className={cn(dash.viewFieldBox, "mt-1")}>
+                    {user.position}
+                  </div>
+                </div>
+              ) : null}
+
+              {isDoctorPortal() && user.specialization ? (
+                <div>
+                  <Label className="font-semibold text-slate-800">
+                    {t?.specialization}
+                  </Label>
+                  <div className={cn(dash.viewFieldBox, "mt-1")}>
+                    {user.specialization}
+                  </div>
+                </div>
+              ) : null}
+
+              {isDoctorPortal() && user.about_doctor ? (
+                <div>
+                  <Label className="font-semibold text-slate-800">
+                    {t?.aboutDoctor}
+                  </Label>
+                  <div className={cn(dash.viewFieldBox, "mt-1")}>
+                    {user.about_doctor}
                   </div>
                 </div>
               ) : null}

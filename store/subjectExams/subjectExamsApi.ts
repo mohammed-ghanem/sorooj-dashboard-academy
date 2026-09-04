@@ -12,6 +12,7 @@ import {
   buildUpdateExamFormData,
   normalizeExam,
 } from "@/store/utils/examApiUtils";
+import { asResourceUpdate } from "@/lib/portal";
 
 export function normalizeSubjectExam(row: any): ISubjectExam {
   return normalizeExam(row, "subject_id") as ISubjectExam;
@@ -57,8 +58,7 @@ export const subjectExamsApi = createApi({
     >({
       query: ({ subjectId, payload }) => ({
         url: `/subjects/${subjectId}/exam`,
-        method: "post",
-        data: buildUpdateExamFormData(payload),
+        ...asResourceUpdate(buildUpdateExamFormData(payload)),
       }),
       invalidatesTags: (_r, _e, { subjectId }) => [
         { type: "SubjectExam", id: subjectId },

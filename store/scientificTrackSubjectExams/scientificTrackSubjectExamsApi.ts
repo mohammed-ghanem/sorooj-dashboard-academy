@@ -12,6 +12,7 @@ import {
   buildUpdateExamFormData,
   normalizeExam,
 } from "@/store/utils/examApiUtils";
+import { asResourceUpdate } from "@/lib/portal";
 
 /**
  * Mirrors `subjectExamsApi` (academic subjects under study terms).
@@ -65,8 +66,7 @@ export const scientificTrackSubjectExamsApi = createApi({
     >({
       query: ({ subjectId, payload }) => ({
         url: `/scientific-track-subjects/${subjectId}/exam`,
-        method: "post",
-        data: buildUpdateExamFormData(payload),
+        ...asResourceUpdate(buildUpdateExamFormData(payload)),
       }),
       invalidatesTags: (_r, _e, { subjectId }) => [
         { type: "ScientificTrackSubjectExam", id: subjectId },

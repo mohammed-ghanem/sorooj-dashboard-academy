@@ -31,6 +31,8 @@ import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
 import { getAvatarSrc } from "@/lib/avatar";
 import FormSubmitProgress from "@/components/shared/FormSubmitProgress";
+import { isDoctorPortal } from "@/lib/portal";
+import { Textarea } from "@/components/ui/textarea";
 
 function UpdateProfile() {
   const lang = LangUseParams();
@@ -59,6 +61,9 @@ function UpdateProfile() {
     email: "",
     mobile: "",
     avatar: "",
+    position: "",
+    about_doctor: "",
+    specialization: "",
   });
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -71,11 +76,14 @@ function UpdateProfile() {
         email: user.email ?? "",
         mobile: user.mobile ?? "",
         avatar: user.avatar ?? "",
+        position: user.position ?? "",
+        about_doctor: user.about_doctor ?? "",
+        specialization: user.specialization ?? "",
       });
     }
   }, [user]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -167,6 +175,11 @@ function UpdateProfile() {
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("mobile", form.mobile);
+      if (isDoctorPortal()) {
+        formData.append("position", form.position);
+        formData.append("about_doctor", form.about_doctor);
+        formData.append("specialization", form.specialization);
+      }
 
       if (selectedFile) {
         formData.append("avatar", selectedFile);
@@ -367,6 +380,59 @@ function UpdateProfile() {
                   />
                 </div>
               </div>
+              {isDoctorPortal() ? (
+                <>
+                  <div className="space-y-2">
+                    <Label
+                      className={cn(
+                        "text-sm font-semibold text-slate-800",
+                        labelAlign,
+                      )}
+                    >
+                      {t?.position ?? translate?.pages.profile.position}
+                    </Label>
+                    <Input
+                      name="position"
+                      value={form.position}
+                      onChange={handleChange}
+                      className={cn(dash.input, "h-11")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={cn(
+                        "text-sm font-semibold text-slate-800",
+                        labelAlign,
+                      )}
+                    >
+                      {t?.specialization ??
+                        translate?.pages.profile.specialization}
+                    </Label>
+                    <Input
+                      name="specialization"
+                      value={form.specialization}
+                      onChange={handleChange}
+                      className={cn(dash.input, "h-11")}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={cn(
+                        "text-sm font-semibold text-slate-800",
+                        labelAlign,
+                      )}
+                    >
+                      {t?.aboutDoctor ?? translate?.pages.profile.aboutDoctor}
+                    </Label>
+                    <Textarea
+                      name="about_doctor"
+                      value={form.about_doctor}
+                      onChange={handleChange}
+                      className={cn("min-h-[100px] resize-y", dash.input)}
+                    />
+                  </div>
+                </>
+              ) : null}
             </section>
 
             <FormSubmitProgress isSubmitting={isUpdating || isUploading} />

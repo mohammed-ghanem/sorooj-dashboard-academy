@@ -1,13 +1,18 @@
 // services/api.ts
 import axios from "axios";
+import { getApiPrefix } from "@/lib/portal";
 // import Cookies from "js-cookie";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL;
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
 
+function getApiBaseUrl() {
+  return `${BASE}${getApiPrefix()}`;
+}
+
 // Main API instance
 const api = axios.create({
-  baseURL: `${BASE}/dashboard-api/v1`,
+  baseURL: getApiBaseUrl(),
   withCredentials: true,
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
@@ -25,7 +30,7 @@ const api = axios.create({
 
 // Sanctum API instance for CSRF (مثل الكود القديم)
 export const sanctumApi = axios.create({
-  baseURL: BASE, // بدون /dashboard-api/v1
+  baseURL: BASE, // CSRF دائماً على الدومين بدون API prefix
   withCredentials: true,
   xsrfCookieName: "XSRF-TOKEN",
   xsrfHeaderName: "X-XSRF-TOKEN",
@@ -45,6 +50,7 @@ const getCSRFTokenFromDocument = (): string | null => {
 // Request interceptor for main api
 api.interceptors.request.use(
   (config) => {
+    config.baseURL = getApiBaseUrl();
     config.headers = config.headers || {};
 
     // Language

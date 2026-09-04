@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../base/axiosBaseQuery";
+import { asResourceUpdate } from "@/lib/portal";
 import type {
   ILesson,
   ILessonVideo,
@@ -131,7 +132,6 @@ function buildCreateLessonFormData(data: ICreateLessonPayload) {
 
 function buildUpdateLessonFormData(data: IUpdateLessonPayload) {
   const fd = new FormData();
-  fd.append("_method", "PUT");
   appendLessonFields(fd, data);
   return fd;
 }
@@ -192,8 +192,7 @@ export const lessonsApi = createApi({
     >({
       query: ({ id, data }) => ({
         url: `/lessons/${id}`,
-        method: "post",
-        data: buildUpdateLessonFormData(data),
+        ...asResourceUpdate(buildUpdateLessonFormData(data)),
       }),
       invalidatesTags: (_r, _e, { id }) => ["Lessons", { type: "Lesson", id }],
     }),

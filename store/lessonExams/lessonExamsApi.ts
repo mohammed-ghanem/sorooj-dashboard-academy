@@ -9,6 +9,7 @@ import {
   buildUpdateExamFormData,
   normalizeExam,
 } from "@/store/utils/examApiUtils";
+import { asResourceUpdate } from "@/lib/portal";
 
 export function normalizeLessonExam(row: any): ILessonExam {
   return normalizeExam(row, "lesson_id");
@@ -54,8 +55,7 @@ export const lessonExamsApi = createApi({
     >({
       query: ({ lessonId, payload }) => ({
         url: `/lessons/${lessonId}/exam`,
-        method: "post",
-        data: buildUpdateExamFormData(payload),
+        ...asResourceUpdate(buildUpdateExamFormData(payload)),
       }),
       invalidatesTags: (_r, _e, { lessonId }) => [
         { type: "LessonExam", id: lessonId },

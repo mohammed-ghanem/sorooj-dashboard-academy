@@ -9,6 +9,7 @@ import { useSessionReady } from "@/hooks/useSessionReady";
 import LangUseParams from "@/translate/LangUseParams";
 import { dash } from "@/constants/dashboardUi";
 import { cn } from "@/lib/utils";
+import { isDoctorPortal } from "@/lib/portal";
 import {
   Card,
   CardContent,
@@ -35,7 +36,7 @@ export default function ViewScientificTrackSubject() {
 
   const { data: categories = [] } = useGetScientificTrackCategoriesQuery(
     undefined,
-    { skip: !sessionReady },
+    { skip: !sessionReady || isDoctorPortal() },
   );
 
   const { data: subject, isLoading, isError } =

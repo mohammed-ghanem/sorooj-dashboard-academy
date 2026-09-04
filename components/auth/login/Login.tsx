@@ -12,6 +12,9 @@ import logo from "@/public/assets/images/logo.png";
 import TranslateHook from "@/translate/TranslateHook";
 import LangUseParams from "@/translate/LangUseParams";
 import LoginSkeleton from "@/components/skeleton/LoginSkeleton";
+import { isDoctorPortal } from "@/lib/portal";
+import { OTP_LOGIN_COOKIE } from "@/lib/authCookies";
+import Cookies from "js-cookie";
 
 
 
@@ -49,15 +52,31 @@ const Login = () => {
 
     try {
       const res = await login(form).unwrap();
+      const token =
+        res?.data?.access_token ?? res?.access_token ?? res?.data?.data?.access_token;
+
+      if (!token && isDoctorPortal()) {
+        Cookies.set(OTP_LOGIN_COOKIE, "1", { path: "/", expires: 1 });
+        Cookies.set("reset_email", form.email, { path: "/", expires: 1 });
+        toast.success(res?.message || translate.pages.login.newVerifyCode);
+        router.replace(
+          `/${lang}/verify-code?email=${encodeURIComponent(form.email)}`,
+        );
+        return;
+      }
+
       toast.success(res?.message);
       router.replace(`/${lang}`);
     } catch (err: any) {
       const errorData = err?.data ?? err;
 
       if (errorData?.errors) {
-        Object.values(errorData.errors).forEach((messages: any) =>
-          messages.forEach((msg: string) => toast.error(msg))
-        );
+        Object.values(errorData.errors).forEach((messages: any) => {
+          const list = Array.isArray(messages) ? messages : [messages];
+          list.forEach((msg) => {
+            if (msg) toast.error(String(msg));
+          });
+        });
         return;
       }
 
@@ -77,7 +96,9 @@ const Login = () => {
             <Image src={logo} alt="login icon" width={200} height={200} />
           </div>
           <h1 className="text-center font-bold text-xl md:text-2xl authTitle">
-            {translate.pages.login.loginTitle}
+            {isDoctorPortal()
+              ? translate.pages.login.loginTitleDoctor
+              : translate.pages.login.loginTitle}
           </h1>
 
           <form
