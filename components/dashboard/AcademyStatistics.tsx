@@ -381,7 +381,6 @@ export default function AcademyStatistics({
       value: stats.kpis.studentsTotal.value,
       icon: Users,
       show: showStudents,
-      growth: stats.kpis.studentsTotal.changePercentage,
       tone: "emerald" as KpiTone,
     },
     {
@@ -390,7 +389,6 @@ export default function AcademyStatistics({
       value: stats.kpis.studentsEnrolled.value,
       icon: UserCheck,
       show: showStudents,
-      growth: stats.kpis.studentsEnrolled.changePercentage,
       tone: "teal" as KpiTone,
     },
     {
@@ -399,7 +397,6 @@ export default function AcademyStatistics({
       value: stats.kpis.studentsNotEnrolled.value,
       icon: UserX,
       show: showStudents,
-      growth: stats.kpis.studentsNotEnrolled.changePercentage,
       tone: "rose" as KpiTone,
     },
     {
@@ -408,7 +405,6 @@ export default function AcademyStatistics({
       value: stats.kpis.doctorsActive.value,
       icon: ShieldUser,
       show: can("doctors"),
-      growth: stats.kpis.doctorsActive.changePercentage,
       tone: "violet" as KpiTone,
     },
     {
@@ -417,7 +413,6 @@ export default function AcademyStatistics({
       value: stats.kpis.countries.value,
       icon: Globe,
       show: showStudents,
-      growth: stats.kpis.countries.changePercentage,
       tone: "sky" as KpiTone,
     },
     {
@@ -426,7 +421,6 @@ export default function AcademyStatistics({
       value: stats.kpis.actionRequired.value,
       icon: AlertTriangle,
       show: showAttention,
-      growth: stats.kpis.actionRequired.changePercentage,
       tone: "amber" as KpiTone,
     },
   ].filter((item) => item.show);
@@ -614,17 +608,6 @@ export default function AcademyStatistics({
               >
                 {formatCount(item.value)}
               </p>
-              {item.growth != null ? (
-                <p
-                  className={cn(
-                    "mt-1 ps-2 text-xs font-semibold",
-                    item.growth >= 0 ? "text-emerald-600" : "text-rose-600",
-                  )}
-                >
-                  {item.growth >= 0 ? "+" : ""}
-                  {item.growth}%
-                </p>
-              ) : null}
             </article>
             );
           })}
@@ -674,10 +657,7 @@ export default function AcademyStatistics({
                       {stage.label}
                     </span>
                     <span className="tabular-nums text-slate-800">
-                      {formatCount(stage.value)}{" "}
-                      <span className="text-slate-400">
-                        ({formatRate(stage.percentage)}%)
-                      </span>
+                      {formatCount(stage.value)}
                     </span>
                   </li>
                 ))}

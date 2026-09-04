@@ -240,7 +240,7 @@ export const authApi = createApi({
         >({
             query: (body) => ({
                 url: "/auth/update-profile",
-                method: isDoctorPortal() ? "PUT" : "POST",
+                method: "POST",
                 data: body,
                 auth: true,
                 withCsrf: true,

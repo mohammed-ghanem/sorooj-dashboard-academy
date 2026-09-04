@@ -10,37 +10,31 @@ const KPI_TONES = [
     card: "border-emerald-100 bg-linear-to-br from-white via-emerald-50/50 to-teal-50/40 ring-emerald-100/80",
     icon: "bg-linear-to-br from-emerald-100 to-teal-50 ring-emerald-200/80",
     rail: "bg-linear-to-b from-emerald-400 to-teal-700",
-    bar: "bg-emerald-200/80",
   },
   {
     card: "border-teal-100 bg-linear-to-br from-white via-teal-50/45 to-cyan-50/35 ring-teal-100/80",
     icon: "bg-linear-to-br from-teal-100 to-cyan-50 ring-teal-200/80",
     rail: "bg-linear-to-b from-teal-400 to-cyan-700",
-    bar: "bg-teal-200/80",
   },
   {
     card: "border-rose-100 bg-linear-to-br from-white via-rose-50/50 to-orange-50/30 ring-rose-100/80",
     icon: "bg-linear-to-br from-rose-100 to-orange-50 ring-rose-200/80",
     rail: "bg-linear-to-b from-rose-400 to-rose-700",
-    bar: "bg-rose-200/80",
   },
   {
     card: "border-violet-100 bg-linear-to-br from-white via-violet-50/45 to-fuchsia-50/30 ring-violet-100/80",
     icon: "bg-linear-to-br from-violet-100 to-fuchsia-50 ring-violet-200/80",
     rail: "bg-linear-to-b from-violet-400 to-indigo-700",
-    bar: "bg-violet-200/80",
   },
   {
     card: "border-sky-100 bg-linear-to-br from-white via-sky-50/50 to-cyan-50/35 ring-sky-100/80",
     icon: "bg-linear-to-br from-sky-100 to-cyan-50 ring-sky-200/80",
     rail: "bg-linear-to-b from-sky-400 to-cyan-700",
-    bar: "bg-sky-200/80",
   },
   {
     card: "border-amber-100 bg-linear-to-br from-white via-amber-50/55 to-orange-50/35 ring-amber-100/80",
     icon: "bg-linear-to-br from-amber-100 to-orange-50 ring-amber-200/80",
     rail: "bg-linear-to-b from-amber-400 to-orange-600",
-    bar: "bg-amber-200/80",
   },
 ] as const;
 
@@ -146,7 +140,6 @@ export default function AcademyStatisticsSkeleton() {
               </span>
             </div>
             <Skeleton className="ms-2 h-8 w-16" />
-            <Skeleton className={cn("mt-2 ms-2 h-3 w-10", tone.bar)} />
           </article>
         ))}
       </div>
