@@ -22,6 +22,24 @@ function normalizeExam(item: any) {
   };
 }
 
+function normalizeReviewer(item: any): IExamArticleReview["reviewer"] {
+  const raw =
+    item?.reviewer ?? item?.reviewed_by ?? item?.reviewer_user;
+
+  if (raw && typeof raw === "object" && !Array.isArray(raw)) {
+    const nested = raw.user && typeof raw.user === "object" ? raw.user : null;
+    const name = String(raw.name ?? raw.full_name ?? nested?.name ?? "");
+    const email = String(raw.email ?? nested?.email ?? "");
+    const id = Number(raw.id ?? nested?.id ?? 0);
+    if (!name && !email && !id) return null;
+    return { id, name, email };
+  }
+
+  const name = String(item?.reviewer_name ?? item?.reviewed_by_name ?? "");
+  if (!name) return null;
+  return { id: 0, name, email: "" };
+}
+
 function questionTextFromItem(item: any): string {
   const question = item?.question ?? item?.exam_question ?? item?.attempt_question;
   if (typeof question === "string") return question;
@@ -66,6 +84,7 @@ function normalizeExamArticleReview(item: any): IExamArticleReview {
         : Number(marksAwarded),
     submitted_at: String(item?.submitted_at ?? ""),
     student: normalizeStudent(item?.student ?? {}),
+    reviewer: normalizeReviewer(item),
     exam: normalizeExam(item?.exam ?? {}),
     is_correct:
       item?.is_correct === null || item?.is_correct === undefined

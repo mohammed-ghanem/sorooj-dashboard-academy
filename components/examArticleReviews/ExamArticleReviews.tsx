@@ -178,6 +178,7 @@ export default function ExamArticleReviews() {
       question_text: detail.question_text || listRow.question_text,
       article_answer: detail.article_answer || listRow.article_answer,
       student: detail.student?.name ? detail.student : listRow.student,
+      reviewer: detail.reviewer?.name ? detail.reviewer : listRow.reviewer,
       exam:
         detail.exam?.title || detail.exam?.examable_label
           ? detail.exam
@@ -270,6 +271,12 @@ export default function ExamArticleReviews() {
                   <span>{t?.studentEmail}: </span>
                   <span>{activeRow.student.email}</span>
                 </p>
+                {reviewed || activeRow.reviewer?.name ? (
+                  <p className="font-semibold text-slate-800">
+                    <span>{t?.reviewerName}: </span>
+                    <span>{activeRow.reviewer?.name || "—"}</span>
+                  </p>
+                ) : null}
               </div>
 
               <div className="flex flex-wrap justify-center gap-2">

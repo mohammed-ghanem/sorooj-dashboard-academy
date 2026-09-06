@@ -1077,6 +1077,7 @@
       "showTitle": "تفاصيل الإجابة المقالية",
       "studentName": "اسم الطالب",
       "studentEmail": "البريد الإلكتروني",
+      "reviewerName": "اسم المراجع",
       "questionLabel": "السؤال",
       "answerLabel": "إجابة الطالب",
       "pendingReview": "قيد المراجعة",

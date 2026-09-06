@@ -1078,6 +1078,7 @@
       "showTitle": "Article answer details",
       "studentName": "Student name",
       "studentEmail": "Email",
+      "reviewerName": "Reviewer name",
       "questionLabel": "Question",
       "answerLabel": "Student article answer",
       "pendingReview": "Under review",

@@ -44,6 +44,7 @@ function mergeAttemptAnswerShell(node: Record<string, unknown>) {
       aa.answer ??
       aa.student_answer,
     student: node.student ?? aa.student,
+    reviewer: node.reviewer ?? aa.reviewer ?? node.reviewed_by ?? aa.reviewed_by,
     exam: node.exam ?? aa.exam,
   };
 }
@@ -63,6 +64,9 @@ export function pickExamArticleReviewFromResponse(response: any): any {
       "examArticleReview",
       "article_review",
       "ArticleReview",
+      "ArticleAnswer",
+      "article_answer",
+      "articleAnswer",
       "review",
     ] as const;
 

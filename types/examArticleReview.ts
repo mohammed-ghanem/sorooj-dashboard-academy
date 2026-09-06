@@ -4,6 +4,12 @@ export interface IExamArticleReviewStudent {
   email: string;
 }
 
+export interface IExamArticleReviewReviewer {
+  id: number;
+  name: string;
+  email: string;
+}
+
 export interface IExamArticleReviewExam {
   title: string;
   examable_label: string;
@@ -22,6 +28,7 @@ export interface IExamArticleReview {
   marks_awarded: number | null;
   submitted_at: string;
   student: IExamArticleReviewStudent;
+  reviewer: IExamArticleReviewReviewer | null;
   exam: IExamArticleReviewExam;
   is_correct?: boolean | null;
 }
