@@ -62,6 +62,8 @@ export default function AppContacts() {
           facebook: data.social?.facebook ?? "",
           instagram: data.social?.instagram ?? "",
           x: data.social?.x ?? "",
+          youtube: data.social?.youtube ?? "",
+          telegram: data.social?.telegram ?? "",
         },
       });
     }
@@ -249,7 +251,7 @@ export default function AppContacts() {
                     className={cn("h-11", dash.input)}
                   />
                 </div>
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label
                     htmlFor="app-contacts-x"
                     className={cn(
@@ -263,6 +265,42 @@ export default function AppContacts() {
                     id="app-contacts-x"
                     value={form.social.x}
                     onChange={(e) => setSocial("x", e.target.value)}
+                    placeholder="https://"
+                    className={cn("h-11", dash.input)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="app-contacts-youtube"
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.youtube}
+                  </Label>
+                  <Input
+                    id="app-contacts-youtube"
+                    value={form.social.youtube}
+                    onChange={(e) => setSocial("youtube", e.target.value)}
+                    placeholder="https://"
+                    className={cn("h-11", dash.input)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="app-contacts-telegram"
+                    className={cn(
+                      "text-sm font-semibold text-slate-800",
+                      labelAlign,
+                    )}
+                  >
+                    {t?.telegram}
+                  </Label>
+                  <Input
+                    id="app-contacts-telegram"
+                    value={form.social.telegram}
+                    onChange={(e) => setSocial("telegram", e.target.value)}
                     placeholder="https://"
                     className={cn("h-11", dash.input)}
                   />

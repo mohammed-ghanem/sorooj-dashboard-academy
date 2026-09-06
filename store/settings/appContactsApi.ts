@@ -27,6 +27,8 @@ function normalizeAppContacts(raw: any): IAppContactsValue {
       facebook: String(social.facebook ?? ""),
       instagram: String(social.instagram ?? ""),
       x: String(social.x ?? social.twitter ?? ""),
+      youtube: String(social.youtube ?? ""),
+      telegram: String(social.telegram ?? ""),
     },
   };
 }
@@ -45,6 +47,8 @@ function buildAppContactsFormData(value: IAppContactsValue) {
   fd.append("value[social][facebook]", value.social?.facebook ?? "");
   fd.append("value[social][instagram]", value.social?.instagram ?? "");
   fd.append("value[social][x]", value.social?.x ?? "");
+  fd.append("value[social][youtube]", value.social?.youtube ?? "");
+  fd.append("value[social][telegram]", value.social?.telegram ?? "");
   return fd;
 }
 

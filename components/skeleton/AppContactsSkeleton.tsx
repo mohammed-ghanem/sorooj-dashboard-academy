@@ -43,11 +43,8 @@ export default function AppContactsSkeleton() {
               <Skeleton className="h-5 w-32" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`space-y-2 ${i === 2 ? "md:col-span-2" : ""}`}
-                >
+              {[...Array(5)].map((_, i) => (
+                <div key={i} className="space-y-2">
                   <Skeleton className="h-4 w-28" />
                   <Skeleton className="h-11 w-full rounded-xl" />
                 </div>

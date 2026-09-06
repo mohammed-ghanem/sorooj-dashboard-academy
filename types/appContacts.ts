@@ -2,6 +2,8 @@ export interface IAppContactsSocial {
   facebook: string;
   instagram: string;
   x: string;
+  youtube: string;
+  telegram: string;
 }
 
 export interface IAppContactsValue {
@@ -16,6 +18,12 @@ export function emptyAppContacts(): IAppContactsValue {
     mobile: "",
     whatsapp: "",
     email: "",
-    social: { facebook: "", instagram: "", x: "" },
+    social: {
+      facebook: "",
+      instagram: "",
+      x: "",
+      youtube: "",
+      telegram: "",
+    },
   };
 }

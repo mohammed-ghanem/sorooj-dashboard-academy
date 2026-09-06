@@ -1299,6 +1299,8 @@
       "facebook": "Facebook",
       "instagram": "Instagram",
       "x": "X (Twitter)",
+      "youtube": "YouTube",
+      "telegram": "Telegram",
       "processing": "Saving…",
       "saveBtn": "Save changes",
       "successMessage": "Contact settings saved successfully",
