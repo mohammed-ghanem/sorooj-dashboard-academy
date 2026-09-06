@@ -48,7 +48,7 @@ export default function StudentCertificateCard({
 
   return (
     <>
-      <article className="group relative overflow-hidden rounded-[1.6rem] bg-[#f7f4ec] shadow-[0_18px_40px_-24px_rgba(6,78,59,0.45)] ring-1 ring-emerald-950/10 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-20px_rgba(6,78,59,0.5)]">
+      <article className="group relative overflow-hidden rounded-3xl bg-[#f7f4ec] shadow-[0_18px_40px_-24px_rgba(6,78,59,0.45)] ring-1 ring-emerald-950/10 transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_44px_-20px_rgba(6,78,59,0.5)]">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -60,37 +60,37 @@ export default function StudentCertificateCard({
         />
         <div
           aria-hidden
-          className="pointer-events-none absolute -end-10 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(180,148,74,0.22),transparent_68%)]"
+          className="pointer-events-none absolute -inset-e-10 -top-16 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(180,148,74,0.22),transparent_68%)]"
         />
         <div
           aria-hidden
-          className="absolute inset-y-0 start-0 w-2.5 bg-[linear-gradient(180deg,#0f766e_0%,#b45309_48%,#065f46_100%)]"
+          className="absolute inset-y-0 inset-s-0 w-2.5 bg-[linear-gradient(180deg,#0f766e_0%,#b45309_48%,#065f46_100%)]"
         />
 
         <span
           aria-hidden
-          className="absolute start-5 top-4 h-3.5 w-3.5 border-s-2 border-t-2 border-emerald-800/35"
+          className="absolute inset-s-5 top-4 h-3.5 w-3.5 border-s-2 border-t-2 border-emerald-800/35"
         />
         <span
           aria-hidden
-          className="absolute end-4 top-4 h-3.5 w-3.5 border-e-2 border-t-2 border-emerald-800/35"
+          className="absolute inset-e-4 top-4 h-3.5 w-3.5 border-e-2 border-t-2 border-emerald-800/35"
         />
         <span
           aria-hidden
-          className="absolute start-5 bottom-4 h-3.5 w-3.5 border-s-2 border-b-2 border-emerald-800/35"
+          className="absolute inset-s-5 bottom-4 h-3.5 w-3.5 border-s-2 border-b-2 border-emerald-800/35"
         />
         <span
           aria-hidden
-          className="absolute end-4 bottom-4 h-3.5 w-3.5 border-e-2 border-b-2 border-emerald-800/35"
+          className="absolute inset-e-4 bottom-4 h-3.5 w-3.5 border-e-2 border-b-2 border-emerald-800/35"
         />
 
         <div className="relative flex flex-col gap-4 px-6 py-5 ps-8 sm:flex-row sm:items-center sm:gap-6 sm:px-8 sm:py-6">
-          <div className="relative mx-auto h-[5.25rem] w-[7.25rem] shrink-0 sm:mx-0">
+          <div className="relative mx-auto h-21 w-29 shrink-0 sm:mx-0">
             <div
               aria-hidden
-              className="absolute inset-0 translate-x-1 translate-y-1 rotate-[-8deg] rounded-xl bg-emerald-950/10"
+              className="absolute inset-0 translate-x-1 translate-y-1 -rotate-6 rounded-xl bg-emerald-950/10"
             />
-            <div className="relative h-full w-full overflow-hidden rounded-xl bg-white shadow-md ring-2 ring-white rotate-[-4deg] transition duration-300 group-hover:rotate-[-7deg]">
+            <div className="relative h-full w-full overflow-hidden rounded-xl bg-white shadow-md ring-2 ring-white -rotate-3 transition duration-300 group-hover:-rotate-6">
               {showImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -104,7 +104,7 @@ export default function StudentCertificateCard({
                 </div>
               )}
             </div>
-            <div className="absolute -bottom-2 -end-2 flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(145deg,#f6d365_0%,#b45309_100%)] shadow-md ring-2 ring-[#f7f4ec]">
+            <div className="absolute -bottom-2 -inset-e-2 flex h-9 w-9 items-center justify-center rounded-full bg-[linear-gradient(145deg,#f6d365_0%,#b45309_100%)] shadow-md ring-2 ring-[#f7f4ec]">
               <Award className="h-4 w-4 text-white" strokeWidth={2.2} />
             </div>
           </div>

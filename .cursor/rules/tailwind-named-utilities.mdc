@@ -1,0 +1,21 @@
+---
+description: Prefer Tailwind v4 named utilities over arbitrary bracket values
+globs: **/*.{tsx,ts,css}
+alwaysApply: true
+---
+
+# Tailwind named utilities
+
+Prefer the built-in Tailwind v4 scale over arbitrary values like `h-[88px]`.
+
+```tsx
+// BAD
+<div className="min-w-[200px] h-[88px] w-[88px] start-0 -end-2" />
+
+// GOOD
+<div className="min-w-50 h-22 w-22 inset-s-0 -inset-e-2" />
+```
+
+- Spacing/sizing: divide px by 4 (`200px` → `50`, `88px` → `22`).
+- Logical inset: `start-*` / `end-*` → `inset-s-*` / `inset-e-*`.
+- Keep brackets only for values with no scale equivalent (`calc()`, `vh`, custom colors/shadows).

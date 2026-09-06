@@ -163,10 +163,10 @@ export default function ViewStudent() {
                 <img
                   src={s.avatar}
                   alt=""
-                  className="h-[88px] w-[88px] rounded-2xl object-cover border border-slate-200/90 shadow-sm ring-1 ring-slate-900/5"
+                  className="h-22 w-22 rounded-2xl object-cover border border-slate-200/90 shadow-sm ring-1 ring-slate-900/5"
                 />
               ) : (
-                <div className="h-[88px] w-[88px] rounded-2xl border border-slate-200/90 bg-slate-50 flex items-center justify-center text-2xl font-semibold text-slate-600 ring-1 ring-slate-900/5">
+                <div className="h-22 w-22 rounded-2xl border border-slate-200/90 bg-slate-50 flex items-center justify-center text-2xl font-semibold text-slate-600 ring-1 ring-slate-900/5">
                   {s.name?.charAt(0)?.toUpperCase() ?? "—"}
                 </div>
               )}
@@ -328,9 +328,9 @@ export default function ViewStudent() {
                       {tab.label} ({tab.count})
                     </h4>
                     {tab.certificates.length === 0 ? (
-                      <p className="text-sm text-slate-500">
+                      <div className="rounded-3xl border border-dashed border-emerald-800/20 bg-[#f7f4ec]/60 px-6 py-5 text-sm text-slate-500">
                         {t?.noCertificates}
-                      </p>
+                      </div>
                     ) : (
                       <div className="flex flex-col gap-4">
                         {tab.certificates.map((cert) => (
