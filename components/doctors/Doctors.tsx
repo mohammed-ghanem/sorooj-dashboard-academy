@@ -127,7 +127,7 @@ export default function Doctors() {
       key: "specialization",
       header: headers.specialization,
       render: (_, row) => (
-        <span className="truncate max-w-[220px] block">
+        <span className="truncate max-w-55 block">
           {row.specialization || "—"}
         </span>
       ),
