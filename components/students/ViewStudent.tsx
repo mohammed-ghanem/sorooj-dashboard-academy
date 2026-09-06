@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Award, Download, Eye, ImageIcon, Users } from "lucide-react";
+import { Award, Eye, Users } from "lucide-react";
 
 import { useGetStudentByIdQuery } from "@/store/students/studentsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
@@ -22,10 +22,10 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import ViewStudentSkeleton from "@/components/skeleton/ViewStudentSkeleton";
+import StudentCertificateCard from "@/components/students/StudentCertificateCard";
 import type {
   IStudent,
   IStudentAcademicYear,
-  IStudentCertificate,
   IStudentDateRange,
 } from "@/types/student";
 
@@ -332,17 +332,19 @@ export default function ViewStudent() {
                         {t?.noCertificates}
                       </p>
                     ) : (
-                      <div className="grid grid-cols-1 gap-4">
+                      <div className="flex flex-col gap-4">
                         {tab.certificates.map((cert) => (
-                          <CertificateCard
+                          <StudentCertificateCard
                             key={cert.id}
                             cert={cert}
+                            dir={pageDir}
                             labels={{
                               type: t?.certificateType,
                               serial: t?.serialNumber,
                               issued: t?.issuedAt,
                               viewImage: t?.viewImage,
                               downloadPdf: t?.downloadPdf,
+                              close: t?.closeCertificate,
                             }}
                           />
                         ))}
@@ -374,65 +376,5 @@ export default function ViewStudent() {
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-function CertificateCard({
-  cert,
-  labels,
-}: {
-  cert: IStudentCertificate;
-  labels: {
-    type?: string;
-    serial?: string;
-    issued?: string;
-    viewImage?: string;
-    downloadPdf?: string;
-  };
-}) {
-  const pdfHref = cert.pdfUrl || cert.downloadUrl;
-  const imageHref = cert.imageUrl;
-
-  return (
-    <article className="rounded-xl border border-slate-200/90 bg-white/95 p-4 shadow-sm ring-1 ring-slate-900/4">
-      <p className="font-semibold text-slate-900">
-        {cert.displayTitle || cert.title || "—"}
-      </p>
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Field
-          label={labels.type ?? ""}
-          value={cert.typeLabel || cert.type}
-        />
-        <Field
-          label={labels.serial ?? ""}
-          value={cert.serialNumber}
-          dir="ltr"
-        />
-        <Field
-          label={labels.issued ?? ""}
-          value={cert.issuedAtLabel || cert.issuedAt}
-        />
-      </div>
-      {imageHref || pdfHref ? (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {imageHref ? (
-            <Button asChild size="sm" variant="outline" className="rounded-xl">
-              <a href={imageHref} target="_blank" rel="noopener noreferrer">
-                <ImageIcon className="h-4 w-4" />
-                {labels.viewImage}
-              </a>
-            </Button>
-          ) : null}
-          {pdfHref ? (
-            <Button asChild size="sm" className={dash.tableEdit}>
-              <a href={pdfHref} target="_blank" rel="noopener noreferrer">
-                <Download className="h-4 w-4" />
-                {labels.downloadPdf}
-              </a>
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
-    </article>
   );
 }

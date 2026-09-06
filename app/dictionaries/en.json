@@ -1141,6 +1141,7 @@
         "certificateType": "Certificate type",
         "viewImage": "View image",
         "downloadPdf": "Download PDF",
+        "closeCertificate": "Close",
         "accountStatus": "Account status",
         "verification": "Verification",
         "createdAt": "Created at",

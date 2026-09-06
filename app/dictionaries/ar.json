@@ -1140,6 +1140,7 @@
         "certificateType": "نوع الشهادة",
         "viewImage": "عرض الصورة",
         "downloadPdf": "تحميل PDF",
+        "closeCertificate": "إغلاق",
         "accountStatus": "حالة الحساب",
         "verification": "التحقق",
         "createdAt": "تاريخ الإنشاء",
