@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { Eye, Users } from "lucide-react";
+import { Award, Download, Eye, ImageIcon, Users } from "lucide-react";
 
 import { useGetStudentByIdQuery } from "@/store/students/studentsApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
@@ -22,7 +22,12 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import ViewStudentSkeleton from "@/components/skeleton/ViewStudentSkeleton";
-import type { IStudent } from "@/types/student";
+import type {
+  IStudent,
+  IStudentAcademicYear,
+  IStudentCertificate,
+  IStudentDateRange,
+} from "@/types/student";
 
 function Field({
   label,
@@ -51,6 +56,34 @@ function pickText(primary: string | null, fallback: string | null) {
   return null;
 }
 
+function formatDateRange(range: IStudentDateRange | null) {
+  if (!range) return null;
+  const start = range.start_date?.trim() || "";
+  const end = range.end_date?.trim() || "";
+  if (start && end) return `${start} — ${end}`;
+  return start || end || null;
+}
+
+function formatAcademicYear(year: IStudentAcademicYear | null) {
+  if (!year) return null;
+  const label = year.sequenceLabel || (year.sequence ? String(year.sequence) : "");
+  const dates = formatDateRange({
+    start_date: year.start_date,
+    end_date: year.end_date,
+  });
+  if (label && dates) return `${label} (${dates})`;
+  return label || dates || null;
+}
+
+function yesNo(
+  value: boolean | null,
+  labels: { yes?: string; no?: string },
+) {
+  if (value === true) return labels.yes;
+  if (value === false) return labels.no;
+  return null;
+}
+
 export default function ViewStudent() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -63,7 +96,7 @@ export default function ViewStudent() {
 
   const { data: student, isLoading, isError } = useGetStudentByIdQuery(
     Number(id),
-    { skip: !sessionReady || !id || Number.isNaN(Number(id)) }
+    { skip: !sessionReady || !id || Number.isNaN(Number(id)) },
   );
 
   if (!sessionReady || isLoading) {
@@ -82,6 +115,19 @@ export default function ViewStudent() {
   }
 
   const s: IStudent = student;
+  const certificateTabs =
+    s.tabs.length > 0
+      ? s.tabs
+      : s.certificates.length > 0
+        ? [
+            {
+              key: "all",
+              label: t?.certificatesTitle ?? "",
+              count: s.certificates.length,
+              certificates: s.certificates,
+            },
+          ]
+        : [];
 
   return (
     <div className={dash.formPage} dir={pageDir}>
@@ -174,6 +220,50 @@ export default function ViewStudent() {
                   undefined
                 }
               />
+              <Field
+                label={t?.enrolledAt ?? ""}
+                value={s.enrolled_at}
+              />
+              <Field
+                label={t?.cohort ?? ""}
+                value={s.cohort?.name}
+              />
+              <Field
+                label={t?.academicYear ?? ""}
+                value={formatAcademicYear(s.academic_year)}
+              />
+              <Field
+                label={t?.studyTerm ?? ""}
+                value={s.study_term?.name}
+              />
+              <Field
+                label={t?.makeupExamPeriod ?? ""}
+                value={formatDateRange(s.makeup_exam_period)}
+              />
+              <Field
+                label={t?.progressPhase ?? ""}
+                value={
+                  pickText(s.progressPhaseLabel, s.progressPhase) ?? undefined
+                }
+              />
+              <Field
+                label={t?.hasPassed ?? ""}
+                value={yesNo(s.has_passed, { yes: t?.yes, no: t?.no })}
+              />
+              <Field
+                label={t?.hasCompletedProgram ?? ""}
+                value={yesNo(s.has_completed_program, {
+                  yes: t?.yes,
+                  no: t?.no,
+                })}
+              />
+              <Field
+                label={t?.hasCompletionCertificate ?? ""}
+                value={yesNo(s.has_program_completion_certificate, {
+                  yes: t?.yes,
+                  no: t?.no,
+                })}
+              />
             </div>
           </section>
 
@@ -209,6 +299,61 @@ export default function ViewStudent() {
             )}
           </div>
 
+          <Separator />
+
+          <section className={dash.sectionNeutral}>
+            <div className="mb-6 flex flex-wrap items-start gap-4">
+              <span className={dash.sectionIconWrap}>
+                <Award className="h-5 w-5" strokeWidth={2} />
+              </span>
+              <div className="min-w-0 space-y-1">
+                <h3 className="text-base font-bold text-slate-900">
+                  {t?.certificatesTitle}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {t?.certificatesCount}: {s.certificates_count} ·{" "}
+                  {t?.academyCount}: {s.academy_count} ·{" "}
+                  {t?.independentCount}: {s.independent_count}
+                </p>
+              </div>
+            </div>
+
+            {certificateTabs.length === 0 ? (
+              <p className="text-sm text-slate-500">{t?.noCertificates}</p>
+            ) : (
+              <div className="space-y-6">
+                {certificateTabs.map((tab) => (
+                  <div key={tab.key} className="space-y-3">
+                    <h4 className="text-sm font-semibold text-slate-800">
+                      {tab.label} ({tab.count})
+                    </h4>
+                    {tab.certificates.length === 0 ? (
+                      <p className="text-sm text-slate-500">
+                        {t?.noCertificates}
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-4">
+                        {tab.certificates.map((cert) => (
+                          <CertificateCard
+                            key={cert.id}
+                            cert={cert}
+                            labels={{
+                              type: t?.certificateType,
+                              serial: t?.serialNumber,
+                              issued: t?.issuedAt,
+                              viewImage: t?.viewImage,
+                              downloadPdf: t?.downloadPdf,
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
           {s.created_at ? (
             <>
               <Separator />
@@ -229,5 +374,65 @@ export default function ViewStudent() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function CertificateCard({
+  cert,
+  labels,
+}: {
+  cert: IStudentCertificate;
+  labels: {
+    type?: string;
+    serial?: string;
+    issued?: string;
+    viewImage?: string;
+    downloadPdf?: string;
+  };
+}) {
+  const pdfHref = cert.pdfUrl || cert.downloadUrl;
+  const imageHref = cert.imageUrl;
+
+  return (
+    <article className="rounded-xl border border-slate-200/90 bg-white/95 p-4 shadow-sm ring-1 ring-slate-900/4">
+      <p className="font-semibold text-slate-900">
+        {cert.displayTitle || cert.title || "—"}
+      </p>
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <Field
+          label={labels.type ?? ""}
+          value={cert.typeLabel || cert.type}
+        />
+        <Field
+          label={labels.serial ?? ""}
+          value={cert.serialNumber}
+          dir="ltr"
+        />
+        <Field
+          label={labels.issued ?? ""}
+          value={cert.issuedAtLabel || cert.issuedAt}
+        />
+      </div>
+      {imageHref || pdfHref ? (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {imageHref ? (
+            <Button asChild size="sm" variant="outline" className="rounded-xl">
+              <a href={imageHref} target="_blank" rel="noopener noreferrer">
+                <ImageIcon className="h-4 w-4" />
+                {labels.viewImage}
+              </a>
+            </Button>
+          ) : null}
+          {pdfHref ? (
+            <Button asChild size="sm" className={dash.tableEdit}>
+              <a href={pdfHref} target="_blank" rel="noopener noreferrer">
+                <Download className="h-4 w-4" />
+                {labels.downloadPdf}
+              </a>
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
+    </article>
   );
 }

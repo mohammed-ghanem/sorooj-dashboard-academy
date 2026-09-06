@@ -31,7 +31,7 @@ export default function ViewStudentSkeleton() {
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[...Array(8)].map((_, i) => (
+              {[...Array(16)].map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="h-4 w-28" />
                   <Skeleton className="h-10 w-full rounded-xl" />
@@ -51,6 +51,22 @@ export default function ViewStudentSkeleton() {
             <Skeleton className="h-4 w-28" />
             <Skeleton className="h-7 w-24 rounded-full" />
           </div>
+
+          <Separator />
+
+          <section className="rounded-2xl border border-slate-200/90 bg-linear-to-br from-white via-slate-50/30 to-emerald-50/20 p-6 md:p-8 shadow-sm ring-1 ring-slate-900/3">
+            <div className="mb-6 flex flex-wrap items-start gap-4">
+              <Skeleton className="h-11 w-11 shrink-0 rounded-xl" />
+              <div className="space-y-2 flex-1">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-4 w-64 max-w-full" />
+              </div>
+            </div>
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-28 w-full rounded-xl" />
+            </div>
+          </section>
 
           <Separator />
 

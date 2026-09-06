@@ -1,10 +1,91 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../base/axiosBaseQuery";
-import type { IStudent } from "@/types/student";
+import type {
+  IStudent,
+  IStudentAcademicYear,
+  IStudentCertificate,
+  IStudentCertificateTab,
+  IStudentDateRange,
+  IStudentNamedRef,
+} from "@/types/student";
 import type { IApiMessageResponse } from "@/types/academicYear";
 
+function asNamedRef(item: any): IStudentNamedRef | null {
+  if (!item || item.id == null) return null;
+  return {
+    id: Number(item.id) || 0,
+    name: String(item.name ?? ""),
+  };
+}
+
+function asDateRange(item: any): IStudentDateRange | null {
+  if (!item || typeof item !== "object") return null;
+  const start = item.start_date ?? null;
+  const end = item.end_date ?? null;
+  if (!start && !end) return null;
+  return { start_date: start, end_date: end };
+}
+
+function asAcademicYear(item: any): IStudentAcademicYear | null {
+  if (!item || item.id == null) return null;
+  return {
+    id: Number(item.id) || 0,
+    sequence: Number(item.sequence ?? 0),
+    sequenceLabel: String(item._sequence ?? ""),
+    start_date: item.start_date ?? null,
+    end_date: item.end_date ?? null,
+  };
+}
+
+function asBool(value: unknown): boolean | null {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value === "boolean") return value;
+  if (value === 1 || value === "1") return true;
+  if (value === 0 || value === "0") return false;
+  return Boolean(value);
+}
+
+function normalizeCertificate(item: any): IStudentCertificate {
+  return {
+    id: Number(item?.id) || 0,
+    group: String(item?.group ?? ""),
+    groupLabel: String(item?._group ?? ""),
+    type: String(item?.type ?? ""),
+    typeLabel: String(item?._type ?? ""),
+    title: String(item?.title ?? ""),
+    displayTitle: String(item?.display_title ?? item?.title ?? ""),
+    studentName: String(item?.student_name ?? ""),
+    serialNumber: String(item?.serial_number ?? ""),
+    issuedAt: item?.issued_at ?? null,
+    issuedAtLabel: item?._issued_at ?? null,
+    imageUrl: item?.image_url ? String(item.image_url) : null,
+    pdfUrl: item?.pdf_url ? String(item.pdf_url) : null,
+    hasFiles: Boolean(item?.has_files),
+    downloadUrl: item?.download_url ? String(item.download_url) : null,
+  };
+}
+
+function normalizeCertificateTab(item: any): IStudentCertificateTab {
+  const certificates = Array.isArray(item?.certificates)
+    ? item.certificates.map(normalizeCertificate)
+    : [];
+  return {
+    key: String(item?.key ?? ""),
+    label: String(item?.label ?? ""),
+    count: Number(item?.count ?? certificates.length) || 0,
+    certificates,
+  };
+}
+
 function normalizeStudent(item: any): IStudent {
+  const certificates = Array.isArray(item?.certificates)
+    ? item.certificates.map(normalizeCertificate)
+    : [];
+  const tabs = Array.isArray(item?.tabs)
+    ? item.tabs.map(normalizeCertificateTab)
+    : [];
+
   return {
     id: Number(item?.id) || 0,
     name: item?.name ?? "",
@@ -30,6 +111,23 @@ function normalizeStudent(item: any): IStudent {
     joinPurposeLabel: item?._join_purpose ?? null,
     enrollmentStatus: item?.enrollment_status ?? null,
     enrollmentStatusLabel: item?._enrollment_status ?? null,
+    enrolled_at: item?.enrolled_at ?? null,
+    cohort: asNamedRef(item?.cohort),
+    academic_year: asAcademicYear(item?.academic_year),
+    study_term: asNamedRef(item?.study_term),
+    makeup_exam_period: asDateRange(item?.makeup_exam_period),
+    progressPhase: item?.progress_phase ?? null,
+    progressPhaseLabel: item?._progress_phase ?? null,
+    has_passed: asBool(item?.has_passed),
+    has_completed_program: asBool(item?.has_completed_program),
+    has_program_completion_certificate: asBool(
+      item?.has_program_completion_certificate,
+    ),
+    certificates_count: Number(item?.certificates_count ?? certificates.length) || 0,
+    academy_count: Number(item?.academy_count ?? 0) || 0,
+    independent_count: Number(item?.independent_count ?? 0) || 0,
+    tabs,
+    certificates,
     created_at: item?.created_at ?? null,
   };
 }
