@@ -79,8 +79,11 @@ export default function Doctors() {
     useOptimisticToggle<IDoctor>({
       getId: (row) => row.id,
       getStatus: (row) => row.is_active,
-      onToggle: async (row) => {
-        await toggleStatus(row.id);
+      onToggle: async (row, next) => {
+        await toggleStatus({
+          id: row.id,
+          is_active: next,
+        }).unwrap();
       },
     });
 

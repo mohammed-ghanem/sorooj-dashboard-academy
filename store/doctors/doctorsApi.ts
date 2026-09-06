@@ -8,10 +8,31 @@ import {
   IApiMessageResponse,
 } from "@/types/doctor";
 
+function parseIsActive(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (["1", "true", "active", "yes"].includes(normalized)) return true;
+    if (["0", "false", "inactive", "no", ""].includes(normalized)) return false;
+    const numeric = Number(normalized);
+    if (Number.isFinite(numeric)) return numeric === 1;
+  }
+  return false;
+}
+
 function normalizeDoctor(item: any): IDoctor {
-  const doctor = item?.doctor ?? item;
+  const doctor = item?.Doctor ?? item?.doctor ?? item?.user ?? item;
+  const activeRaw =
+    doctor?.is_active ??
+    doctor?.isActive ??
+    doctor?.status ??
+    item?.is_active ??
+    item?.isActive ??
+    item?.status;
+
   return {
-    id: Number(doctor?.id) || 0,
+    id: Number(doctor?.id ?? item?.id) || 0,
     name: doctor?.name ?? "",
     email: doctor?.email ?? "",
     mobile: String(doctor?.mobile ?? ""),
@@ -19,7 +40,7 @@ function normalizeDoctor(item: any): IDoctor {
     position: doctor?.position ?? "",
     about_doctor: doctor?.about_doctor ?? "",
     specialization: doctor?.specialization ?? "",
-    is_active: Boolean(Number(doctor?.is_active ?? 0)),
+    is_active: parseIsActive(activeRaw),
     created_at: doctor?.created_at,
     updated_at: doctor?.updated_at,
     message: item?.message ?? "",
@@ -134,17 +155,29 @@ export const doctorsApi = createApi({
       invalidatesTags: ["Doctors"],
     }),
 
-    toggleDoctorStatus: builder.mutation<{ message: string }, number>({
-      query: (id) => ({
-        url: `/doctors/status/${id}`,
-        method: "post",
-      }),
-      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+    toggleDoctorStatus: builder.mutation<
+      { message: string },
+      { id: number; is_active: boolean; reason?: string }
+    >({
+      query: ({ id, is_active, reason }) => {
+        const formData = new FormData();
+        formData.append("is_active", is_active ? "1" : "0");
+        formData.append(
+          "reason",
+          reason?.trim() || (is_active ? "activate" : "deactivate"),
+        );
+        return {
+          url: `/doctors/status/${id}`,
+          method: "post",
+          data: formData,
+        };
+      },
+      async onQueryStarted({ id, is_active }, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
           doctorsApi.util.updateQueryData("getDoctors", undefined, (draft: IDoctor[]) => {
             const row = draft.find((d) => d.id === id);
             if (row) {
-              row.is_active = !row.is_active;
+              row.is_active = is_active;
             }
           })
         );
@@ -155,7 +188,7 @@ export const doctorsApi = createApi({
           patchResult.undo();
         }
       },
-      invalidatesTags: ["Doctors"],
+      invalidatesTags: (_r, _e, { id }) => ["Doctors", { type: "Doctor", id }],
     }),
   }),
 });

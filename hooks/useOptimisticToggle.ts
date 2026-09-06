@@ -32,6 +32,11 @@ export function useOptimisticToggle<T>({
   
       try {
         await onToggle(item, next);
+        setOptimisticMap((p) => {
+          const nextMap = { ...p };
+          delete nextMap[id];
+          return nextMap;
+        });
       } catch {
         setOptimisticMap((p) => ({ ...p, [id]: getStatus(item) }));
         throw new Error();
