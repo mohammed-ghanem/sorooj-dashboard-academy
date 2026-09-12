@@ -24,6 +24,7 @@ import {
   scientificLibraryLinks,
   homePageSettingsLinks,
   settingsLinks,
+  bottomLinks,
   isNavHrefActive,
   isLinkGroupActive,
   pathWithoutLang,
@@ -109,6 +110,7 @@ const MAIN_TONES: Record<string, ToneKey> = {
   examArticleReviews: "amber",
   admins: "slate",
   roles: "violet",
+  activityLogs: "slate",
 };
 
 const SETTINGS_TONES: Record<string, ToneKey> = {
@@ -169,6 +171,9 @@ const SideBar = () => {
   );
   const visibleSettingsLinks = settingsLinks(lang).filter((link) =>
     canShowLink(link),
+  );
+  const visibleBottomLinks = bottomLinks(lang).filter((item) =>
+    canShowLink(item),
   );
 
   const isActive = (href: string) => isNavHrefActive(pathname, href, lang);
@@ -422,6 +427,23 @@ const SideBar = () => {
               </div>
             </li>
           ) : null}
+
+          {visibleBottomLinks.map((link) => {
+            const tone = MAIN_TONES[link.key] ?? "slate";
+            const active = isActive(link.href);
+            return (
+              <li key={link.href}>
+                <Link href={link.href} className={itemClass(active, tone)}>
+                  <span className={iconChip(active, tone)}>
+                    <link.icon size={15} />
+                  </span>
+                  <span className="hidden min-w-0 flex-1 text-start leading-snug md:block">
+                    {translate.sidebar[link.key]}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </aside>

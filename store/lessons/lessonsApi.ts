@@ -46,6 +46,18 @@ function normalizeLesson(item: any): ILesson {
       name: loc.name,
       name_ar: loc.name_ar,
       name_en: loc.name_en,
+      study_term_id:
+        subjectRaw?.study_term_id != null
+          ? Number(subjectRaw.study_term_id)
+          : subjectRaw?.study_term?.id != null
+            ? Number(subjectRaw.study_term.id)
+            : undefined,
+      category_id:
+        subjectRaw?.category_id != null
+          ? Number(subjectRaw.category_id)
+          : subjectRaw?.category?.id != null
+            ? Number(subjectRaw.category.id)
+            : undefined,
     };
   }
 
@@ -77,6 +89,12 @@ function normalizeLesson(item: any): ILesson {
     is_active: Boolean(
       row?.is_active === true || Number(row?.is_active ?? 0) === 1
     ),
+    sort_order:
+      row?.sort_order != null
+        ? Number(row.sort_order)
+        : row?.order != null
+          ? Number(row.order)
+          : undefined,
     created_at: row?.created_at,
     updated_at: row?.updated_at,
     message: row?.message ?? "",
@@ -136,27 +154,91 @@ function buildUpdateLessonFormData(data: IUpdateLessonPayload) {
   return fd;
 }
 
+function extractLessonsList(response: any): any[] {
+  if (response == null) return [];
+  const d = response?.data ?? response;
+  const raw =
+    (Array.isArray(d?.data) ? d.data : null) ??
+    (Array.isArray(d?.data?.data) ? d.data.data : null) ??
+    d?.Lessons ??
+    d?.lessons ??
+    (Array.isArray(d) ? d : null) ??
+    (Array.isArray(response) ? response : null) ??
+    d?.data ??
+    [];
+  return Array.isArray(raw) ? raw : [];
+}
+
 export const lessonsApi = createApi({
   reducerPath: "lessonsApi",
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Lessons", "Lesson"],
   endpoints: (builder) => ({
     getLessons: builder.query<ILesson[], { type: LessonTrackType }>({
-      query: ({ type }) => ({
-        url: "/lessons",
-        method: "get",
-        params: { page: 0, limit: 0, type },
-      }),
-      transformResponse: (response: any) => {
-        const d = response?.data ?? response;
-        const raw =
-          (Array.isArray(d?.data) ? d.data : null) ??
-          d?.Lessons ??
-          d?.lessons ??
-          d?.data ??
-          d ??
-          [];
-        return (Array.isArray(raw) ? raw : []).map(normalizeLesson);
+      async queryFn({ type }, _queryApi, _extraOptions, baseQuery) {
+        const queryParams = {
+          page: 0,
+          limit: 0,
+          per_page: 0,
+          type,
+        };
+
+        const firstResult = await baseQuery({
+          url: "/lessons",
+          method: "get",
+          params: queryParams,
+        });
+
+        if (firstResult.error) {
+          return { error: firstResult.error as any };
+        }
+
+        const body = firstResult.data as any;
+        let allRaw = extractLessonsList(body);
+
+        const meta = body?.meta ?? body?.data?.meta ?? body;
+        const lastPage = Number(meta?.last_page ?? 1);
+        const total = Number(meta?.total ?? allRaw.length);
+
+        if (lastPage > 1 && allRaw.length < total) {
+          const promises = [];
+          for (let p = 2; p <= lastPage; p++) {
+            promises.push(
+              baseQuery({
+                url: "/lessons",
+                method: "get",
+                params: {
+                  ...queryParams,
+                  page: p,
+                },
+              }),
+            );
+          }
+
+          const results = await Promise.all(promises);
+          for (const res of results) {
+            if (res.data) {
+              const pageItems = extractLessonsList(res.data);
+              allRaw = allRaw.concat(pageItems);
+            }
+          }
+        }
+
+        // Deduplicate in case of overlapping rows
+        const seen = new Set<number>();
+        const uniqueRaw: any[] = [];
+        for (const item of allRaw) {
+          const id = Number(item?.id);
+          if (id && !seen.has(id)) {
+            seen.add(id);
+            uniqueRaw.push(item);
+          } else if (!id) {
+            uniqueRaw.push(item);
+          }
+        }
+
+        const list = uniqueRaw.map(normalizeLesson);
+        return { data: list };
       },
       providesTags: ["Lessons"],
     }),

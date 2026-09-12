@@ -94,6 +94,7 @@ export const scientificTrackSubjectsApi = createApi({
       query: () => ({
         url: "/scientific-track-subjects",
         method: "get",
+        params: { page: 0, limit: 0 },
       }),
       transformResponse: (response: any) => {
         const d = response?.data ?? response;

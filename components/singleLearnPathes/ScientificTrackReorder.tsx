@@ -8,6 +8,9 @@ import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubje
 import { useGetLessonsQuery } from "@/store/lessons/lessonsApi";
 import TranslateHook from "@/translate/TranslateHook";
 import type { ModuleReorderConfig } from "@/constants/reorderModules";
+import type { ILesson } from "@/types/lesson";
+import type { IScientificTrackSubject } from "@/types/scientificTrackSubject";
+import { parseLocalizedNameFromModel } from "@/utils/localizedName";
 
 export default function ScientificTrackReorder() {
   const translate = TranslateHook();
@@ -33,6 +36,13 @@ export default function ScientificTrackReorder() {
         hintKey: "subjectsHint",
         useGetListQuery: useGetScientificTrackSubjectsQuery,
         getLabel: (item) => item.name,
+        groupBy: {
+          groupTitle: sidebar?.categories ?? "Categories",
+          getParentId: (item: IScientificTrackSubject) =>
+            item.category_id ?? item.category?.id,
+          getParentLabel: (item: IScientificTrackSubject) =>
+            item.category?.name,
+        },
       },
       {
         key: "lessons",
@@ -42,8 +52,23 @@ export default function ScientificTrackReorder() {
         hintKey: "lessonsHint",
         useGetListQuery: useGetLessonsQuery,
         queryArg: { type: "category" },
-        getLabel: (item) =>
+        getLabel: (item: ILesson) =>
           [item.lesson_number, item.title].filter(Boolean).join(" · "),
+        groupBy: {
+          groupTitle: sidebar?.categorySubjects ?? "Subjects",
+          getParentId: (item: ILesson) => item.subject_id ?? item.subject?.id,
+          getParentLabel: (item: ILesson, lang) => {
+            if (item.subject) {
+              const loc = parseLocalizedNameFromModel(item.subject);
+              const label =
+                lang === "ar"
+                  ? loc.name_ar || loc.name || loc.name_en
+                  : loc.name_en || loc.name || loc.name_ar;
+              if (label) return label;
+            }
+            return item.subject_id ? `#${item.subject_id}` : undefined;
+          },
+        },
       },
     ],
   };

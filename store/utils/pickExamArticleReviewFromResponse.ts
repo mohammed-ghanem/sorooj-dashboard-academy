@@ -98,10 +98,12 @@ export function pickExamArticleReviewsListFromResponse(response: any): any[] {
 
   const outer = response?.data ?? response;
   const raw =
-    outer?.data ??
+    (Array.isArray(outer) ? outer : null) ??
+    (Array.isArray(outer?.data) ? outer.data : null) ??
+    (Array.isArray(outer?.data?.data) ? outer.data.data : null) ??
     outer?.exam_article_reviews ??
     outer?.ExamArticleReviews ??
-    (Array.isArray(outer) ? outer : null);
+    outer?.data;
 
   if (Array.isArray(raw)) return raw;
 

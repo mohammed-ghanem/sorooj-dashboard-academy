@@ -72,6 +72,7 @@ export const bookCategoriesApi = createApi({
       query: () => ({
         url: "/book-categories",
         method: "get",
+        params: { page: 0, limit: 0 },
       }),
       transformResponse: (response: any) =>
         pickBookCategoriesList(response).map(normalizeCategory),

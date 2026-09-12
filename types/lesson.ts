@@ -26,6 +26,8 @@ export interface ILesson {
     name?: string;
     name_ar?: string;
     name_en?: string;
+    study_term_id?: number;
+    category_id?: number;
   };
   doctor?: {
     id?: number;
@@ -34,6 +36,7 @@ export interface ILesson {
   videos: ILessonVideo[];
   attachments?: ILessonAttachment[];
   is_active: boolean;
+  sort_order?: number;
   created_at?: string;
   updated_at?: string;
   message?: string;

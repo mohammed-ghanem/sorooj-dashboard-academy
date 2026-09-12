@@ -144,6 +144,21 @@ function pickStudentFromResponse(response: any): any {
   );
 }
 
+function extractStudentsList(response: any): any[] {
+  if (response == null) return [];
+  const d = response?.data ?? response;
+  const raw =
+    (Array.isArray(d?.data) ? d.data : null) ??
+    (Array.isArray(d?.data?.data) ? d.data.data : null) ??
+    d?.Students ??
+    d?.students ??
+    (Array.isArray(d) ? d : null) ??
+    (Array.isArray(response) ? response : null) ??
+    d?.data ??
+    [];
+  return Array.isArray(raw) ? raw : [];
+}
+
 export type IStudentsListParams = {
   name?: string;
   email?: string;
@@ -157,26 +172,70 @@ export const studentsApi = createApi({
   tagTypes: ["Students", "Student"],
   endpoints: (builder) => ({
     getStudents: builder.query<IStudent[], IStudentsListParams | void>({
-      query: (params) => ({
-        url: "/students",
-        method: "get",
-        params: {
+      async queryFn(params, _queryApi, _extraOptions, baseQuery) {
+        const queryParams = {
           page: 0,
           limit: 0,
-          ...params,
-        },
-      }),
-      transformResponse: (response: any) => {
-        const d = response?.data ?? response;
-        const raw =
-          (Array.isArray(d?.data) ? d.data : null) ??
-          d?.Students ??
-          d?.students ??
-          d?.data ??
-          d ??
-          [];
-        const list = Array.isArray(raw) ? raw : [];
-        return list.map(normalizeStudent);
+          per_page: 0,
+          ...(params || {}),
+        };
+
+        const firstResult = await baseQuery({
+          url: "/students",
+          method: "get",
+          params: queryParams,
+        });
+
+        if (firstResult.error) {
+          return { error: firstResult.error as any };
+        }
+
+        const body = firstResult.data as any;
+        let allRaw = extractStudentsList(body);
+
+        const meta = body?.meta ?? body?.data?.meta ?? body;
+        const lastPage = Number(meta?.last_page ?? 1);
+        const total = Number(meta?.total ?? allRaw.length);
+
+        if (lastPage > 1 && allRaw.length < total) {
+          const promises = [];
+          for (let p = 2; p <= lastPage; p++) {
+            promises.push(
+              baseQuery({
+                url: "/students",
+                method: "get",
+                params: {
+                  ...queryParams,
+                  page: p,
+                },
+              }),
+            );
+          }
+
+          const results = await Promise.all(promises);
+          for (const res of results) {
+            if (res.data) {
+              const pageItems = extractStudentsList(res.data);
+              allRaw = allRaw.concat(pageItems);
+            }
+          }
+        }
+
+        // Deduplicate in case of overlapping rows
+        const seen = new Set<number>();
+        const uniqueRaw: any[] = [];
+        for (const item of allRaw) {
+          const id = Number(item?.id);
+          if (id && !seen.has(id)) {
+            seen.add(id);
+            uniqueRaw.push(item);
+          } else if (!id) {
+            uniqueRaw.push(item);
+          }
+        }
+
+        const list = uniqueRaw.map(normalizeStudent);
+        return { data: list };
       },
       providesTags: ["Students"],
     }),

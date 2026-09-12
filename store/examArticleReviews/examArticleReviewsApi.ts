@@ -99,20 +99,77 @@ export const examArticleReviewsApi = createApi({
   tagTypes: ["ExamArticleReviews"],
   endpoints: (builder) => ({
     getExamArticleReviews: builder.query<IExamArticleReview[], void>({
-      query: () => ({
-        url: "exam-article-reviews",
-        method: "get",
-      }),
-      transformResponse: (response: any) => {
-        const raw = pickExamArticleReviewsListFromResponse(response);
-        return raw.map((row) => normalizeExamArticleReview(row));
+      async queryFn(_arg, _queryApi, _extraOptions, baseQuery) {
+        // First request with limit: 0, page: 0
+        const firstResult = await baseQuery({
+          url: "/exam-article-reviews",
+          method: "get",
+          params: {
+            page: 0,
+            limit: 0,
+            per_page: 0,
+          },
+        });
+
+        if (firstResult.error) {
+          return { error: firstResult.error as any };
+        }
+
+        const body = firstResult.data as any;
+        let allRaw = pickExamArticleReviewsListFromResponse(body);
+
+        // If backend paginated despite limit=0 (e.g. meta.last_page > 1 and total > items received)
+        const meta = body?.meta ?? body?.data?.meta;
+        const lastPage = Number(meta?.last_page ?? 1);
+        const total = Number(meta?.total ?? allRaw.length);
+
+        if (lastPage > 1 && allRaw.length < total) {
+          const promises = [];
+          for (let p = 2; p <= lastPage; p++) {
+            promises.push(
+              baseQuery({
+                url: "/exam-article-reviews",
+                method: "get",
+                params: {
+                  page: p,
+                  limit: 0,
+                  per_page: 0,
+                },
+              }),
+            );
+          }
+
+          const results = await Promise.all(promises);
+          for (const res of results) {
+            if (res.data) {
+              const pageItems = pickExamArticleReviewsListFromResponse(res.data);
+              allRaw = allRaw.concat(pageItems);
+            }
+          }
+        }
+
+        // Deduplicate in case of overlapping rows
+        const seen = new Set<number>();
+        const uniqueRaw: any[] = [];
+        for (const item of allRaw) {
+          const id = Number(item?.id);
+          if (id && !seen.has(id)) {
+            seen.add(id);
+            uniqueRaw.push(item);
+          } else if (!id) {
+            uniqueRaw.push(item);
+          }
+        }
+
+        const normalized = uniqueRaw.map((row) => normalizeExamArticleReview(row));
+        return { data: normalized };
       },
       providesTags: ["ExamArticleReviews"],
     }),
 
     getExamArticleReview: builder.query<IExamArticleReview, number>({
       query: (id) => ({
-        url: `exam-article-reviews/${id}`,
+        url: `/exam-article-reviews/${id}`,
         method: "get",
       }),
       transformResponse: (response: any) => {
@@ -135,7 +192,7 @@ export const examArticleReviewsApi = createApi({
         const fd = new FormData();
         fd.append("is_correct", String(is_correct));
         return {
-          url: `exam-article-reviews/${id}/review`,
+          url: `/exam-article-reviews/${id}/review`,
           method: "post",
           data: fd,
         };

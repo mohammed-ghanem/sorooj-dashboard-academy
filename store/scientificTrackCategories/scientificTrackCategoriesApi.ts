@@ -76,6 +76,7 @@ export const scientificTrackCategoriesApi = createApi({
       query: () => ({
         url: "/scientific-track-categories",
         method: "get",
+        params: { page: 0, limit: 0 },
       }),
       transformResponse: (response: any) =>
         sortByOrderField(

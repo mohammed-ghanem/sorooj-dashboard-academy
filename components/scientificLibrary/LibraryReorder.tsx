@@ -7,6 +7,7 @@ import { useGetBookCategoriesQuery } from "@/store/bookCategories/bookCategories
 import { useGetBooksQuery } from "@/store/books/booksApi";
 import TranslateHook from "@/translate/TranslateHook";
 import type { ModuleReorderConfig } from "@/constants/reorderModules";
+import type { IBook } from "@/types/book";
 
 export default function LibraryReorder() {
   const translate = TranslateHook();
@@ -32,6 +33,11 @@ export default function LibraryReorder() {
         hintKey: "booksHint",
         useGetListQuery: useGetBooksQuery,
         getLabel: (item) => item.title,
+        groupBy: {
+          groupTitle: sidebar?.bookCategories ?? "Categories",
+          getParentId: (item: IBook) => item.category_id ?? item.category?.id,
+          getParentLabel: (item: IBook) => item.category?.name,
+        },
       },
     ],
   };

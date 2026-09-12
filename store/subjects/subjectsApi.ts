@@ -48,6 +48,12 @@ function normalizeSubject(item: any): ISubject {
     study_term_id: pickStudyTermId(item),
     study_term,
     cover: item?.cover ?? item?.cover_url ?? undefined,
+    sort_order:
+      item?.sort_order != null
+        ? Number(item.sort_order)
+        : item?.order != null
+          ? Number(item.order)
+          : undefined,
     is_active: Boolean(item?.is_active === true || Number(item?.is_active ?? 0) === 1),
     created_at: item?.created_at,
     updated_at: item?.updated_at,

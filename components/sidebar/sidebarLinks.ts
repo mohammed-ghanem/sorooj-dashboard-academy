@@ -1,47 +1,26 @@
 import {
-
   BookOpenCheck,
-
   BookOpenText,
-
   CalendarRange,
-
   Film,
-
   ShieldUser,
-
   GraduationCap,
-
   Home,
-
   ShieldCheck,
-
   UserCircle,
-
   Users,
-
   FileText,
-
+  History,
   Library,
-
   BookOpen,
-
   ArrowUpDown,
-
   Sparkles,
-
   Target,
-
   Layers,
-
   type LucideIcon,
-
 } from "lucide-react";
 
-
-
 export type SidebarLinkItem = {
-
   href: string;
 
   icon: LucideIcon;
@@ -51,13 +30,9 @@ export type SidebarLinkItem = {
   module?: string;
 
   always?: boolean;
-
 };
 
-
-
 export type SettingsLinkItem = {
-
   href: string;
 
   key: string;
@@ -65,15 +40,10 @@ export type SettingsLinkItem = {
   module?: string;
 
   always?: boolean;
-
 };
 
-
-
 export const mainLinks = (lang: string): SidebarLinkItem[] => [
-
   {
-
     href: `/${lang}`,
 
     icon: Home,
@@ -81,11 +51,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "dashboard",
 
     always: true,
-
   },
 
   {
-
     href: `/${lang}/doctors`,
 
     icon: ShieldUser,
@@ -93,11 +61,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "doctors",
 
     module: "doctors",
-
   },
 
   {
-
     href: `/${lang}/cohorts`,
 
     icon: CalendarRange,
@@ -105,11 +71,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "cohorts",
 
     module: "cohorts",
-
   },
 
   {
-
     href: `/${lang}/academic-years`,
 
     icon: GraduationCap,
@@ -117,11 +81,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "academicYears",
 
     module: "academic_years",
-
   },
 
   {
-
     href: `/${lang}/students`,
 
     icon: UserCircle,
@@ -129,11 +91,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "students",
 
     module: "students",
-
   },
 
   {
-
     href: `/${lang}/exam-article-reviews`,
 
     icon: FileText,
@@ -141,11 +101,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "examArticleReviews",
 
     module: "exam_article_reviews",
-
   },
 
   {
-
     href: `/${lang}/admins`,
 
     icon: Users,
@@ -153,11 +111,9 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "admins",
 
     module: "admins",
-
   },
 
   {
-
     href: `/${lang}/roles`,
 
     icon: ShieldCheck,
@@ -165,17 +121,11 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "roles",
 
     module: "roles",
-
   },
-
 ];
 
-
-
 export const academicStudyLinks = (lang: string): SidebarLinkItem[] => [
-
   {
-
     href: `/${lang}/academic-study/study-terms`,
 
     icon: BookOpenCheck,
@@ -183,11 +133,9 @@ export const academicStudyLinks = (lang: string): SidebarLinkItem[] => [
     key: "studyTerms",
 
     module: "study_terms",
-
   },
 
   {
-
     href: `/${lang}/academic-study/subjects`,
 
     icon: BookOpenText,
@@ -195,11 +143,9 @@ export const academicStudyLinks = (lang: string): SidebarLinkItem[] => [
     key: "subjects",
 
     module: "subjects",
-
   },
 
   {
-
     href: `/${lang}/academic-study/lessons`,
 
     icon: Film,
@@ -207,11 +153,9 @@ export const academicStudyLinks = (lang: string): SidebarLinkItem[] => [
     key: "lessons",
 
     module: "lessons",
-
   },
 
   {
-
     href: `/${lang}/academic-study/reorder`,
 
     icon: ArrowUpDown,
@@ -219,17 +163,11 @@ export const academicStudyLinks = (lang: string): SidebarLinkItem[] => [
     key: "changeOrder",
 
     module: "study_terms",
-
   },
-
 ];
 
-
-
 export const independentTracksLinks = (lang: string): SidebarLinkItem[] => [
-
   {
-
     href: `/${lang}/singleLearnPath/categories`,
 
     icon: BookOpenCheck,
@@ -237,11 +175,9 @@ export const independentTracksLinks = (lang: string): SidebarLinkItem[] => [
     key: "categories",
 
     module: "scientific_tracks",
-
   },
 
   {
-
     href: `/${lang}/singleLearnPath/subjects`,
 
     icon: BookOpenText,
@@ -249,11 +185,9 @@ export const independentTracksLinks = (lang: string): SidebarLinkItem[] => [
     key: "categorySubjects",
 
     module: "scientific_tracks",
-
   },
 
   {
-
     href: `/${lang}/singleLearnPath/lessons`,
 
     icon: Film,
@@ -261,11 +195,9 @@ export const independentTracksLinks = (lang: string): SidebarLinkItem[] => [
     key: "categoryLessons",
 
     module: "scientific_tracks",
-
   },
 
   {
-
     href: `/${lang}/singleLearnPath/reorder`,
 
     icon: ArrowUpDown,
@@ -273,17 +205,11 @@ export const independentTracksLinks = (lang: string): SidebarLinkItem[] => [
     key: "changeOrder",
 
     module: "scientific_tracks",
-
   },
-
 ];
 
-
-
 export const scientificLibraryLinks = (lang: string): SidebarLinkItem[] => [
-
   {
-
     href: `/${lang}/scientific-library/categories`,
 
     icon: Library,
@@ -291,11 +217,9 @@ export const scientificLibraryLinks = (lang: string): SidebarLinkItem[] => [
     key: "bookCategories",
 
     module: "book_categories",
-
   },
 
   {
-
     href: `/${lang}/scientific-library/books`,
 
     icon: BookOpen,
@@ -303,11 +227,9 @@ export const scientificLibraryLinks = (lang: string): SidebarLinkItem[] => [
     key: "books",
 
     module: "books",
-
   },
 
   {
-
     href: `/${lang}/scientific-library/reorder`,
 
     icon: ArrowUpDown,
@@ -315,12 +237,8 @@ export const scientificLibraryLinks = (lang: string): SidebarLinkItem[] => [
     key: "changeOrder",
 
     module: "scientific_library",
-
   },
-
 ];
-
-
 
 export const homePageSettingsLinks = (lang: string): SidebarLinkItem[] => [
   {
@@ -356,131 +274,100 @@ export const homePageSettingsLinks = (lang: string): SidebarLinkItem[] => [
 ];
 
 export const settingsLinks = (lang: string): SettingsLinkItem[] => [
-
   {
-
     href: `/${lang}/privacy-policy`,
 
     key: "privacyPolicy",
 
     module: "privacy_policy",
-
   },
 
   {
-
     href: `/${lang}/app-contacts`,
 
     key: "appContacts",
 
     module: "app_contacts",
-
   },
 
   {
-
     href: `/${lang}/terms-conditions`,
 
     key: "termsAndConditions",
 
     module: "terms_and_conditions",
-
   },
 
   {
-
     href: `/${lang}/delete-account`,
 
     key: "deleteAccount",
 
     module: "delete_account",
-
   },
 
   {
-
     href: `/${lang}/contact-us`,
 
     key: "contactUs",
 
     module: "contact_us",
-
   },
 
   {
-
     href: `/${lang}/profile`,
 
     key: "profile",
 
     always: true,
-
   },
-
 ];
 
-
+export const bottomLinks = (lang: string): SidebarLinkItem[] => [
+  {
+    href: `/${lang}/activity-logs`,
+    icon: History,
+    key: "activityLogs",
+    module: "activity_logs",
+  },
+];
 
 /** Strip `/{lang}` prefix for path comparisons. */
 
 export function pathWithoutLang(pathname: string, lang: string) {
-
   const prefix = `/${lang}`;
 
   if (pathname === prefix) return "/";
 
   if (pathname.startsWith(`${prefix}/`)) {
-
     return pathname.slice(prefix.length) || "/";
-
   }
 
   return pathname || "/";
-
 }
 
-
-
 export function isNavHrefActive(pathname: string, href: string, lang: string) {
-
   const path = pathWithoutLang(pathname, lang);
 
   const target = pathWithoutLang(href, lang);
-
-
 
   if (target === "/") return path === "/";
 
   if (path === target) return true;
 
-
-
   if (!path.startsWith(`${target}/`)) return false;
-
-
 
   if (target.endsWith("/reorder")) return true;
 
-
-
   return !path.startsWith(`${target}/reorder`);
-
 }
 
-
-
 export function isLinkGroupActive(
-
   pathname: string,
 
   links: { href: string }[],
 
   lang: string,
-
 ) {
-
   return links.some((link) => isNavHrefActive(pathname, link.href, lang));
-
 }
-
-

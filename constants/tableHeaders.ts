@@ -125,10 +125,22 @@ export const TABLE_HEADERS = {
 
     examArticleReviews: {
       student: "اسم الطالب",
+      exam: "المادة / الاختبار",
       question: "السؤال",
       answer: "الإجابة المقالية",
       submittedAt: "تاريخ الإرسال",
       status: "حالة المراجعة",
+      evaluation: "التقييم",
+      actions: "الإجراءات",
+    },
+
+    activityLogs: {
+      description: "الوصف",
+      module: "الوحدة",
+      action: "الإجراء",
+      causer: "المنفّذ",
+      subject: "العنصر",
+      date: "التاريخ",
       actions: "الإجراءات",
     },
 
@@ -266,10 +278,22 @@ export const TABLE_HEADERS = {
 
     examArticleReviews: {
       student: "Student",
+      exam: "Subject / Exam",
       question: "Question",
       answer: "Essay answer",
       submittedAt: "Submitted at",
       status: "Review status",
+      evaluation: "Evaluation",
+      actions: "Actions",
+    },
+
+    activityLogs: {
+      description: "Description",
+      module: "Module",
+      action: "Action",
+      causer: "Performed by",
+      subject: "Subject",
+      date: "Date",
       actions: "Actions",
     },
 

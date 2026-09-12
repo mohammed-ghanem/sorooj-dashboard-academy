@@ -12,6 +12,7 @@ export interface ISubject {
     name_en?: string;
   };
   cover?: string;
+  sort_order?: number;
   is_active: boolean;
   created_at?: string;
   updated_at?: string;
