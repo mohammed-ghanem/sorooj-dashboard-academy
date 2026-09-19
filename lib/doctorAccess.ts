@@ -8,6 +8,7 @@ const DOCTOR_MODULES = new Set([
   "scientific_tracks",
   "scientific_track_subjects",
   "scientific_track_lessons",
+  "books",
 ]);
 
 const SUBJECT_WRITE_PATHS = [
@@ -26,6 +27,7 @@ const ALLOWED_PREFIXES = [
   "/singleLearnPath/subjects",
   "/singleLearnPath/lessons",
   "/exam-article-reviews",
+  "/scientific-library/books",
   "/profile",
   "/update-profile",
   "/change-password",
