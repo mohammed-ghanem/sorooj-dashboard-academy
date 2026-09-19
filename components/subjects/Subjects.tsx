@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import LangUseParams from "@/translate/LangUseParams";
 
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 
 import { useOptimisticToggle } from "@/hooks/useOptimisticToggle";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { cn } from "@/lib/utils";
 
 import { BookOpenText, Edit3, Eye } from "lucide-react";
 import { Column, DataTable } from "../datatable/DataTable";
@@ -35,6 +36,8 @@ import { ACADEMIC_STUDY_SUBJECTS_PATH } from "@/utils/lessonsPaths";
 import { canDoctorMutateSubjects } from "@/lib/doctorAccess";
 import { isDoctorPortal } from "@/lib/portal";
 
+type StudyTermTab = "all" | number;
+
 export default function Subjects() {
   const sessionReady = useSessionReady();
   const lang = LangUseParams();
@@ -44,20 +47,80 @@ export default function Subjects() {
   const headers = TABLE_HEADERS[lang as "ar" | "en"].subjects;
   const pg = translate?.pages.subjects;
 
+  const [studyTermTab, setStudyTermTab] = useState<StudyTermTab>("all");
+
   const { data: studyTerms = [] } = useGetStudyTermsQuery(undefined, {
     skip: !sessionReady || isDoctorPortal(),
   });
 
+  const { data: subjects = [], isLoading } = useGetSubjectsQuery(undefined, {
+    skip: !sessionReady,
+  });
+  const [deleteSubject] = useDeleteSubjectMutation();
+  const [deleteSubjectExam] = useDeleteSubjectExamMutation();
+  const [toggleStatus] = useToggleSubjectStatusMutation();
+
   const studyTermLabelMap = useMemo(() => {
     const m = new Map<number, string>();
+
     studyTerms.forEach((st) => {
       const loc = parseLocalizedNameFromModel(st);
       const label =
-        lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name;
-      m.set(st.id, label);
+        lang === "ar"
+          ? loc.name_ar || loc.name || loc.name_en
+          : loc.name_en || loc.name || loc.name_ar;
+      if (label) m.set(st.id, label);
     });
+
+    subjects.forEach((row) => {
+      const id = row.study_term_id || row.study_term?.id;
+      if (!id || m.has(id)) return;
+      if (row.study_term) {
+        const loc = parseLocalizedNameFromModel(row.study_term);
+        const label =
+          lang === "ar"
+            ? loc.name_ar || loc.name || loc.name_en
+            : loc.name_en || loc.name || loc.name_ar;
+        if (label) {
+          m.set(id, label);
+          return;
+        }
+      }
+      m.set(id, `#${id}`);
+    });
+
     return m;
-  }, [studyTerms, lang]);
+  }, [studyTerms, subjects, lang]);
+
+  const studyTermTabs = useMemo(() => {
+    const counts = new Map<number, number>();
+    subjects.forEach((row) => {
+      const id = row.study_term_id || row.study_term?.id;
+      if (!id) return;
+      counts.set(id, (counts.get(id) ?? 0) + 1);
+    });
+
+    const ids = new Set<number>([
+      ...studyTerms.map((st) => st.id),
+      ...counts.keys(),
+    ]);
+
+    return [...ids]
+      .map((id) => ({
+        id,
+        label: studyTermLabelMap.get(id) || `#${id}`,
+        count: counts.get(id) ?? 0,
+      }))
+      .sort((a, b) => a.id - b.id);
+  }, [subjects, studyTerms, studyTermLabelMap]);
+
+  const filteredSubjects = useMemo(() => {
+    if (studyTermTab === "all") return subjects;
+    return subjects.filter((row) => {
+      const id = row.study_term_id || row.study_term?.id;
+      return id === studyTermTab;
+    });
+  }, [subjects, studyTermTab]);
 
   const displayStudyTerm = (row: ISubject) => {
     const nested = row.study_term;
@@ -71,13 +134,6 @@ export default function Subjects() {
     if (fromMap) return fromMap;
     return row.study_term_id ? `#${row.study_term_id}` : "—";
   };
-
-  const { data: subjects = [], isLoading } = useGetSubjectsQuery(undefined, {
-    skip: !sessionReady,
-  });
-  const [deleteSubject] = useDeleteSubjectMutation();
-  const [deleteSubjectExam] = useDeleteSubjectExamMutation();
-  const [toggleStatus] = useToggleSubjectStatusMutation();
 
   const { getOptimisticStatus, toggle, isPending } =
     useOptimisticToggle<ISubject>({
@@ -179,7 +235,9 @@ export default function Subjects() {
       render: (_, row) => (
         <div className="flex flex-col items-center gap-2 min-w-50">
           <div className="flex justify-center gap-2 flex-wrap">
-            <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/view/${row.id}`}>
+            <Link
+              href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/view/${row.id}`}
+            >
               <Button
                 type="button"
                 size="sm"
@@ -191,7 +249,9 @@ export default function Subjects() {
             </Link>
             {canDoctorMutateSubjects() ? (
               <>
-                <Link href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/edit/${row.id}`}>
+                <Link
+                  href={`/${lang}/${ACADEMIC_STUDY_SUBJECTS_PATH}/edit/${row.id}`}
+                >
                   <Button
                     type="button"
                     size="sm"
@@ -237,15 +297,77 @@ export default function Subjects() {
       showSkeleton={showSkeleton}
       dir={pageDir}
     >
-      <DataTable
-        data={subjects}
-        columns={columns}
-        isSkeleton={showSkeleton}
-        searchPlaceholder={`${pg?.searchPlaceholder}`}
-        className={dash.dataTableOuter}
-        tableCardClassName={dash.dataTableCard}
-        tableHeaderClassName={dash.dataTableHeader}
-      />
+      <div className="space-y-4">
+        {studyTermTabs.length > 0 ? (
+          <div className="flex flex-wrap gap-1.5 rounded-2xl bg-slate-50/80 p-1.5 ring-1 ring-slate-200/80">
+            <button
+              type="button"
+              onClick={() => setStudyTermTab("all")}
+              className={cn(
+                "inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm",
+                studyTermTab === "all"
+                  ? "bg-white text-emerald-900 shadow-sm ring-1 ring-emerald-200/70"
+                  : "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+              )}
+            >
+              <span>
+                {pg?.tabAll ??
+                  (lang === "ar" ? "جميع المواد" : "All subjects")}
+              </span>
+              <span
+                className={cn(
+                  "inline-flex min-w-5 shrink-0 items-center justify-center rounded-md px-1.5 text-xs font-bold tabular-nums",
+                  studyTermTab === "all"
+                    ? "bg-emerald-100 text-emerald-900"
+                    : "bg-slate-200/70 text-slate-600",
+                )}
+              >
+                {subjects.length}
+              </span>
+            </button>
+
+            {studyTermTabs.map((tab) => {
+              const active = studyTermTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setStudyTermTab(tab.id)}
+                  className={cn(
+                    "inline-flex max-w-full items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-colors sm:text-sm",
+                    active
+                      ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-300"
+                      : "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+                  )}
+                  title={tab.label}
+                >
+                  <span className="truncate">{tab.label}</span>
+                  <span
+                    className={cn(
+                      "inline-flex min-w-5 shrink-0 items-center justify-center rounded-md px-1.5 text-xs font-bold tabular-nums",
+                      active
+                        ? "bg-slate-200 text-slate-800"
+                        : "bg-slate-200/70 text-slate-600",
+                    )}
+                  >
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+
+        <DataTable
+          data={filteredSubjects}
+          columns={columns}
+          isSkeleton={showSkeleton}
+          searchPlaceholder={`${pg?.searchPlaceholder}`}
+          className={dash.dataTableOuter}
+          tableCardClassName={dash.dataTableCard}
+          tableHeaderClassName={dash.dataTableHeader}
+        />
+      </div>
     </IndexListPage>
   );
 }

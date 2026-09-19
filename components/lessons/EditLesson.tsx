@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./style.css";
 import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
@@ -17,7 +17,9 @@ import {
 } from "lucide-react";
 
 import { useGetSubjectsQuery } from "@/store/subjects/subjectsApi";
+import { useGetStudyTermsQuery } from "@/store/studyTerms/studyTermsApi";
 import { useGetScientificTrackSubjectsQuery } from "@/store/scientificTrackSubjects/scientificTrackSubjectsApi";
+import { useGetScientificTrackCategoriesQuery } from "@/store/scientificTrackCategories/scientificTrackCategoriesApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
 import { useGetProfileQuery } from "@/store/auth/authApi";
 import { isDoctorPortal } from "@/lib/portal";
@@ -129,8 +131,16 @@ export default function EditLesson({
     useGetSubjectsQuery(undefined, {
       skip: !sessionReady || isCategory,
     });
+  const { data: studyTerms = [], isLoading: loadingStudyTerms } =
+    useGetStudyTermsQuery(undefined, {
+      skip: !sessionReady || isCategory || isDoctorPortal(),
+    });
   const { data: trackSubjects = [], isLoading: loadingTrackSubjects } =
     useGetScientificTrackSubjectsQuery(undefined, {
+      skip: !sessionReady || !isCategory,
+    });
+  const { data: trackCategories = [], isLoading: loadingTrackCategories } =
+    useGetScientificTrackCategoriesQuery(undefined, {
       skip: !sessionReady || !isCategory,
     });
   const { data: doctors = [], isLoading: loadingDoctors } =
@@ -154,6 +164,7 @@ export default function EditLesson({
   const [title, setTitle] = useState("");
   const [briefContent, setBriefContent] = useState("");
   const [content, setContent] = useState("");
+  const [parentId, setParentId] = useState<number | "">("");
   const [subjectId, setSubjectId] = useState<number | "">("");
   const [doctorId, setDoctorId] = useState<number | "">("");
   const [isActive, setIsActive] = useState(true);
@@ -180,14 +191,99 @@ export default function EditLesson({
   }, [lesson]);
 
   useEffect(() => {
+    if (!lesson?.subject_id) return;
+
+    if (isCategory) {
+      const row = trackSubjects.find((s) => s.id === lesson.subject_id);
+      const pid =
+        row?.category_id ||
+        row?.category?.id ||
+        lesson.subject?.category_id ||
+        "";
+      if (pid) setParentId(Number(pid));
+      return;
+    }
+
+    const row = academicSubjects.find((s) => s.id === lesson.subject_id);
+    const pid =
+      row?.study_term_id ||
+      row?.study_term?.id ||
+      lesson.subject?.study_term_id ||
+      "";
+    if (pid) setParentId(Number(pid));
+  }, [lesson, isCategory, academicSubjects, trackSubjects]);
+
+  useEffect(() => {
     if (isDoctorPortal() && selfDoctorId > 0) {
       setDoctorId(selfDoctorId);
     }
   }, [selfDoctorId]);
 
-  const subjectOptions = isCategory
-    ? trackSubjects.map((s) => ({ id: s.id, label: s.name }))
-    : academicSubjects.map((row) => {
+  const parentOptions = useMemo(() => {
+    if (isCategory) {
+      const map = new Map<number, string>();
+      trackCategories.forEach((c) => {
+        if (c.id) map.set(c.id, c.name || `#${c.id}`);
+      });
+      trackSubjects.forEach((s) => {
+        const id = s.category_id || s.category?.id;
+        if (!id || map.has(id)) return;
+        map.set(id, s.category?.name || `#${id}`);
+      });
+      return [...map.entries()]
+        .map(([id, label]) => ({ id, label }))
+        .sort((a, b) =>
+          a.label.localeCompare(b.label, lang === "ar" ? "ar" : "en"),
+        );
+    }
+
+    const map = new Map<number, string>();
+    studyTerms.forEach((st) => {
+      const loc = parseLocalizedNameFromModel(st);
+      const label =
+        lang === "ar"
+          ? loc.name_ar || loc.name || loc.name_en
+          : loc.name_en || loc.name || loc.name_ar;
+      if (st.id) map.set(st.id, label || `#${st.id}`);
+    });
+    academicSubjects.forEach((s) => {
+      const id = s.study_term_id || s.study_term?.id;
+      if (!id || map.has(id)) return;
+      if (s.study_term) {
+        const loc = parseLocalizedNameFromModel(s.study_term);
+        const label =
+          lang === "ar"
+            ? loc.name_ar || loc.name || loc.name_en
+            : loc.name_en || loc.name || loc.name_ar;
+        map.set(id, label || `#${id}`);
+        return;
+      }
+      map.set(id, `#${id}`);
+    });
+    return [...map.entries()]
+      .map(([id, label]) => ({ id, label }))
+      .sort((a, b) => a.id - b.id);
+  }, [
+    isCategory,
+    trackCategories,
+    trackSubjects,
+    studyTerms,
+    academicSubjects,
+    lang,
+  ]);
+
+  const subjectOptions = useMemo(() => {
+    if (parentId === "") return [];
+
+    if (isCategory) {
+      return trackSubjects
+        .filter((s) => (s.category_id || s.category?.id) === parentId)
+        .map((s) => ({ id: s.id, label: s.name }));
+    }
+
+    return academicSubjects
+      .filter((row) => (row.study_term_id || row.study_term?.id) === parentId)
+      .map((row) => {
         const loc = parseLocalizedNameFromModel(row);
         return {
           id: row.id,
@@ -195,10 +291,17 @@ export default function EditLesson({
             lang === "ar" ? loc.name_ar || loc.name : loc.name_en || loc.name,
         };
       });
+  }, [parentId, isCategory, trackSubjects, academicSubjects, lang]);
+
+  const handleParentChange = (value: string) => {
+    const next = value === "" ? "" : Number(value);
+    setParentId(next);
+    setSubjectId("");
+  };
 
   const loadingSubjects = isCategory
-    ? loadingTrackSubjects
-    : loadingAcademicSubjects;
+    ? loadingTrackSubjects || loadingTrackCategories
+    : loadingAcademicSubjects || loadingStudyTerms;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -377,18 +480,50 @@ export default function EditLesson({
               <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                 <div className="space-y-2">
                   <Label className="text-sm font-semibold text-slate-800">
+                    {isCategory
+                      ? el?.category ?? cs?.category
+                      : el?.studyTerm ?? cs?.studyTerm}
+                  </Label>
+                  <select
+                    className={dash.select}
+                    value={parentId === "" ? "" : String(parentId)}
+                    onChange={(e) => handleParentChange(e.target.value)}
+                  >
+                    <option value="">
+                      {isCategory
+                        ? el?.selectCategory ?? cs?.selectCategory
+                        : el?.selectStudyTerm ?? cs?.selectStudyTerm}
+                    </option>
+                    {parentOptions.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-slate-800">
                     {el?.subject}
                   </Label>
                   <select
                     className={dash.select}
                     value={subjectId === "" ? "" : String(subjectId)}
+                    disabled={parentId === ""}
                     onChange={(e) =>
                       setSubjectId(
                         e.target.value === "" ? "" : Number(e.target.value),
                       )
                     }
                   >
-                    <option value="">{el?.selectSubject}</option>
+                    <option value="">
+                      {parentId === ""
+                        ? isCategory
+                          ? el?.selectSubjectAfterCategory ??
+                            cs?.selectSubjectAfterCategory
+                          : el?.selectSubjectAfterParent ??
+                            cs?.selectSubjectAfterParent
+                        : el?.selectSubject}
+                    </option>
                     {subjectOptions.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.label}

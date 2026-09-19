@@ -101,11 +101,6 @@ export default function DoctorStatistics({
           <h1 className="text-xl font-bold text-slate-900 md:text-2xl">
             {t?.doctorStatsTitle}
           </h1>
-          {doctor?.filters.from ? (
-            <p className="mt-1 text-sm text-slate-500">
-              {doctor.filters.from} — {doctor.filters.to}
-            </p>
-          ) : null}
         </div>
         <div className="flex flex-wrap gap-2">
           {PERIODS.map((period) => (

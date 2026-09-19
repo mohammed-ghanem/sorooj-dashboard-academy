@@ -83,29 +83,85 @@ function pickSubjectFromPayload(response: any): any {
   );
 }
 
+function extractSubjectsList(response: any): any[] {
+  if (response == null) return [];
+  const d = response?.data ?? response;
+  const raw =
+    (Array.isArray(d?.data) ? d.data : null) ??
+    (Array.isArray(d?.data?.data) ? d.data.data : null) ??
+    d?.Subjects ??
+    d?.subjects ??
+    (Array.isArray(d) ? d : null) ??
+    (Array.isArray(response) ? response : null) ??
+    d?.data ??
+    [];
+  return Array.isArray(raw) ? raw : [];
+}
+
+function dedupeById(list: any[]): any[] {
+  const seen = new Set<number>();
+  const unique: any[] = [];
+  for (const item of list) {
+    const id = Number(item?.id);
+    if (id && !seen.has(id)) {
+      seen.add(id);
+      unique.push(item);
+    } else if (!id) {
+      unique.push(item);
+    }
+  }
+  return unique;
+}
+
 export const subjectsApi = createApi({
   reducerPath: "subjectsApi",
   baseQuery: axiosBaseQuery(),
   tagTypes: ["Subjects", "Subject"],
   endpoints: (builder) => ({
     getSubjects: builder.query<ISubject[], void>({
-      query: () => ({
-        url: "/subjects",
-        method: "get",
-        params: { page: 0, limit: 0 },
-      }),
-      transformResponse: (response: any) => {
-        const d = response?.data ?? response;
-        const raw =
-          (Array.isArray(d?.data) ? d.data : null) ??
-          d?.data?.data ??
-          d?.Subjects ??
-          d?.subjects ??
-          d?.subjects ??
-          d?.data ??
-          d ??
-          [];
-        return (Array.isArray(raw) ? raw : []).map(normalizeSubject);
+      async queryFn(_arg, _queryApi, _extraOptions, baseQuery) {
+        const queryParams = { page: 0, limit: 0, per_page: 0 };
+
+        const firstResult = await baseQuery({
+          url: "/subjects",
+          method: "get",
+          params: queryParams,
+        });
+
+        if (firstResult.error) {
+          return { error: firstResult.error as any };
+        }
+
+        const body = firstResult.data as any;
+        let allRaw = extractSubjectsList(body);
+
+        const meta = body?.meta ?? body?.data?.meta ?? body;
+        const lastPage = Number(meta?.last_page ?? 1);
+        const total = Number(meta?.total ?? allRaw.length);
+
+        if (lastPage > 1 && allRaw.length < total) {
+          const promises = [];
+          for (let p = 2; p <= lastPage; p++) {
+            promises.push(
+              baseQuery({
+                url: "/subjects",
+                method: "get",
+                params: { ...queryParams, page: p },
+              }),
+            );
+          }
+
+          const results = await Promise.all(promises);
+          for (const res of results) {
+            if (res.data) {
+              allRaw = allRaw.concat(extractSubjectsList(res.data));
+            }
+          }
+        }
+
+        return {
+          data: dedupeById(allRaw).map(normalizeSubject),
+        };
       },
       providesTags: ["Subjects"],
     }),
