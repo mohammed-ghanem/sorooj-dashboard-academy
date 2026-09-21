@@ -20,7 +20,10 @@ import {
   useUpdateBookMutation,
   useDeleteBookAttachmentMutation,
 } from "@/store/books/booksApi";
+import { useGetProfileQuery } from "@/store/auth/authApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { isDoctorPortal } from "@/lib/portal";
+import { extractProfileUser } from "@/lib/profileUser";
 import { setUploadProgressListener } from "@/lib/uploadProgressBus";
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
 import { LessonCkEditorSkeleton } from "@/components/skeleton/LessonCkEditorSkeleton";
@@ -89,8 +92,12 @@ export default function EditBook() {
     });
   const { data: doctors = [], isLoading: loadingDoctors } = useGetDoctorsQuery(
     undefined,
-    { skip: !sessionReady },
+    { skip: !sessionReady || isDoctorPortal() },
   );
+  const { data: profile } = useGetProfileQuery(undefined, {
+    skip: !sessionReady || !isDoctorPortal(),
+  });
+  const selfDoctorId = Number(extractProfileUser(profile)?.id) || 0;
   const [updateBook, { isLoading: isUpdating }] = useUpdateBookMutation();
   const [deleteAttachment] = useDeleteBookAttachmentMutation();
 
@@ -112,6 +119,12 @@ export default function EditBook() {
     setDoctorId(book.doctor_id || "");
     setIsActive(Boolean(book.is_active));
   }, [book]);
+
+  useEffect(() => {
+    if (isDoctorPortal() && selfDoctorId > 0) {
+      setDoctorId(selfDoctorId);
+    }
+  }, [selfDoctorId]);
 
   const addPdfRow = () =>
     setPdfRows((prev) => [...prev, { key: newKey(), file: null }]);
@@ -252,25 +265,29 @@ export default function EditBook() {
                     ))}
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-slate-800">
-                    {t?.doctor}
-                  </Label>
-                  <select
-                    className={dash.select}
-                    value={doctorId === "" ? "" : String(doctorId)}
-                    onChange={(e) =>
-                      setDoctorId(e.target.value ? Number(e.target.value) : "")
-                    }
-                  >
-                    <option value="">{t?.selectDoctor}</option>
-                    {doctors.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isDoctorPortal() ? null : (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-slate-800">
+                      {t?.doctor}
+                    </Label>
+                    <select
+                      className={dash.select}
+                      value={doctorId === "" ? "" : String(doctorId)}
+                      onChange={(e) =>
+                        setDoctorId(
+                          e.target.value ? Number(e.target.value) : "",
+                        )
+                      }
+                    >
+                      <option value="">{t?.selectDoctor}</option>
+                      {doctors.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -293,9 +310,15 @@ export default function EditBook() {
             </section>
 
             <section className={dash.sectionNeutral}>
-              <Label className="mb-3 block text-sm font-semibold text-slate-800">
+              <Label className="mb-2 block text-sm font-semibold text-slate-800">
                 {t?.image}
               </Label>
+              <p className="mb-3 text-xs font-light text-red-600">
+                {t?.imageSizeHint ??
+                  (lang === "ar"
+                    ? "يُراعى أن تكون مقاس الغلاف: العرض 450 بكسل × الطول 265 بكسل"
+                    : "Please use a cover size of 450px width × 265px height")}
+              </p>
               <ImageDropzone
                 file={image}
                 onFileChange={setImage}
@@ -411,7 +434,9 @@ export default function EditBook() {
               </div>
               <Button
                 type="submit"
-                disabled={isUpdating}
+                disabled={
+                  isUpdating || (isDoctorPortal() && selfDoctorId <= 0)
+                }
                 className={dash.formSubmit}
               >
                 {isUpdating

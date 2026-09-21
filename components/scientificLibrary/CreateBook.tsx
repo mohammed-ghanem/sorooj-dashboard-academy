@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -17,7 +17,10 @@ import {
 import { useGetBookCategoriesQuery } from "@/store/bookCategories/bookCategoriesApi";
 import { useGetDoctorsQuery } from "@/store/doctors/doctorsApi";
 import { useCreateBookMutation } from "@/store/books/booksApi";
+import { useGetProfileQuery } from "@/store/auth/authApi";
 import { useSessionReady } from "@/hooks/useSessionReady";
+import { isDoctorPortal } from "@/lib/portal";
+import { extractProfileUser } from "@/lib/profileUser";
 import { setUploadProgressListener } from "@/lib/uploadProgressBus";
 import LessonFormSkeleton from "@/components/skeleton/LessonFormSkeleton";
 import { LessonCkEditorSkeleton } from "@/components/skeleton/LessonCkEditorSkeleton";
@@ -77,8 +80,12 @@ export default function CreateBook() {
     });
   const { data: doctors = [], isLoading: loadingDoctors } = useGetDoctorsQuery(
     undefined,
-    { skip: !sessionReady },
+    { skip: !sessionReady || isDoctorPortal() },
   );
+  const { data: profile } = useGetProfileQuery(undefined, {
+    skip: !sessionReady || !isDoctorPortal(),
+  });
+  const selfDoctorId = Number(extractProfileUser(profile)?.id) || 0;
   const [createBook, { isLoading: isCreating }] = useCreateBookMutation();
 
   const [title, setTitle] = useState("");
@@ -90,6 +97,12 @@ export default function CreateBook() {
   const [pdfRows, setPdfRows] = useState<PdfRow[]>([
     { key: newKey(), file: null },
   ]);
+
+  useEffect(() => {
+    if (isDoctorPortal() && selfDoctorId > 0) {
+      setDoctorId(selfDoctorId);
+    }
+  }, [selfDoctorId]);
 
   const addPdfRow = () =>
     setPdfRows((prev) => [...prev, { key: newKey(), file: null }]);
@@ -196,25 +209,29 @@ export default function CreateBook() {
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-semibold text-slate-800">
-                    {t?.doctor}
-                  </Label>
-                  <select
-                    className={dash.select}
-                    value={doctorId === "" ? "" : String(doctorId)}
-                    onChange={(e) =>
-                      setDoctorId(e.target.value ? Number(e.target.value) : "")
-                    }
-                  >
-                    <option value="">{t?.selectDoctor}</option>
-                    {doctors.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {isDoctorPortal() ? null : (
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-slate-800">
+                      {t?.doctor}
+                    </Label>
+                    <select
+                      className={dash.select}
+                      value={doctorId === "" ? "" : String(doctorId)}
+                      onChange={(e) =>
+                        setDoctorId(
+                          e.target.value ? Number(e.target.value) : "",
+                        )
+                      }
+                    >
+                      <option value="">{t?.selectDoctor}</option>
+                      {doctors.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </section>
 
@@ -273,6 +290,12 @@ export default function CreateBook() {
                 <Label className="text-sm font-semibold text-slate-800">
                   {t?.image}
                 </Label>
+                <p className="text-xs font-light text-red-600">
+                  {t?.imageSizeHint ??
+                    (lang === "ar"
+                      ? "يُراعى أن تكون مقاس الغلاف: العرض 450 بكسل × الطول 265 بكسل"
+                      : "Please use a cover size of 450px width × 265px height")}
+                </p>
                 <ImageDropzone file={image} onFileChange={setImage} />
               </div>
             </section>
@@ -359,7 +382,9 @@ export default function CreateBook() {
               </div>
               <Button
                 type="submit"
-                disabled={isCreating}
+                disabled={
+                  isCreating || (isDoctorPortal() && selfDoctorId <= 0)
+                }
                 className={dash.formSubmit}
               >
                 {isCreating
