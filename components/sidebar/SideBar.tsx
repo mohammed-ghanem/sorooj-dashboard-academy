@@ -108,6 +108,7 @@ const MAIN_TONES: Record<string, ToneKey> = {
   academicYears: "teal",
   students: "emerald",
   examArticleReviews: "amber",
+  examAttemptRequests: "sky",
   admins: "slate",
   roles: "violet",
   activityLogs: "slate",

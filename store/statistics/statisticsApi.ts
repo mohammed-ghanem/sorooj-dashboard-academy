@@ -109,6 +109,7 @@ export function emptyStatistics(): DashboardStatsPayload {
     attention: {
       essayReviews: 0,
       unrepliedMessages: 0,
+      examAttemptRequests: 0,
       makeupPending: 0,
       makeup: 0,
       yearFailures: 0,
@@ -221,6 +222,10 @@ export function normalizeStatistics(response: any): DashboardStatsPayload {
   const attention = {
     essayReviews: listCount(attentionRaw, "pending_article_reviews"),
     unrepliedMessages: listCount(attentionRaw, "unanswered_contacts"),
+    examAttemptRequests: listCount(
+      attentionRaw,
+      "pending_exam_attempt_requests",
+    ),
     makeupPending: listCount(attentionRaw, "makeup_pending"),
     makeup: listCount(attentionRaw, "makeup"),
     yearFailures: listCount(attentionRaw, "year_failed"),

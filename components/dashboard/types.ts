@@ -116,6 +116,7 @@ export type DashboardStatsPayload = {
   attention: {
     essayReviews: number;
     unrepliedMessages: number;
+    examAttemptRequests: number;
     makeupPending: number;
     makeup: number;
     yearFailures: number;

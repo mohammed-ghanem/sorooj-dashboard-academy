@@ -17,6 +17,7 @@ import {
   Sparkles,
   Target,
   Layers,
+  RefreshCw,
   type LucideIcon,
 } from "lucide-react";
 
@@ -101,6 +102,16 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     key: "examArticleReviews",
 
     module: "exam_article_reviews",
+  },
+
+  {
+    href: `/${lang}/exam-attempt-requests`,
+
+    icon: RefreshCw,
+
+    key: "examAttemptRequests",
+
+    module: "exam_attempt_requests",
   },
 
   {

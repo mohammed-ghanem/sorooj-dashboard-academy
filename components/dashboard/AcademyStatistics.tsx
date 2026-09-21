@@ -14,6 +14,7 @@ import {
   Hourglass,
   Library,
   Mail,
+  RefreshCw,
   ShieldUser,
   TrendingUp,
   UserCheck,
@@ -371,7 +372,10 @@ export default function AcademyStatistics({
   const showLibrary =
     can("books") || can("book_categories") || can("scientific_library");
   const showAttention =
-    can("exam_article_reviews") || can("contact_us") || showStudents;
+    can("exam_article_reviews") ||
+    can("contact_us") ||
+    can("exam_attempt_requests") ||
+    showStudents;
   const showExams = showProgram || showTracks;
 
   const kpis = [
@@ -489,6 +493,15 @@ export default function AcademyStatistics({
       tone: "text-emerald-700 bg-linear-to-br from-emerald-100 to-teal-50 ring-1 ring-emerald-200/70",
       href: `/${lang}/contact-us`,
       show: can("contact_us"),
+    },
+    {
+      key: "examAttemptRequests",
+      label: t?.attentionExamAttemptRequests,
+      value: stats.attention.examAttemptRequests,
+      icon: RefreshCw,
+      tone: "text-cyan-700 bg-linear-to-br from-cyan-100 to-sky-50 ring-1 ring-cyan-200/70",
+      href: `/${lang}/exam-attempt-requests`,
+      show: can("exam_attempt_requests"),
     },
     {
       key: "makeupPending",

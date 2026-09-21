@@ -22,6 +22,7 @@ import { subjectExamsApi } from "./subjectExams/subjectExamsApi";
 import { lessonVideosApi } from "./lessonVideos/lessonVideosApi";
 import { videoExamsApi } from "./videoExams/videoExamsApi";
 import { examArticleReviewsApi } from "./examArticleReviews/examArticleReviewsApi";
+import { examAttemptRequestsApi } from "./examAttemptRequests/examAttemptRequestsApi";
 import { scientificTrackCategoriesApi } from "./scientificTrackCategories/scientificTrackCategoriesApi";
 import { scientificTrackSubjectsApi } from "./scientificTrackSubjects/scientificTrackSubjectsApi";
 import { scientificTrackSubjectExamsApi } from "./scientificTrackSubjectExams/scientificTrackSubjectExamsApi";
@@ -63,6 +64,7 @@ export const store = configureStore({
     [lessonVideosApi.reducerPath]: lessonVideosApi.reducer,
     [videoExamsApi.reducerPath]: videoExamsApi.reducer,
     [examArticleReviewsApi.reducerPath]: examArticleReviewsApi.reducer,
+    [examAttemptRequestsApi.reducerPath]: examAttemptRequestsApi.reducer,
     [scientificTrackCategoriesApi.reducerPath]:
       scientificTrackCategoriesApi.reducer,
     [scientificTrackSubjectsApi.reducerPath]:
@@ -103,6 +105,7 @@ export const store = configureStore({
       lessonVideosApi.middleware,
       videoExamsApi.middleware,
       examArticleReviewsApi.middleware,
+      examAttemptRequestsApi.middleware,
       scientificTrackCategoriesApi.middleware,
       scientificTrackSubjectsApi.middleware,
       scientificTrackSubjectExamsApi.middleware,

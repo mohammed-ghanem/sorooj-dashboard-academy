@@ -134,6 +134,15 @@ export const TABLE_HEADERS = {
       actions: "الإجراءات",
     },
 
+    examAttemptRequests: {
+      student: "الطالب",
+      exam: "الاختبار",
+      attempts: "المحاولات",
+      status: "الحالة",
+      createdAt: "تاريخ الطلب",
+      actions: "الإجراءات",
+    },
+
     activityLogs: {
       description: "الوصف",
       module: "الوحدة",
@@ -284,6 +293,15 @@ export const TABLE_HEADERS = {
       submittedAt: "Submitted at",
       status: "Review status",
       evaluation: "Evaluation",
+      actions: "Actions",
+    },
+
+    examAttemptRequests: {
+      student: "Student",
+      exam: "Exam",
+      attempts: "Attempts",
+      status: "Status",
+      createdAt: "Requested at",
       actions: "Actions",
     },
 
