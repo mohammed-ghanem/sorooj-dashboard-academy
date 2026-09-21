@@ -127,7 +127,7 @@ function mergeHierarchy(
 export default function ExamAttemptRequests() {
   const sessionReady = useSessionReady();
   const translate = TranslateHook();
-  const lang = LangUseParams();
+  const lang = LangUseParams() ?? "ar";
   const pageDir = lang === "ar" ? "rtl" : "ltr";
   const headers = TABLE_HEADERS[lang as "ar" | "en"].examAttemptRequests;
   const t = translate?.examAttemptRequests;
@@ -942,7 +942,7 @@ export default function ExamAttemptRequests() {
         columns={columns}
         data={filtered}
         isSkeleton={showSkeleton}
-        className={dash.tableShell}
+        className={dash.dataTableOuter}
       />
 
       <Dialog
