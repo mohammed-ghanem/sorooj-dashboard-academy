@@ -220,7 +220,11 @@
       "aboutDoctor": "About the doctor",
       "specialization": "Specialization",
       "processing": "Processing Update Profile",
-      "confirmBtn": "Confirm"
+      "confirmBtn": "Confirm",
+      "deleteAvatar": "Delete avatar",
+      "deletingAvatar": "Deleting image...",
+      "deleteAvatarSuccess": "Profile photo deleted",
+      "deleteAvatarFailed": "Failed to delete profile photo"
     },
     "profile": {
       "title": " Profile",

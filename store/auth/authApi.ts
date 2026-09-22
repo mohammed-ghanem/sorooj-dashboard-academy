@@ -258,6 +258,17 @@ export const authApi = createApi({
                 }
             },
         }),
+
+        // ---------------- DELETE AVATAR ----------------
+        deleteAvatar: builder.mutation<{ message?: string }, void>({
+            query: () => ({
+                url: "/auth/delete-avatar",
+                method: "DELETE",
+                auth: true,
+                withCsrf: true,
+            }),
+            invalidatesTags: ["Profile"],
+        }),
     }),
 });
 
@@ -270,5 +281,6 @@ export const {
     useChangePasswordMutation,
     useGetProfileQuery,
     useUpdateProfileMutation,
+    useDeleteAvatarMutation,
     useResendOtpMutation,
 } = authApi;

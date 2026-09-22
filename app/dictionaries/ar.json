@@ -218,7 +218,11 @@
       "aboutDoctor": "نبذة عن الدكتور",
       "specialization": "التخصص",
       "processing": "جارى تحديث الملف الشخصى",
-      "confirmBtn": "تاكيد"
+      "confirmBtn": "تاكيد",
+      "deleteAvatar": "حذف الصورة",
+      "deletingAvatar": "جاري حذف الصورة...",
+      "deleteAvatarSuccess": "تم حذف صورة الملف الشخصي",
+      "deleteAvatarFailed": "فشل حذف صورة الملف الشخصي"
     },
     "profile": {
       "title": "الملف الشخصى",

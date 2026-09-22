@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import {
   useGetProfileQuery,
   useUpdateProfileMutation,
+  useDeleteAvatarMutation,
 } from "@/store/auth/authApi";
 import PhoneInput from "react-phone-input-2";
 import { toast } from "sonner";
@@ -54,6 +55,8 @@ function UpdateProfile() {
 
   const [updateProfile, { isLoading: isUpdating }] =
     useUpdateProfileMutation();
+  const [deleteAvatar, { isLoading: isDeletingAvatar }] =
+    useDeleteAvatarMutation();
   const user = profileData?.data || profileData?.user || profileData;
 
   const [form, setForm] = useState({
@@ -144,13 +147,55 @@ function UpdateProfile() {
     }
   };
 
-  const handleRemoveImage = () => {
+  const clearLocalAvatar = () => {
     setForm((prev) => ({ ...prev, avatar: "" }));
-
     setSelectedFile(null);
-
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    if (isUploading || isDeletingAvatar || isUpdating) return;
+
+    const hasServerAvatar = Boolean(user?.avatar);
+    // New local preview only — clear without hitting the API
+    if (!hasServerAvatar) {
+      clearLocalAvatar();
+      return;
+    }
+
+    const toastId = toast.loading(
+      t?.deletingAvatar ??
+        (lang === "ar" ? "جاري حذف الصورة..." : "Deleting image..."),
+    );
+
+    try {
+      const res = await deleteAvatar().unwrap();
+      clearLocalAvatar();
+      toast.success(
+        res?.message ||
+          t?.deleteAvatarSuccess ||
+          (lang === "ar" ? "تم حذف الصورة" : "Avatar deleted"),
+        { id: toastId },
+      );
+      await refetch();
+    } catch (err: any) {
+      const errorData = err?.data ?? err;
+      if (errorData?.errors) {
+        Object.values(errorData.errors).forEach((messages: any) =>
+          (Array.isArray(messages) ? messages : [messages]).forEach(
+            (msg: string) => toast.error(String(msg), { id: toastId }),
+          ),
+        );
+        return;
+      }
+      toast.error(
+        errorData?.message ||
+          t?.deleteAvatarFailed ||
+          (lang === "ar" ? "فشل حذف الصورة" : "Failed to delete avatar"),
+        { id: toastId },
+      );
     }
   };
 
@@ -256,23 +301,31 @@ function UpdateProfile() {
 
             <div className="flex justify-center pb-2">
               <div className="relative">
-                {(form.avatar || selectedFile) && (
+                {(form.avatar || selectedFile || user?.avatar) && (
                   <button
                     type="button"
                     onClick={handleRemoveImage}
-                    className="absolute inset-e-0 top-0 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow transition hover:bg-red-600"
+                    disabled={isUploading || isDeletingAvatar || isUpdating}
+                    title={t?.deleteAvatar ?? (lang === "ar" ? "حذف الصورة" : "Delete avatar")}
+                    className="absolute inset-e-0 top-0 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
                   >
-                    <X className="h-4 w-4" />
+                    {isDeletingAvatar ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <X className="h-4 w-4" />
+                    )}
                   </button>
                 )}
 
                 <Avatar
                   className="h-28 w-28 cursor-pointer border-4 border-emerald-100 shadow-md ring-2 ring-white"
-                  onClick={!isUploading ? handleImageClick : undefined}
+                  onClick={
+                    !isUploading && !isDeletingAvatar
+                      ? handleImageClick
+                      : undefined
+                  }
                 >
-                  <AvatarImage
-                    src={getAvatarSrc(form.avatar || user?.avatar)}
-                  />
+                  <AvatarImage src={getAvatarSrc(form.avatar)} />
                   <AvatarFallback className="bg-emerald-50 text-lg font-semibold text-emerald-800">
                     {getInitials(form.name || "User")}
                   </AvatarFallback>
@@ -284,7 +337,7 @@ function UpdateProfile() {
                   variant="secondary"
                   className="absolute bottom-0 inset-e-0 h-9 w-9 rounded-full shadow-md ring-2 ring-white"
                   onClick={handleImageClick}
-                  disabled={isUploading}
+                  disabled={isUploading || isDeletingAvatar}
                 >
                   <Upload className="h-4 w-4" />
                 </Button>
