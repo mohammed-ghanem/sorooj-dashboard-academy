@@ -81,7 +81,14 @@ type VideoRow = {
   is_active: boolean;
 };
 
-type PdfRow = { key: string; file: File | null };
+type PdfRow = { key: string; title: string; file: File | null };
+
+type ExistingPdfRow = {
+  id: number;
+  title: string;
+  file_url?: string;
+  name?: string;
+};
 
 function lessonVideosToRows(videos: ILessonVideo[]): VideoRow[] {
   if (!videos.length) {
@@ -173,8 +180,9 @@ export default function EditLesson({
     { key: newKey(), title: "", youtube_url: "", is_active: true },
   ]);
   const [pdfRows, setPdfRows] = useState<PdfRow[]>([
-    { key: newKey(), file: null },
+    { key: newKey(), title: "", file: null },
   ]);
+  const [existingPdfs, setExistingPdfs] = useState<ExistingPdfRow[]>([]);
 
   useEffect(() => {
     if (!lesson) return;
@@ -187,7 +195,15 @@ export default function EditLesson({
     setDoctorId(lesson.doctor_id || "");
     setIsActive(Boolean(lesson.is_active));
     setVideoRows(lessonVideosToRows(lesson.videos));
-    setPdfRows([{ key: newKey(), file: null }]);
+    setPdfRows([{ key: newKey(), title: "", file: null }]);
+    setExistingPdfs(
+      (lesson.attachments ?? []).map((a) => ({
+        id: a.id,
+        title: a.title || a.name || "",
+        file_url: a.file_url,
+        name: a.name,
+      })),
+    );
   }, [lesson]);
 
   useEffect(() => {
@@ -324,9 +340,41 @@ export default function EditLesson({
     }
 
     const videos = rowsToVideos(videoRows);
-    const attachments = pdfRows
-      .map((r) => r.file)
-      .filter((f): f is File => f !== null);
+    const rowsWithFile = pdfRows.filter((r) => r.file);
+    for (const row of existingPdfs) {
+      if (!row.title.trim()) {
+        toast.error(
+          cs?.pdfTitleRequired ??
+            el?.pdfTitleRequired ??
+            (lang === "ar"
+              ? "عنوان ملف PDF مطلوب"
+              : "PDF title is required"),
+        );
+        return;
+      }
+    }
+    for (const row of rowsWithFile) {
+      if (!row.title.trim()) {
+        toast.error(
+          cs?.pdfTitleRequired ??
+            el?.pdfTitleRequired ??
+            (lang === "ar"
+              ? "عنوان ملف PDF مطلوب"
+              : "PDF title is required"),
+        );
+        return;
+      }
+    }
+    const attachments = [
+      ...existingPdfs.map((r) => ({
+        id: r.id,
+        title: r.title.trim(),
+      })),
+      ...rowsWithFile.map((r) => ({
+        title: r.title.trim(),
+        file: r.file as File,
+      })),
+    ];
 
     try {
       const res = await updateLesson({
@@ -365,6 +413,7 @@ export default function EditLesson({
   const handleDeletePdf = async (attachmentId: number) => {
     try {
       const res = await deleteAttachment({ lessonId, attachmentId }).unwrap();
+      setExistingPdfs((prev) => prev.filter((a) => a.id !== attachmentId));
       toast.success(res?.message);
     } catch (err: any) {
       const errorData = err?.data ?? err;
@@ -394,7 +443,7 @@ export default function EditLesson({
   };
 
   const addPdfRow = () =>
-    setPdfRows((prev) => [...prev, { key: newKey(), file: null }]);
+    setPdfRows((prev) => [...prev, { key: newKey(), title: "", file: null }]);
 
   const removePdfRow = (key: string) => {
     setPdfRows((prev) =>
@@ -413,8 +462,6 @@ export default function EditLesson({
       </div>
     );
   }
-
-  const existingAttachments = lesson.attachments ?? [];
 
   return (
     <div className={dash.formPage} dir={pageDir}>
@@ -733,35 +780,68 @@ export default function EditLesson({
                 <Label className="text-sm font-semibold text-slate-800">
                   {el?.existingPdfs}
                 </Label>
-                {existingAttachments.length === 0 ? (
+                {existingPdfs.length === 0 ? (
                   <p className="text-sm text-muted-foreground">—</p>
                 ) : (
-                  <ul className="space-y-2">
-                    {existingAttachments.map((att) => (
-                      <li
+                  <div className="space-y-4">
+                    {existingPdfs.map((att) => (
+                      <div
                         key={att.id}
-                        className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-100/90 bg-amber-50/40 px-3 py-2.5 text-sm"
+                        className="space-y-3 rounded-xl border border-amber-100/90 bg-amber-50/40 px-3 py-3"
                       >
-                        <a
-                          href={att.file_url || "#"}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-emerald-800 underline truncate max-w-60 font-medium"
-                        >
-                          {att.name || att.file_url || `#${att.id}`}
-                        </a>
-                        <DeleteConfirmDialog
-                          title={translate?.pages.lessons.deleteTitle ?? ""}
-                          description={
-                            translate?.pages.lessons.deleteMessage ?? ""
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <Label className="text-xs font-medium text-slate-600">
+                            {cs?.pdfTitle ??
+                              el?.pdfTitle ??
+                              (lang === "ar" ? "عنوان الملف" : "File title")}
+                          </Label>
+                          <DeleteConfirmDialog
+                            title={translate?.pages.lessons.deleteTitle ?? ""}
+                            description={
+                              translate?.pages.lessons.deleteMessage ?? ""
+                            }
+                            confirmText={
+                              translate?.pages.lessons.deleteBtn ?? ""
+                            }
+                            cancelText={
+                              translate?.pages.lessons.cancelBtn ?? ""
+                            }
+                            onConfirm={() => handleDeletePdf(att.id)}
+                          />
+                        </div>
+                        <Input
+                          value={att.title}
+                          onChange={(e) =>
+                            setExistingPdfs((prev) =>
+                              prev.map((r) =>
+                                r.id === att.id
+                                  ? { ...r, title: e.target.value }
+                                  : r,
+                              ),
+                            )
                           }
-                          confirmText={translate?.pages.lessons.deleteBtn ?? ""}
-                          cancelText={translate?.pages.lessons.cancelBtn ?? ""}
-                          onConfirm={() => handleDeletePdf(att.id)}
+                          placeholder={
+                            cs?.pdfTitlePlaceholder ??
+                            el?.pdfTitlePlaceholder ??
+                            (lang === "ar"
+                              ? "اكتب عنوان الملف"
+                              : "Enter file title")
+                          }
+                          className={dash.input}
                         />
-                      </li>
+                        {att.file_url ? (
+                          <a
+                            href={att.file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-block text-sm font-medium text-emerald-800 underline truncate max-w-full"
+                          >
+                            {att.name || att.file_url}
+                          </a>
+                        ) : null}
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 )}
               </div>
 
@@ -798,6 +878,33 @@ export default function EditLesson({
                       <Trash2 className="w-4 h-4 me-1" />
                       {cs?.removePdfSlot}
                     </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-slate-600">
+                      {cs?.pdfTitle ??
+                        el?.pdfTitle ??
+                        (lang === "ar" ? "عنوان الملف" : "File title")}
+                    </Label>
+                    <Input
+                      value={row.title}
+                      onChange={(e) =>
+                        setPdfRows((prev) =>
+                          prev.map((r) =>
+                            r.key === row.key
+                              ? { ...r, title: e.target.value }
+                              : r,
+                          ),
+                        )
+                      }
+                      placeholder={
+                        cs?.pdfTitlePlaceholder ??
+                        el?.pdfTitlePlaceholder ??
+                        (lang === "ar"
+                          ? "اكتب عنوان الملف"
+                          : "Enter file title")
+                      }
+                      className={dash.input}
+                    />
                   </div>
                   <PdfDropzone
                     file={row.file}

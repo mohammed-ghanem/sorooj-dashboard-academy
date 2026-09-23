@@ -58,7 +58,7 @@ function newKey() {
     : `${Date.now()}-${Math.random()}`;
 }
 
-type PdfRow = { key: string; file: File | null };
+type PdfRow = { key: string; title: string; file: File | null };
 
 export default function CreateBook() {
   const sessionReady = useSessionReady();
@@ -95,7 +95,7 @@ export default function CreateBook() {
   const [isActive, setIsActive] = useState(true);
   const [image, setImage] = useState<File | null>(null);
   const [pdfRows, setPdfRows] = useState<PdfRow[]>([
-    { key: newKey(), file: null },
+    { key: newKey(), title: "", file: null },
   ]);
 
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function CreateBook() {
   }, [selfDoctorId]);
 
   const addPdfRow = () =>
-    setPdfRows((prev) => [...prev, { key: newKey(), file: null }]);
+    setPdfRows((prev) => [...prev, { key: newKey(), title: "", file: null }]);
   const removePdfRow = (key: string) => {
     setPdfRows((prev) =>
       prev.length <= 1 ? prev : prev.filter((r) => r.key !== key),
@@ -124,9 +124,23 @@ export default function CreateBook() {
       return;
     }
 
-    const attachments = pdfRows
-      .map((r) => r.file)
-      .filter((f): f is File => f !== null);
+    const rowsWithFile = pdfRows.filter((r) => r.file);
+    for (const row of rowsWithFile) {
+      if (!row.title.trim()) {
+        toast.error(
+          t?.pdfTitleRequired ??
+            (lang === "ar"
+              ? "عنوان ملف PDF مطلوب"
+              : "PDF title is required"),
+        );
+        return;
+      }
+    }
+
+    const attachments = rowsWithFile.map((r) => ({
+      title: r.title.trim(),
+      file: r.file as File,
+    }));
 
     const toastId = toast.loading(`${t?.processing}...`);
     setUploadProgress(0);
@@ -342,6 +356,31 @@ export default function CreateBook() {
                       <Trash2 className="me-1 h-4 w-4" />
                       {cs?.removePdfSlot}
                     </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs font-medium text-slate-600">
+                      {t?.pdfTitle ??
+                        (lang === "ar" ? "عنوان الملف" : "File title")}
+                    </Label>
+                    <Input
+                      value={row.title}
+                      onChange={(e) =>
+                        setPdfRows((prev) =>
+                          prev.map((r) =>
+                            r.key === row.key
+                              ? { ...r, title: e.target.value }
+                              : r,
+                          ),
+                        )
+                      }
+                      placeholder={
+                        t?.pdfTitlePlaceholder ??
+                        (lang === "ar"
+                          ? "اكتب عنوان الملف"
+                          : "Enter file title")
+                      }
+                      className={dash.input}
+                    />
                   </div>
                   <PdfDropzone
                     file={row.file}

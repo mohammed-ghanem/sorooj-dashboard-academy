@@ -270,7 +270,7 @@ export default function ViewLesson({
                       rel="noopener noreferrer"
                       className="inline-flex items-center rounded-xl border border-amber-100/90 bg-amber-50/50 px-4 py-2.5 text-sm font-medium text-amber-950 hover:bg-amber-100/60 transition-colors"
                     >
-                      {att.name || att.file_url || `#${att.id}`}
+                      {att.title || att.name || att.file_url || `#${att.id}`}
                     </a>
                   </li>
                 ))}

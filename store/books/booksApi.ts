@@ -11,8 +11,9 @@ import type { IApiMessageResponse } from "@/types/academicYear";
 function normalizeAttachment(item: any) {
   return {
     id: Number(item?.id) || 0,
+    title: String(item?.title ?? ""),
     file_url: item?.file_url ?? item?.url ?? item?.path ?? "",
-    name: item?.name ?? item?.original_name ?? "",
+    name: item?.name ?? item?.original_name ?? item?.title ?? "",
   };
 }
 
@@ -76,8 +77,14 @@ function appendBookFields(
   fd.append("doctor_id", String(data.doctor_id));
   fd.append("is_active", data.is_active ? "1" : "0");
   if (data.image) fd.append("image", data.image);
-  data.attachments.forEach((file) => {
-    fd.append("attachments[]", file);
+  data.attachments.forEach((att, i) => {
+    if (att.id != null && att.id > 0) {
+      fd.append(`attachments[${i}][id]`, String(att.id));
+    }
+    fd.append(`attachments[${i}][title]`, att.title);
+    if (att.file) {
+      fd.append(`attachments[${i}][file]`, att.file);
+    }
   });
 }
 

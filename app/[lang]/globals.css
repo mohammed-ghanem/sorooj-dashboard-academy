@@ -1,12 +1,9 @@
-/* Font imports */
-@import url("https://fonts.googleapis.com/css2?family=Amiri&family=Almarai&family=Aref+Ruqaa&family=El+Messiri&family=Reem+Kufi&display=swap");
-
 /* Tailwind imports */
 @import "tailwindcss";
 
 /* Base styles */
 :root {
-  font-family: var(--font-cairo), sans-serif;
+  font-family: var(--font-cairo), "Cairo Fallback", sans-serif;
 
   /* Light theme variables */
   --background: 0 0% 100%;
@@ -56,6 +53,10 @@
 
 /* Simple theme mapping for Tailwind v4 */
 @theme {
+  --font-sans: var(--font-cairo), "Cairo Fallback", ui-sans-serif, system-ui,
+    sans-serif;
+  --default-font-family: var(--font-sans);
+
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -81,6 +82,12 @@
 @layer base {
   * {
     border-color: hsl(var(--border));
+  }
+
+  html,
+  body {
+    font-family: var(--font-cairo), "Cairo Fallback", ui-sans-serif, system-ui,
+      sans-serif;
   }
 
   body {
@@ -191,7 +198,7 @@ input[data-slot="input"]:-webkit-autofill:active {
 }
 
 .fontCairo {
-  font-family: "Cairo", sans-serif;
+  font-family: var(--font-cairo), "Cairo Fallback", sans-serif;
 }
 .fontBold {
   font-weight: bold;

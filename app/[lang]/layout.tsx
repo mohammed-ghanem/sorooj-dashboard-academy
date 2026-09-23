@@ -12,10 +12,13 @@ import { Cairo } from "next/font/google";
 import Footer from "@/components/footer/Footer";
 
 
+// Variable Cairo = one file (all weights) instead of 4 separate downloads.
 const cairo = Cairo({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  subsets: ["arabic", "latin"],
   variable: "--font-cairo",
+  display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
 export const metadata: Metadata = {
@@ -35,7 +38,7 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={dir} className={cairo.variable}>
-      <body className="min-h-screen overflow-hidden">
+      <body className={`${cairo.className} min-h-screen overflow-hidden antialiased`}>
         <Providers>
           <AuthSessionGuard lang={lang}>
           <PermissionRouteGuard lang={lang}>

@@ -7,6 +7,7 @@ export interface ILessonVideo {
 
 export interface ILessonAttachment {
   id: number;
+  title?: string;
   file_url?: string;
   name?: string;
 }
@@ -50,6 +51,13 @@ export interface ILessonVideoPayload {
   is_active: boolean;
 }
 
+/** PDF attachment on create/update (existing rows include id; new rows include file) */
+export interface ILessonAttachmentUpload {
+  id?: number;
+  title: string;
+  file?: File;
+}
+
 export interface ICreateLessonPayload {
   lesson_number: string;
   title: string;
@@ -59,7 +67,7 @@ export interface ICreateLessonPayload {
   doctor_id: number;
   is_active: boolean;
   videos: ILessonVideoPayload[];
-  attachments: File[];
+  attachments: ILessonAttachmentUpload[];
   type: LessonTrackType;
 }
 
@@ -72,6 +80,6 @@ export interface IUpdateLessonPayload {
   doctor_id: number;
   is_active: boolean;
   videos: ILessonVideoPayload[];
-  attachments: File[];
+  attachments: ILessonAttachmentUpload[];
   type: LessonTrackType;
 }

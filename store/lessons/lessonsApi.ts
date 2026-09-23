@@ -28,8 +28,9 @@ function normalizeVideo(item: any): ILessonVideo {
 function normalizeAttachment(item: any): ILessonAttachment {
   return {
     id: Number(item?.id) || 0,
+    title: String(item?.title ?? ""),
     file_url: item?.file_url ?? item?.url ?? item?.path ?? "",
-    name: item?.name ?? item?.original_name ?? "",
+    name: item?.name ?? item?.original_name ?? item?.title ?? "",
   };
 }
 
@@ -137,8 +138,14 @@ function appendLessonFields(
   fd.append("is_active", data.is_active ? "1" : "0");
   fd.append("type", data.type);
   appendVideos(fd, data.videos);
-  data.attachments.forEach((file) => {
-    fd.append("attachments[]", file);
+  data.attachments.forEach((att, i) => {
+    if (att.id != null && att.id > 0) {
+      fd.append(`attachments[${i}][id]`, String(att.id));
+    }
+    fd.append(`attachments[${i}][title]`, att.title);
+    if (att.file) {
+      fd.append(`attachments[${i}][file]`, att.file);
+    }
   });
 }
 

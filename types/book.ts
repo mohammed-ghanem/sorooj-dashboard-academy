@@ -1,5 +1,6 @@
 export interface IBookAttachment {
   id: number;
+  title?: string;
   file_url?: string;
   name?: string;
 }
@@ -26,6 +27,13 @@ export interface IBook {
   message?: string;
 }
 
+/** PDF attachment on create/update (existing rows include id; new rows include file) */
+export interface IBookAttachmentUpload {
+  id?: number;
+  title: string;
+  file?: File;
+}
+
 export interface ICreateBookPayload {
   title: string;
   content: string;
@@ -33,7 +41,7 @@ export interface ICreateBookPayload {
   doctor_id: number;
   is_active: boolean;
   image?: File | null;
-  attachments: File[];
+  attachments: IBookAttachmentUpload[];
 }
 
 export interface IUpdateBookPayload {
@@ -43,5 +51,5 @@ export interface IUpdateBookPayload {
   doctor_id: number;
   is_active: boolean;
   image?: File | null;
-  attachments: File[];
+  attachments: IBookAttachmentUpload[];
 }

@@ -155,7 +155,7 @@ export default function ViewBook() {
                         rel="noopener noreferrer"
                         className="text-emerald-800 underline"
                       >
-                        {att.name || att.file_url || `#${att.id}`}
+                        {att.title || att.name || att.file_url || `#${att.id}`}
                       </a>
                     </li>
                   ))}
