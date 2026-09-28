@@ -33,6 +33,7 @@ const MODULE_ROUTE_ALIASES: Record<string, string[]> = {
   doctors: ["doctors"],
   cohorts: ["cohorts"],
   students: ["students"],
+  "re-enrollment-requests": ["students"],
   admins: ["admins"],
   roles: ["roles"],
   "activity-logs": ["activity_logs"],

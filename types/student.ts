@@ -46,6 +46,17 @@ export interface IStudentCertificateTab {
   certificates: IStudentCertificate[];
 }
 
+export interface IReEnrollmentOption {
+  id: number;
+  label: string;
+  description: string;
+}
+
+export interface IReEnrollmentOptionsResponse {
+  options: IReEnrollmentOption[];
+  message: string;
+}
+
 export interface IStudent {
   id: number;
   name: string;
@@ -72,6 +83,8 @@ export interface IStudent {
   makeup_exam_period: IStudentDateRange | null;
   progressPhase: string | null;
   progressPhaseLabel: string | null;
+  carried_over_study_terms: IStudentNamedRef[];
+  can_re_enroll: boolean;
   has_passed: boolean | null;
   has_completed_program: boolean | null;
   has_program_completion_certificate: boolean | null;

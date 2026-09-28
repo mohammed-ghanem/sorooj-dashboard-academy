@@ -2,6 +2,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { axiosBaseQuery } from "../base/axiosBaseQuery";
 import type {
+  IReEnrollmentOption,
+  IReEnrollmentOptionsResponse,
   IStudent,
   IStudentAcademicYear,
   IStudentCertificate,
@@ -17,6 +19,33 @@ function asNamedRef(item: any): IStudentNamedRef | null {
     id: Number(item.id) || 0,
     name: String(item.name ?? ""),
   };
+}
+
+/** Accepts `[{id,name}]`, `[{study_term:{id,name}}]`, ids, or plain names. */
+function asNamedRefList(value: any): IStudentNamedRef[] {
+  if (!Array.isArray(value)) return [];
+  const out: IStudentNamedRef[] = [];
+  const seen = new Set<string>();
+  value.forEach((raw, index) => {
+    let id = 0;
+    let name = "";
+    if (typeof raw === "string") {
+      name = raw.trim();
+    } else if (typeof raw === "number") {
+      id = raw;
+    } else if (raw && typeof raw === "object") {
+      const inner = raw.study_term ?? raw.studyTerm ?? raw;
+      id = Number(inner?.id ?? raw?.study_term_id ?? 0) || 0;
+      name = String(
+        inner?.name ?? inner?._name ?? inner?.name_ar ?? inner?.title ?? "",
+      ).trim();
+    }
+    const key = id ? `id:${id}` : `name:${name || index}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push({ id, name });
+  });
+  return out;
 }
 
 function asDateRange(item: any): IStudentDateRange | null {
@@ -118,6 +147,8 @@ function normalizeStudent(item: any): IStudent {
     makeup_exam_period: asDateRange(item?.makeup_exam_period),
     progressPhase: item?.progress_phase ?? null,
     progressPhaseLabel: item?._progress_phase ?? null,
+    carried_over_study_terms: asNamedRefList(item?.carried_over_study_terms),
+    can_re_enroll: asBool(item?.can_re_enroll) === true,
     has_passed: asBool(item?.has_passed),
     has_completed_program: asBool(item?.has_completed_program),
     has_program_completion_certificate: asBool(
@@ -164,7 +195,43 @@ export type IStudentsListParams = {
   email?: string;
   mobile?: string;
   is_active?: 0 | 1;
+  progress_phase?: string;
 };
+
+function pickName(obj: any): string {
+  if (!obj || typeof obj !== "object") return "";
+  const candidates = [
+    obj.name,
+    obj.cohort_name,
+    obj._name,
+    obj.label,
+    obj.title,
+    obj.display_name,
+    obj.name_ar,
+    obj.name_en,
+    obj.name?.ar,
+    obj.name?.en,
+  ];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c.trim();
+  }
+  return "";
+}
+
+function normalizeReEnrollmentOption(item: any): IReEnrollmentOption {
+  const cohort = item?.cohort ?? null;
+  const id = Number(
+    item?.cohort_id ?? cohort?.id ?? item?.id ?? item?.value ?? 0,
+  );
+  const label = pickName(item) || pickName(cohort);
+  const ay = item?.academic_year ?? cohort?.academic_year;
+  const start = item?.start_date ?? cohort?.start_date;
+  const end = item?.end_date ?? cohort?.end_date;
+  const description = [ay?._sequence, start && end ? `${start} → ${end}` : ""]
+    .filter(Boolean)
+    .join(" · ");
+  return { id, label, description };
+}
 
 export const studentsApi = createApi({
   reducerPath: "studentsApi",
@@ -336,6 +403,43 @@ export const studentsApi = createApi({
       },
       invalidatesTags: (_r, _e, id) => ["Students", { type: "Student", id }],
     }),
+
+    getReEnrollmentOptions: builder.query<IReEnrollmentOptionsResponse, number>({
+      query: (id) => ({
+        url: `/students/${id}/re-enrollment-options`,
+        method: "get",
+      }),
+      transformResponse: (response: any) => {
+        const d = response?.data ?? response;
+        const raw = Array.isArray(d?.options)
+          ? d.options
+          : Array.isArray(d)
+            ? d
+            : [];
+        return {
+          options: raw
+            .map(normalizeReEnrollmentOption)
+            .filter((o: IReEnrollmentOption) => o.id > 0),
+          message: String(d?.message ?? ""),
+        };
+      },
+      keepUnusedDataFor: 0,
+    }),
+
+    reEnrollStudent: builder.mutation<
+      IApiMessageResponse,
+      { id: number; cohort_id: number }
+    >({
+      query: ({ id, cohort_id }) => ({
+        url: `/students/re-enroll/${id}`,
+        method: "post",
+        data: { cohort_id },
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        "Students",
+        { type: "Student", id },
+      ],
+    }),
   }),
 });
 
@@ -345,4 +449,6 @@ export const {
   useToggleStudentStatusMutation,
   useDeleteStudentMutation,
   useChangeStudentEnrollmentMutation,
+  useLazyGetReEnrollmentOptionsQuery,
+  useReEnrollStudentMutation,
 } = studentsApi;

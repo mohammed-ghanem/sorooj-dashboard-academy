@@ -18,6 +18,7 @@ import {
   Target,
   Layers,
   RefreshCw,
+  UserRoundX,
   type LucideIcon,
 } from "lucide-react";
 
@@ -90,6 +91,16 @@ export const mainLinks = (lang: string): SidebarLinkItem[] => [
     icon: UserCircle,
 
     key: "students",
+
+    module: "students",
+  },
+
+  {
+    href: `/${lang}/re-enrollment-requests`,
+
+    icon: UserRoundX,
+
+    key: "reEnrollmentRequests",
 
     module: "students",
   },

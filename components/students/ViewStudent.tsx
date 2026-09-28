@@ -23,6 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import ViewStudentSkeleton from "@/components/skeleton/ViewStudentSkeleton";
 import StudentCertificateCard from "@/components/students/StudentCertificateCard";
+import CarriedOverTerms from "@/components/students/CarriedOverTerms";
 import type {
   IStudent,
   IStudentAcademicYear,
@@ -245,6 +246,21 @@ export default function ViewStudent() {
                 value={
                   pickText(s.progressPhaseLabel, s.progressPhase) ?? undefined
                 }
+              />
+              <div>
+                <Label className="font-semibold text-slate-800">
+                  {t?.carriedOverStudyTerms ?? "المحاور المرحّلة"}
+                </Label>
+                <div className={cn(dash.viewFieldBox)}>
+                  <CarriedOverTerms
+                    terms={s.carried_over_study_terms}
+                    emptyLabel={t?.noCarriedOver ?? "لا يوجد"}
+                  />
+                </div>
+              </div>
+              <Field
+                label={t?.canReEnroll ?? "قابلية إعادة القيد"}
+                value={yesNo(s.can_re_enroll, { yes: t?.yes, no: t?.no })}
               />
               <Field
                 label={t?.hasPassed ?? ""}
