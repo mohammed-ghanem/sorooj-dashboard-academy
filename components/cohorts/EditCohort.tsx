@@ -228,7 +228,7 @@ export default function EditCohort() {
             </section>
 
             <CohortEnrollmentPeriodsSection
-              register={register}
+              control={control}
               watch={watch}
               labelAlign={labelAlign}
               labels={{

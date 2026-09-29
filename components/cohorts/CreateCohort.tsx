@@ -201,7 +201,7 @@ export default function CreateCohort() {
             </section>
 
             <CohortEnrollmentPeriodsSection
-              register={register}
+              control={control}
               watch={watch}
               labelAlign={labelAlign}
               labels={{

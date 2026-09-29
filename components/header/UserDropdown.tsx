@@ -75,11 +75,15 @@ export default function UserDropdown({
         </div>
 
         {showUserName && (
-          <div className="hidden md:flex flex-col items-start">
-            <span className="text-sm font-medium">
+          <div className="hidden md:flex flex-col items-start min-w-0 max-w-48">
+            <span className="text-sm font-medium truncate max-w-full">
               {user.name}
             </span>
-            <span className="text-xs text-gray-500">
+            <span
+              className="text-xs text-gray-500 truncate max-w-full rtl:text-right"
+              dir="ltr"
+              title={user.email}
+            >
               {user.email}
             </span>
           </div>
@@ -93,9 +97,15 @@ export default function UserDropdown({
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border z-50">
-          <div className="p-3 border-b">
-            <div className="font-medium">{user.name}</div>
-            <div className="text-sm text-gray-500">
+          <div className="p-3 border-b min-w-0">
+            <div className="font-medium truncate" title={user.name}>
+              {user.name}
+            </div>
+            <div
+              className="text-sm text-gray-500 truncate rtl:text-right"
+              dir="ltr"
+              title={user.email}
+            >
               {user.email}
             </div>
           </div>
