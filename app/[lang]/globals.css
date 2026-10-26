@@ -3,7 +3,8 @@
 
 /* Base styles */
 :root {
-  font-family: var(--font-cairo), "Cairo Fallback", sans-serif;
+  --font-cairo: "Cairo";
+  font-family: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
 
   /* Light theme variables */
   --background: 0 0% 100%;
@@ -53,8 +54,7 @@
 
 /* Simple theme mapping for Tailwind v4 */
 @theme {
-  --font-sans: var(--font-cairo), "Cairo Fallback", ui-sans-serif, system-ui,
-    sans-serif;
+  --font-sans: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
   --default-font-family: var(--font-sans);
 
   --color-background: hsl(var(--background));
@@ -86,8 +86,7 @@
 
   html,
   body {
-    font-family: var(--font-cairo), "Cairo Fallback", ui-sans-serif, system-ui,
-      sans-serif;
+    font-family: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
   }
 
   body {
@@ -198,7 +197,7 @@ input[data-slot="input"]:-webkit-autofill:active {
 }
 
 .fontCairo {
-  font-family: var(--font-cairo), "Cairo Fallback", sans-serif;
+  font-family: var(--font-cairo), ui-sans-serif, system-ui, sans-serif;
 }
 .fontBold {
   font-weight: bold;

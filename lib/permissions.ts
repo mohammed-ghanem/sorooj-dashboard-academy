@@ -277,7 +277,8 @@ function roleGrantsFullAccess(role: unknown): boolean {
   if (typeof role !== "object") return false;
 
   const record = role as Record<string, unknown>;
-  if (record.is_super_admin === true || record.is_super_admin === 1) return true;
+  if (record.is_super_admin === true || record.is_super_admin === 1)
+    return true;
 
   const labels = [
     record.slug,
@@ -362,9 +363,7 @@ function collectPermissionIdsFromRoles(value: unknown, out: Set<number>) {
   }
 }
 
-export function extractUserPermissionKeys(
-  profileData: unknown,
-): Set<string> {
+export function extractUserPermissionKeys(profileData: unknown): Set<string> {
   const keys = new Set<string>();
   const user = extractProfileUser(profileData);
   if (!user) return keys;
@@ -431,7 +430,11 @@ function collectPermissionIds(value: unknown, out: Set<number>) {
     typeof record.name_ar === "string" ||
     typeof record.name_en === "string";
 
-  if (record.id != null && looksLikePermission && !Array.isArray(record.controls)) {
+  if (
+    record.id != null &&
+    looksLikePermission &&
+    !Array.isArray(record.controls)
+  ) {
     const id = Number(record.id);
     if (Number.isFinite(id)) out.add(id);
   }
@@ -634,7 +637,10 @@ export function isFullAccessUser(profileData: unknown): boolean {
 
 export function buildPermissionContext(
   profileData: unknown,
-  catalog?: Array<{ name: string; controls: Array<{ id: number; key: string }> }>,
+  catalog?: Array<{
+    name: string;
+    controls: Array<{ id: number; key: string }>;
+  }>,
   options?: { ready?: boolean },
 ) {
   const ready = Boolean(options?.ready);
@@ -649,8 +655,7 @@ export function buildPermissionContext(
     }
   }
 
-  const fullAccess =
-    isFullAccessUser(profileData) || keysGrantFullAccess(keys);
+  const fullAccess = isFullAccessUser(profileData) || keysGrantFullAccess(keys);
   const restricted = !fullAccess && isRestrictedUser(profileData);
 
   const shouldEnforce = ready && restricted && !fullAccess;
@@ -865,10 +870,7 @@ const MODULE_FAMILIES: Record<string, string[]> = {
     "scientific_track_categories",
     "scientific_tracks",
   ],
-  scientific_track_subjects: [
-    "scientific_track_subjects",
-    "scientific_tracks",
-  ],
+  scientific_track_subjects: ["scientific_track_subjects", "scientific_tracks"],
   scientific_tracks: [
     "scientific_tracks",
     "scientific_track_categories",
@@ -877,10 +879,7 @@ const MODULE_FAMILIES: Record<string, string[]> = {
   home_page: ["home_page", "settings"],
 };
 
-export function hasModuleAccess(
-  keys: Set<string>,
-  module: string,
-): boolean {
+export function hasModuleAccess(keys: Set<string>, module: string): boolean {
   if (!module) return false;
   const targets = MODULE_FAMILIES[module] ?? [module];
   for (const target of targets) {
@@ -1018,7 +1017,10 @@ export function canAccessHref(
 
 export function getPermissionContext(
   profileData: unknown,
-  catalog?: Array<{ name: string; controls: Array<{ id: number; key: string }> }>,
+  catalog?: Array<{
+    name: string;
+    controls: Array<{ id: number; key: string }>;
+  }>,
 ) {
   return buildPermissionContext(profileData, catalog);
 }

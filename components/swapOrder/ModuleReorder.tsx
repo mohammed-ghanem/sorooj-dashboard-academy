@@ -37,13 +37,16 @@ function buildGroups<T extends { id: number }>(
 ): ReorderGroup[] {
   const buckets = new Map<
     string,
-    { parentId: string | number | null; parentLabel: string; items: SwapOrderItem[] }
+    {
+      parentId: string | number | null;
+      parentLabel: string;
+      items: SwapOrderItem[];
+    }
   >();
 
   for (const item of list) {
     const parentId = groupConfig.getParentId(item);
-    const key =
-      parentId == null || parentId === "" ? "none" : String(parentId);
+    const key = parentId == null || parentId === "" ? "none" : String(parentId);
 
     const swapItem: SwapOrderItem = {
       id: item.id,
@@ -78,7 +81,9 @@ function buildGroups<T extends { id: number }>(
       if (Number.isFinite(numA) && Number.isFinite(numB)) {
         return numA - numB;
       }
-      return a.parentLabel.localeCompare(b.parentLabel, lang, { numeric: true });
+      return a.parentLabel.localeCompare(b.parentLabel, lang, {
+        numeric: true,
+      });
     })
     .map((bucket) => ({
       key: `group-${bucket.parentId ?? "none"}`,
@@ -115,8 +120,7 @@ function ReorderTabPanel({
     goToLabel: t?.goTo ?? "",
   };
 
-  const uncategorizedDefault =
-    lang === "ar" ? "بدون تصنيف" : "Uncategorized";
+  const uncategorizedDefault = lang === "ar" ? "بدون تصنيف" : "Uncategorized";
 
   const contentGroups = useMemo(() => {
     if (!tab.groupBy) return [];
@@ -125,9 +129,18 @@ function ReorderTabPanel({
       tab.groupBy,
       tab.getLabel,
       lang,
-      tab.groupBy.uncategorizedLabel ?? t?.uncategorized ?? uncategorizedDefault,
+      tab.groupBy.uncategorizedLabel ??
+        t?.uncategorized ??
+        uncategorizedDefault,
     );
-  }, [list, tab.groupBy, tab.getLabel, lang, t?.uncategorized, uncategorizedDefault]);
+  }, [
+    list,
+    tab.groupBy,
+    tab.getLabel,
+    lang,
+    t?.uncategorized,
+    uncategorizedDefault,
+  ]);
 
   useEffect(() => {
     if (!contentGroups.length) {
@@ -214,7 +227,8 @@ export default function ModuleReorder({ config }: Props) {
   const defaultKey = config.defaultTabKey ?? config.tabs[0]?.key ?? "";
   const [tab, setTab] = useState(defaultKey);
 
-  const activeTab = config.tabs.find((item) => item.key === tab) ?? config.tabs[0];
+  const activeTab =
+    config.tabs.find((item) => item.key === tab) ?? config.tabs[0];
 
   return (
     <IndexListPage
@@ -250,7 +264,12 @@ export default function ModuleReorder({ config }: Props) {
         </div>
 
         {activeTab ? (
-          <ReorderTabPanel key={activeTab.key} tab={activeTab} lang={lang} t={t} />
+          <ReorderTabPanel
+            key={activeTab.key}
+            tab={activeTab}
+            lang={lang}
+            t={t}
+          />
         ) : null}
       </div>
     </IndexListPage>

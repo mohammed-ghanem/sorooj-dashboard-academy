@@ -8,18 +8,8 @@ import AuthSessionGuard from "@/components/auth/AuthSessionGuard";
 import PermissionRouteGuard from "@/components/auth/PermissionRouteGuard";
 import SideBar from "@/components/sidebar/SideBar";
 import { ReactNode } from "react";
-import { Cairo } from "next/font/google";
 import Footer from "@/components/footer/Footer";
-
-
-// Variable Cairo = one file (all weights) instead of 4 separate downloads.
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  variable: "--font-cairo",
-  display: "swap",
-  preload: true,
-  adjustFontFallback: true,
-});
+import CairoFontLinks from "@/components/shared/CairoFontLinks";
 
 export const metadata: Metadata = {
   title: "Sorooj Academy Dashboard",
@@ -37,8 +27,11 @@ export default async function RootLayout({
   const dir = lang === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={lang} dir={dir} className={cairo.variable}>
-      <body className={`${cairo.className} min-h-screen overflow-hidden antialiased`}>
+    <html lang={lang} dir={dir}>
+      <head>
+        <CairoFontLinks />
+      </head>
+      <body className="min-h-screen overflow-hidden antialiased">
         <Providers>
           <AuthSessionGuard lang={lang}>
           <PermissionRouteGuard lang={lang}>
